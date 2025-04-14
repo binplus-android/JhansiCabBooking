@@ -8,17 +8,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SplashActivity">
-    <ImageView
-        android:id="@+id/iv_logo"
+    <LinearLayout
         android:layout_centerInParent="true"
-        android:src="@drawable/logo"
-        android:layout_width="200dp"
-        android:layout_height="200dp"/>
-<TextView
-    android:textAlignment="center"
-    style="@style/TextViewExtraBold"
-    android:text="Cab Booking"
-    android:layout_below="@+id/iv_logo"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/iv_logo"
+            android:src="@drawable/logo"
+            android:layout_width="170dp"
+            android:layout_height="170dp"/>
+        <TextView
+            android:textSize="@dimen/space_25"
+            android:textAlignment="center"
+            style="@style/TextViewExtraBold"
+            android:text="Jhansi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+
+        android:textAlignment="center"
+        android:textSize="@dimen/space_14"
+        android:text="Cab Booking"
+        android:layout_below="@+id/iv_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
+
 </RelativeLayout>
