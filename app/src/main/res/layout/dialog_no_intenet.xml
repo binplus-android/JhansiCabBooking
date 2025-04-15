@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="4pt"
+        android:background="@drawable/bg_box_grey_boader"
+        android:backgroundTint="@color/white"
+        android:padding="@dimen/button_margin_horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120pt"
+                android:src="@drawable/no_internet_img"/>
+            <TextView
+                android:id="@+id/tv_no_internet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/check_internet"
+                style="@style/TextViewRegular"
+                android:gravity="center"
+                android:layout_marginTop="-10pt"
+               />
+                        <Button
+                            android:visibility="gone"
+                            android:background="@drawable/bg_button"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/space_3"
+                            android:id="@+id/btn_ok"
+                            android:layout_width="60pt"
+                            android:layout_height="@dimen/button_height"
+                            android:text="Ok"
+
+                            />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

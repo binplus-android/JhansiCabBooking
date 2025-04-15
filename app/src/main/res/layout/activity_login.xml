@@ -1,48 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:background="@color/white"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.LoginActivity">
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:src="@drawable/logo"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:id="@+id/main"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/space_90"/>
-    <LinearLayout
-        android:layout_marginTop="@dimen/space_12"
-        android:layout_marginHorizontal="@dimen/space_8"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        style="@style/TextViewExtraBold"/>
-        <TextView
-            android:layout_marginTop="@dimen/space_15"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mobile NUmber"
-        />
-        <EditText
-            android:hint="Enter here"
-            android:layout_marginTop="@dimen/space_5"
+        android:layout_height="match_parent"
+        tools:context=".activity.LoginActivity">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            />
-        <Button
-            android:text="Get OTP"
-            android:layout_marginTop="@dimen/space_15"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"/>
-    </LinearLayout>
-</LinearLayout>
-</RelativeLayout>
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/logo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/space_100"/>
+            <LinearLayout
+                android:layout_marginTop="@dimen/space_18"
+                android:layout_marginHorizontal="@dimen/space_8"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Login"
+                    style="@style/TextViewExtraBold"/>
+                <TextView
+                    android:layout_marginTop="@dimen/space_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mobile_number"
+                    />
+                <EditText
+                    android:id="@+id/et_mob"
+                    android:hint="@string/enter_here"
+                    android:layout_marginTop="@dimen/space_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edittext_height"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    />
+                <Button
+                    android:id="@+id/btn_otp"
+                    android:text="@string/get_otp"
+                    android:layout_marginTop="@dimen/space_15"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_marginVertical="@dimen/space_15"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ready_to_begin"
+                />
+            <TextView
+                android:textColor="@color/colorAccent"
+                android:layout_marginLeft="@dimen/space_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/join_here"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

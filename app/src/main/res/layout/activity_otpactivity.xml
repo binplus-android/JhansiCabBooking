@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.OTPActivity">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:src="@drawable/logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/space_100"/>
+                <LinearLayout
+                    android:layout_marginTop="@dimen/space_18"
+                    android:layout_marginHorizontal="@dimen/space_10"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_marginTop="@dimen/space_8"
+                        android:id="@+id/tv_otpv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/otp_verification"
+                        style="@style/TextViewExtraBold"
+                        />
+                    <TextView
+                        android:id="@+id/tv_no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_to_share_otp"
+                        android:layout_marginTop="@dimen/space_4"
+                        android:textSize="@dimen/space_5"
+                        style="@style/TextViewRegular" />
+
+                        <RelativeLayout
+                            android:layout_marginTop="@dimen/space_3"
+                            android:layout_marginVertical="@dimen/space_5"
+                            android:layout_width="wrap_content"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content">
+
+                            <com.mukeshsolanki.OtpView
+                                android:id="@+id/otpView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:itemBackground="@drawable/bg_bottom_line"
+                                app:OtpItemCount="6"
+                                android:layout_centerHorizontal="true"
+                                app:OtpItemSpacing="@dimen/space_5"
+                                app:OtpItemHeight="@dimen/space_25"
+                                app:OtpItemWidth="@dimen/space_24"
+                                app:OtpLineColor="@color/black"
+                                app:OtpState_filled="false"
+                                app:OtpHideLineWhenFilled="false"
+                                android:textSize="@dimen/space_10"
+                                android:textColor="@color/black" />
+
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_margin="@dimen/space_1">
+                            <TextView
+                                android:id="@+id/tv_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/time_remaining"
+                                android:textSize="@dimen/space_5"
+                                style="@style/TextViewRegular"/>
+                            <TextView
+                                android:id="@+id/tv_min"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/space_5"
+                                android:text="00"
+                                android:textColor="@color/red_600"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:layout_marginLeft="@dimen/space_1"
+                                android:paddingHorizontal="1dp"/>
+                            <TextView
+
+                                android:layout_marginLeft="2pt"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text=":"
+                                android:layout_width="wrap_content"
+                                android:paddingHorizontal="1dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/space_5"
+                                android:textColor="@color/colorPrimary"
+                                />
+                            <TextView
+                                android:layout_marginLeft="2pt"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="01"
+                                android:layout_width="wrap_content"
+                                android:id="@+id/tv_sec"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/space_5"
+                                android:textColor="@color/red_600"
+                                />
+                        </LinearLayout>
+                        <Button
+                            android:id="@+id/btn_submit"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/button_height"
+                            android:text="@string/submit"
+                            android:layout_marginTop="@dimen/space_5"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_resend_otp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/resend"
+                            android:visibility="gone"
+                            android:layout_marginTop="@dimen/space_5"
+                            android:textSize="@dimen/space_6"
+                            android:textColor="@color/black" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </ScrollView>
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_marginVertical="@dimen/space_15"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ready_to_begin"
+                />
+            <TextView
+                android:textColor="@color/colorAccent"
+                android:layout_marginLeft="@dimen/space_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/join_here"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
