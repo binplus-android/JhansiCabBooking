@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_barLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/mytoolbar"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways">
+            <RelativeLayout
+                    android:id="@+id/lin_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_centerInParent="true"
+                        android:id="@+id/logo"
+                        android:layout_width="15pt"
+                        android:layout_height="15pt"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/logo" />
+
+
+
+
+                <ImageView
+                    android:layout_alignParentRight="true"
+                        android:layout_width="10pt"
+                        android:layout_height="10pt"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/space_3"
+                        android:layout_marginRight="@dimen/space_5"
+
+                   android:src="@drawable/notification"/>
+
+
+                </RelativeLayout>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/lin_back_main"
+                    android:background="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:padding="@dimen/space_3"
+                            android:id="@+id/iv_backarrow"
+                            android:layout_width="@dimen/space_12"
+                            android:layout_height="@dimen/space_12"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/space_5"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/white"/>
+                        <TextView
+                            android:layout_marginStart="@dimen/space_3"
+                            android:id="@+id/tv_title"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/iv_backarrow"
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/space_7"
+                            android:textStyle="bold"
+                            android:text="@string/app_name">
+
+                        </TextView>
+
+
+
+
+
+
+
+
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+            <RelativeLayout
+                android:background="@color/white"
+                android:layout_below="@id/mytoolbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <FrameLayout
+                    android:id="@+id/main_framelayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
+                </FrameLayout>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+</RelativeLayout>
