@@ -10,7 +10,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
@@ -34,6 +38,14 @@ public class Common {
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
         java.util.regex.Matcher m = p.matcher(mobileNumber);
         return m.matches();
+    }
+    public void switchFragment(Fragment fragment) {
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager ( );
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
+        fragmentTransaction.replace (R.id.main_framelayout, fragment);
+        fragmentTransaction.addToBackStack (null);
+        fragmentTransaction.commit ( );
+
     }
     public boolean isValidName(String name){
         if (name.isEmpty ( )) {

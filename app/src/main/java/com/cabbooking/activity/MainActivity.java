@@ -24,6 +24,8 @@ import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initView();
+        allClick();
         loadFragment(new HomeFragment());
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
@@ -65,6 +68,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    public void setTitle(String title){
+        TextView tv_title= binding.appBar.findViewById(R.id.tv_title);
+         tv_title.setText(title);
+    }
+    private void allClick() {
+        binding.appBar.findViewById(R.id.iv_backarrow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
     public void loadFragment(Fragment fragment) {
         Bundle bundle=new Bundle();
         fragment.setArguments(bundle);

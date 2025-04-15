@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragement.PickUpFragment">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_map"
+        android:src="@drawable/map_dummy"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="200pt"/>
+        <LinearLayout
+            android:layout_marginHorizontal="@dimen/space_8"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_marginTop="@dimen/space_15"
+                android:text="Confirm your pickup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:id="@+id/lin_destination"
+                android:background="@drawable/bg_edittext"
+                android:gravity="center_vertical"
+                android:layout_gravity="center"
+                android:padding="@dimen/space_6"
+                android:layout_marginTop="@dimen/space_10"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height">
+                <ImageView
+                    android:layout_marginLeft="@dimen/space_2"
+                    android:src="@drawable/ic_location"
+                    android:layout_width="8pt"
+                    android:layout_height="8pt"/>
+                <TextView
+
+                    android:textSize="@dimen/space_7"
+                    android:layout_marginLeft="@dimen/space_8"
+                    android:text="Address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_marginTop="@dimen/space_10"
+                android:text="Confirm Location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"/>
+        </LinearLayout>
+</LinearLayout>
+
+
+    </RelativeLayout>
+</layout>
