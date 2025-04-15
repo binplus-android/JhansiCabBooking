@@ -19,6 +19,7 @@ import com.cabbooking.R;
 import com.cabbooking.databinding.ActivityOtpactivityBinding;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
+import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.SmsListener;
 import com.cabbooking.utils.SmsReceiver;
 import com.cabbooking.utils.ToastMsg;
@@ -35,6 +36,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     String number="",otpget="";
     String msg_status="0";
     public static final String OTP_REGEX = "[0-9]{3,6}";
+    SessionManagment sessionManagment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void initView() {
+        sessionManagment=new SessionManagment(this);
         common=new Common(this);
         number=getIntent ().getStringExtra ("mobile");
         otpget=getIntent ().getStringExtra ("otp");
@@ -210,6 +213,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void verifyOTP(String mobile, String otp) {
+        sessionManagment.setLoginValue();
         Intent intent = new Intent(OTPActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -31,8 +31,9 @@
                     <ImageView
                         android:layout_centerInParent="true"
                         android:id="@+id/logo"
-                        android:layout_width="15pt"
-                        android:layout_height="15pt"
+                        android:layout_width="18pt"
+                        android:layout_marginVertical="1dp"
+                        android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/logo" />
