@@ -102,9 +102,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         @Override
         public void onClick(View widget) {
             // Show Toast when "Terms & Conditions" is clicked
-            Toast.makeText(widget.getContext(), "term", Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(SignUpActivity.this,PolicyActivity.class);
+            startActivity(intent);
             // Optionally, toggle the checkbox
-            checkBox.setChecked(!checkBox.isChecked());
+           // checkBox.setChecked(!checkBox.isChecked());
         }
     };
     int termsStart = fullText.indexOf("Terms & Conditions");
@@ -116,9 +117,10 @@ spannable.setSpan(new ForegroundColorSpan(Color.BLUE), termsStart, termsStart + 
         @Override
         public void onClick(View widget) {
             // Show Toast when "Privacy Policy" is clicked
-            Toast.makeText(widget.getContext(), "privacy", Toast.LENGTH_SHORT).show();
+           Intent intent=new Intent(SignUpActivity.this,PolicyActivity.class);
+           startActivity(intent);
             // Optionally, toggle the checkbox
-            checkBox.setChecked(!checkBox.isChecked());
+           // checkBox.setChecked(!checkBox.isChecked());
         }
     };
     int privacyStart = fullText.indexOf("Privacy Policy");
