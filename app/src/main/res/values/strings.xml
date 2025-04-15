@@ -11,6 +11,7 @@
     <string name="enter_valid_name">Please enter valid name</string>
     <string name="enter_valid_mobile">Please enter valid mobile number</string>
     <string name="enter_valid_email">Please enter valid email id</string>
+    <string name="i_agree_check">Please accept Terms &amp; Conditions and Privacy Policy</string>
     <string name="check_internet"><![CDATA[Check your internet connection & try again !]]></string>
     <string name="otp_verification">OTP\nVerification</string>
     <string name="not_to_share_otp">Keep Your OTP Confidential</string>
@@ -18,7 +19,7 @@
     <string name="submit">Submit</string>
     <string name="register">Register</string>
     <string name="time_remaining">Time remaining : </string>
-    <string name="resend">Resend OTP</string>
+    <string name="resend">Request a new OTP</string>
     <string name="ready_to_begin">Ready to begin ? </string>
     <string name="join_here"> Join here</string>
     <string name="welcome_back">Welcome Back </string>

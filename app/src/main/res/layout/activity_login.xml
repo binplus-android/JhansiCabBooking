@@ -16,7 +16,7 @@
             <ImageView
                 android:src="@drawable/logo"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/space_100"/>
+                android:layout_height="@dimen/space_90"/>
             <LinearLayout
                 android:layout_marginTop="@dimen/space_18"
                 android:layout_marginHorizontal="@dimen/space_8"
@@ -46,7 +46,7 @@
                 <Button
                     android:id="@+id/btn_otp"
                     android:text="@string/get_otp"
-                    android:layout_marginTop="@dimen/space_15"
+                    android:layout_marginTop="@dimen/space_24"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"/>
             </LinearLayout>
@@ -66,7 +66,7 @@
                 />
             <TextView
                 android:textColor="@color/colorAccent"
-                android:layout_marginLeft="@dimen/space_4"
+                android:layout_marginLeft="@dimen/space_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/join_here"

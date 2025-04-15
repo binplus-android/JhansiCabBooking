@@ -16,7 +16,7 @@
             <ImageView
                 android:src="@drawable/logo"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/space_100"/>
+                android:layout_height="@dimen/space_90"/>
             <LinearLayout
                 android:layout_marginTop="@dimen/space_18"
                 android:layout_marginHorizontal="@dimen/space_8"
@@ -29,7 +29,7 @@
                     android:text="@string/Signup"
                     style="@style/TextViewExtraBold"/>
                 <TextView
-                    android:layout_marginTop="@dimen/space_15"
+                    android:layout_marginTop="@dimen/space_12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/name_s"
@@ -71,13 +71,27 @@
                     android:layout_height="@dimen/edittext_height"
                     android:inputType="textEmailAddress"
                     />
-                <CheckBox
-                    android:layout_marginTop="@dimen/space_8"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/space_2"
                     android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:layout_height="wrap_content"
-                    android:text="@string/i_agree"
-                    />
+                    android:layout_height="wrap_content">
+                    <CheckBox
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:buttonTint="@color/grey_40"
+                        android:id="@+id/ch_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        />
+                    <TextView
+                        android:id="@+id/tv_check"
+                        android:textSize="5pt"
+                        android:text="@string/i_agree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
                 <Button
                     android:id="@+id/btn_otp"
                     android:text="@string/get_otp"
@@ -101,7 +115,7 @@
                 />
             <TextView
                 android:textColor="@color/colorAccent"
-                android:layout_marginLeft="@dimen/space_4"
+                android:layout_marginLeft="@dimen/space_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_here"

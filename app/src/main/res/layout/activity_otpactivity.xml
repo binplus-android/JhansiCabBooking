@@ -43,7 +43,6 @@
                         style="@style/TextViewRegular" />
 
                         <RelativeLayout
-                            android:layout_marginTop="@dimen/space_3"
                             android:layout_marginVertical="@dimen/space_5"
                             android:layout_width="wrap_content"
                             android:gravity="center"
@@ -51,21 +50,23 @@
                             android:layout_height="wrap_content">
 
                             <com.mukeshsolanki.OtpView
+                                android:elevation="@dimen/space_4"
                                 android:id="@+id/otpView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
                                 android:itemBackground="@drawable/bg_bottom_line"
-                                app:OtpItemCount="6"
                                 android:layout_centerHorizontal="true"
+                                app:OtpItemCount="6"
                                 app:OtpItemSpacing="@dimen/space_5"
-                                app:OtpItemHeight="@dimen/space_25"
-                                app:OtpItemWidth="@dimen/space_24"
+                                app:OtpItemHeight="@dimen/space_23"
+                                app:OtpItemWidth="@dimen/space_22"
                                 app:OtpLineColor="@color/black"
                                 app:OtpState_filled="false"
                                 app:OtpHideLineWhenFilled="false"
                                 android:textSize="@dimen/space_10"
                                 android:textColor="@color/black" />
+
 
                         </RelativeLayout>
 
@@ -74,7 +75,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center"
-                            android:layout_margin="@dimen/space_1">
+                            android:layout_margin="@dimen/space_2">
                             <TextView
                                 android:id="@+id/tv_text"
                                 android:layout_width="wrap_content"
@@ -125,15 +126,7 @@
                             android:layout_marginTop="@dimen/space_5"
                             />
 
-                        <TextView
-                            android:id="@+id/tv_resend_otp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/resend"
-                            android:visibility="gone"
-                            android:layout_marginTop="@dimen/space_5"
-                            android:textSize="@dimen/space_6"
-                            android:textColor="@color/black" />
+
 
                 </LinearLayout>
             </LinearLayout>
@@ -148,17 +141,12 @@
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content">
             <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_resend_otp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ready_to_begin"
-                />
-            <TextView
-                android:textColor="@color/colorAccent"
-                android:layout_marginLeft="@dimen/space_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/join_here"
-                />
+                android:text="@string/resend"
+                android:textColor="@color/colorAccent" />
         </LinearLayout>
     </RelativeLayout>
 </layout>
