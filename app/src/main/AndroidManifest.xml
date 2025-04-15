@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.OTPActivity"
             android:exported="false" />
         <activity

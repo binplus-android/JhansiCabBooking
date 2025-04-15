@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">Jhansi Cab Booking</string>
     <string name="mobile_number">Mobile Number</string>
+    <string name="mobile_number_s">Mobile Number*</string>
+    <string name="name_s">Name*</string>
+    <string name="email_id">Email ID</string>
+    <string name="Login">Login</string>
+    <string name="Signup">Signup</string>
     <string name="get_otp">Get OTP</string>
     <string name="enter_here">Enter here</string>
+    <string name="enter_valid_name">Please enter valid name</string>
     <string name="enter_valid_mobile">Please enter valid mobile number</string>
+    <string name="enter_valid_email">Please enter valid email id</string>
     <string name="check_internet"><![CDATA[Check your internet connection & try again !]]></string>
     <string name="otp_verification">OTP\nVerification</string>
     <string name="not_to_share_otp">Keep Your OTP Confidential</string>
@@ -14,7 +21,10 @@
     <string name="resend">Resend OTP</string>
     <string name="ready_to_begin">Ready to begin ? </string>
     <string name="join_here"> Join here</string>
+    <string name="welcome_back">Welcome Back </string>
+    <string name="login_here">Login here</string>
     <string name="OTP_Required">OTP Required</string>
     <string name="OTP_short">4 Digits OTP Required</string>
     <string name="OTP_wrong">Wrong OTP Entered</string>
+    <string name="i_agree">I agree to the Terms &amp; Conditions and Privacy Policy</string>
 </resources>

@@ -23,12 +23,30 @@ public class Common {
         toastMsg = new ToastMsg(context);
         //sessionManagment=new SessionManagment(context);
     }
-
+    public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
     public boolean isValidMobileNumber(String mobileNumber) {
         String pattern = "^[6-9][0-9]{9}$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
         java.util.regex.Matcher m = p.matcher(mobileNumber);
         return m.matches();
+    }
+    public boolean isValidName(String name){
+        if (name.isEmpty ( )) {
+           // errorToast ( context.getString(R.string.name_required));
+           return false;
+
+        } else if (name.trim().contains ("[0-9]")) {
+           // errorToast (context.getString(R.string.number_not_allow));
+            return false;
+
+        } else {
+           return true;
+        }
     }
     public void noInternetDialog() {
         try {
