@@ -1,5 +1,7 @@
 package com.cabbooking.activity;
 
+import static com.cabbooking.utils.SessionManagment.KEY_MOBILE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -214,6 +216,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 
     private void verifyOTP(String mobile, String otp) {
         sessionManagment.setLoginValue();
+        sessionManagment.setValue(KEY_MOBILE,mobile);
         Intent intent = new Intent(OTPActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

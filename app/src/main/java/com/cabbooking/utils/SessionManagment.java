@@ -15,9 +15,9 @@ public class SessionManagment {
     SharedPreferences.Editor editor;
     String PREFS_NAME="CabBooking";
     int PRIVATE_MODE = 0;
-    public static String USER_NAME="user_name";
-    public static String USER_ID="user_id";
-    public static String USER_MOBILE="user_number";
+    public static String KEY_NAME="user_name";
+    public static String KEY_ID="user_id";
+    public static String KEY_MOBILE="user_number";
     String LOGIN = "login";
 
 
@@ -28,7 +28,6 @@ public class SessionManagment {
 
     }
     public void setValue(String key,String value) {
-        editor.putBoolean(LOGIN, true);
         editor.putString(key, value);
         editor.apply();
     } public void setLoginValue() {
