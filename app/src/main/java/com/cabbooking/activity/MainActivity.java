@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
     Toolbar mytoolbar;
     RelativeLayout lin_toolbar;
-    LinearLayout lin_back_main;
+    LinearLayout lin_back_main,lin_only_back;
     SessionManagment sessionManagment;
 
    
@@ -54,17 +54,26 @@ public class MainActivity extends AppCompatActivity {
                 if (fragment != null && fragment.getClass() != null) {
                     String frgmentName = fragment.getClass().getSimpleName();
                     if (frgmentName.contains("HomeFragment")) {
+                        mytoolbar.setVisibility(View.VISIBLE);
                         lin_toolbar.setVisibility(View.VISIBLE);
                         lin_back_main.setVisibility(View.GONE);
+                        lin_only_back.setVisibility(View.GONE);
                         toggle.syncState();
                         mytoolbar.setNavigationIcon(R.drawable.menu);
-                    }
-
-                    else {
+                    } else if(frgmentName.contains("DestinationFragment")) {
+                        toggle.syncState();
+                        mytoolbar.setNavigationIcon(null);
+                        mytoolbar.setVisibility(View.VISIBLE);
+                        lin_toolbar.setVisibility(View.GONE);
+                        lin_back_main.setVisibility(View.VISIBLE);
+                        lin_only_back.setVisibility(View.GONE);
+                    }else {
+                        mytoolbar.setVisibility(View.GONE);
                         toggle.syncState();
                         mytoolbar.setNavigationIcon(null);
                         lin_toolbar.setVisibility(View.GONE);
-                        lin_back_main.setVisibility(View.VISIBLE);
+                        lin_back_main.setVisibility(View.GONE);
+                        lin_only_back.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -87,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onBackPressed();
             }
+        }); binding.appBar.findViewById(R.id.iv_back_only).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
         });
     }
 
@@ -105,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
          mytoolbar=binding.appBar.findViewById(R.id.mytoolbar);
          lin_toolbar=binding.appBar.findViewById(R.id.lin_toolbar);
          lin_back_main=binding.appBar.findViewById(R.id.lin_back_main);
+        lin_only_back=binding.appBar.findViewById(R.id.lin_only_back);
 
         toggle = new ActionBarDrawerToggle(this, binding.drawer, mytoolbar, R.string.drawer_open, R.string.drawer_close);
         binding.drawer.addDrawerListener(toggle);

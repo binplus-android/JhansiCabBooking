@@ -23,6 +23,7 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways">
             <RelativeLayout
+
                     android:id="@+id/lin_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -103,13 +104,46 @@
 
 
                 </LinearLayout>
+
             </androidx.appcompat.widget.Toolbar>
+
             <RelativeLayout
                 android:background="@color/white"
                 android:layout_below="@id/mytoolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center">
+                <LinearLayout
+                    android:elevation="@dimen/space_2"
+                    android:visibility="gone"
+                    android:id="@+id/lin_only_back"
+                    android:background="@android:color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:backgroundTint="@color/black"
+                            android:background="@drawable/active_dot"
+                            android:padding="@dimen/space_2"
+                            android:id="@+id/iv_back_only"
+                            android:layout_width="@dimen/space_12"
+                            android:layout_height="@dimen/space_12"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/space_5"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/white"/>
+                    </RelativeLayout>
+
+
+                </LinearLayout>
                 <FrameLayout
                     android:id="@+id/main_framelayout"
                     android:layout_width="match_parent"
