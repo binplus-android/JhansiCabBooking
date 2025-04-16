@@ -168,7 +168,7 @@
                                     <TextView
                                         style="@style/TextViewSemBold"
                                         android:textSize="@dimen/space_7"
-                                        android:layout_marginLeft="@dimen/space_8"
+                                        android:layout_marginLeft="@dimen/space_5"
                                         android:text="@string/search_destination"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"/>

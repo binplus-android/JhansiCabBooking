@@ -57,7 +57,7 @@
                         android:id="@+id/rec_list"/>
                     <TextView
                         android:layout_marginTop="@dimen/space_5"
-                        android:text="Confirm your pickup"
+                        android:text="@string/landmark"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                     <LinearLayout
@@ -71,14 +71,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/edittext_height">
                         <ImageView
-                            android:layout_marginLeft="@dimen/space_2"
+                            android:layout_marginLeft="@dimen/space_1"
                             android:src="@drawable/ic_location"
                             android:layout_width="8pt"
                             android:layout_height="8pt"/>
                         <TextView
                             android:id="@+id/tv_confirm_address"
                             android:textSize="@dimen/space_7"
-                            android:layout_marginLeft="@dimen/space_8"
+                            android:layout_marginLeft="@dimen/space_5"
                             android:text="Address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>

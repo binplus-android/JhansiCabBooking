@@ -84,6 +84,7 @@ public class VechileFragment extends Fragment {
         list.add(new VechicleModel("Mini"));
         list.add(new VechicleModel("Suv"));
         list.add(new VechicleModel("Auto"));
+        binding.btnBook.setText("Book "+list.get(0).getName());
         adapter = new VechicleAdapter(getActivity(), list, new VechicleAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
