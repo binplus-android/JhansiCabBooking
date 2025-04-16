@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <LinearLayout
-    android:layout_margin="@dimen/space_2"
+    android:id="@+id/lin_main"
+    android:layout_marginVertical="@dimen/space_2"
     android:padding="@dimen/space_1"
-    android:background="@color/gray_edittext"
+    android:background="@drawable/bg_shadow_box"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <RelativeLayout
-        android:background="@drawable/bg_shadow_box"
-        android:id="@+id/rel_main"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

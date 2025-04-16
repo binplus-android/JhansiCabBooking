@@ -15,7 +15,8 @@ import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.databinding.FragmentVechileBinding;
-import com.cabbooking.model.DestinationModel;
+import com.cabbooking.model.VechicleModel;
+import com.cabbooking.model.VechicleModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.RecyclerTouchListener;
 
@@ -30,7 +31,7 @@ public class VechileFragment extends Fragment {
 
     FragmentVechileBinding binding;
     Common common;
-    ArrayList<DestinationModel> list;
+    ArrayList<VechicleModel> list;
     VechicleAdapter adapter;
 
 
@@ -65,6 +66,7 @@ public class VechileFragment extends Fragment {
         allClick();
 
 
+
         return binding.getRoot();
     }
 
@@ -79,10 +81,16 @@ public class VechileFragment extends Fragment {
 
     private void getList() {
         list.clear();
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        adapter = new VechicleAdapter(getActivity(), list);
+        list.add(new VechicleModel("Mini"));
+        list.add(new VechicleModel("Suv"));
+        list.add(new VechicleModel("Auto"));
+        adapter = new VechicleAdapter(getActivity(), list, new VechicleAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                binding.btnBook.setText("Book "+list.get(pos).getName());
+                adapter.notifyDataSetChanged();
+            }
+        });
         binding.recList.setAdapter(adapter);
     }
 
