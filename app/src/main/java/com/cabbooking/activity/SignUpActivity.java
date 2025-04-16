@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -38,20 +40,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up);
         initView();
         allClick();
-
-        String text = "I agree to the " +
-                "<font color='#0000FF'>Terms & Conditions</font> and " +
-                "<font color='#0000FF'>Privacy Policy</font>";
-
-        binding.tvCheck.setText(Html.fromHtml(text));
     }
 
     public void allClick() {
         binding.btnOtp.setOnClickListener(this);
-        binding.tvCheck.setOnClickListener(this);
         binding.linLogin.setOnClickListener(this);
 
-        checkBoxCode();
     }
 
     public void initView() {
@@ -65,12 +59,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (v.getId() == R.id.lin_login) {
             Intent i = new Intent(SignUpActivity.this, LoginActivity.class);
             startActivity(i);
-        }
-        if (v.getId() == R.id.tv_check) {
-            checkBoxCode();
-             //binding.chBox.setChecked(!binding.chBox.isChecked());
-        }
-        if (v.getId() == R.id.btn_otp) {
+        }else if (v.getId() == R.id.btn_otp) {
             if (ConnectivityReceiver.isConnected()) {
 
                 if (!common.isValidName(binding.etName.getText().toString())) {
@@ -91,53 +80,53 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void checkBoxCode(){
+    private void checkBoxCode() {
         TextView tvCheck = binding.tvCheck;
-    CheckBox checkBox = binding.chBox;
+        CheckBox checkBox = binding.chBox;
 
-    String fullText = "I agree to the Terms & Conditions and Privacy Policy";
-    SpannableString spannable = new SpannableString(fullText);
+        String fullText = "I agree to the Terms & Conditions and Privacy Policy";
+        SpannableString spannable = new SpannableString(fullText);
 
-    // "Terms & Conditions" clickable span
-    ClickableSpan termsSpan = new ClickableSpan() {
-        @Override
-        public void onClick(View widget) {
-            // Show Toast when "Terms & Conditions" is clicked
-            Intent intent=new Intent(SignUpActivity.this,PolicyActivity.class);
-            startActivity(intent);
-            // Optionally, toggle the checkbox
-           // checkBox.setChecked(!checkBox.isChecked());
-        }
-    };
-    int termsStart = fullText.indexOf("Terms & Conditions");
-spannable.setSpan(termsSpan, termsStart, termsStart + "Terms & Conditions".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-spannable.setSpan(new ForegroundColorSpan(Color.BLUE), termsStart, termsStart + "Terms & Conditions".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ClickableSpan termsSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                Intent intent = new Intent(SignUpActivity.this, PolicyActivity.class);
+                startActivity(intent);
+            }
 
-    // "Privacy Policy" clickable span
-    ClickableSpan privacySpan = new ClickableSpan() {
-        @Override
-        public void onClick(View widget) {
-            // Show Toast when "Privacy Policy" is clicked
-           Intent intent=new Intent(SignUpActivity.this,PolicyActivity.class);
-           startActivity(intent);
-            // Optionally, toggle the checkbox
-           // checkBox.setChecked(!checkBox.isChecked());
-        }
-    };
-    int privacyStart = fullText.indexOf("Privacy Policy");
-spannable.setSpan(privacySpan, privacyStart, privacyStart + "Privacy Policy".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-spannable.setSpan(new ForegroundColorSpan(Color.BLUE), privacyStart, privacyStart + "Privacy Policy".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);  // Optional: remove underline
+            }
+        };
 
-// Set the Spannable text to TextView and enable clickable spans
-tvCheck.setText(spannable);
+        int termsStart = fullText.indexOf("Terms & Conditions");
+        spannable.setSpan(termsSpan, termsStart, termsStart + "Terms & Conditions".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.BLUE), termsStart, termsStart + "Terms & Conditions".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-// Set LinkMovementMethod to make the spans clickable
-tvCheck.setMovementMethod(LinkMovementMethod.getInstance());
+        ClickableSpan privacySpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                Intent intent = new Intent(SignUpActivity.this, PolicyActivity.class);
+                startActivity(intent);
+            }
 
-// Remove the background color on click (optional)
-tvCheck.setHighlightColor(Color.TRANSPARENT);
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);  // Optional: remove underline
+            }
+        };
 
-}
+        int privacyStart = fullText.indexOf("Privacy Policy");
+        spannable.setSpan(privacySpan, privacyStart, privacyStart + "Privacy Policy".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.BLUE), privacyStart, privacyStart + "Privacy Policy".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvCheck.setText(spannable);
+        tvCheck.setMovementMethod(LinkMovementMethod.getInstance());
+        tvCheck.setHighlightColor(Color.TRANSPARENT);
+    }
 
     private void Signup(String number) {
         String otp = "123456";
