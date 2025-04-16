@@ -130,7 +130,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void Signup(String number) {
         String otp = "123456";
-        String message="OTP send succesfully.";
+        String message="OTP send successfully.";
         new ToastMsg(SignUpActivity.this).toastIconSuccess(message);
         Intent i = new Intent(SignUpActivity.this, OTPActivity.class);
         i.putExtra("mobile",number);
