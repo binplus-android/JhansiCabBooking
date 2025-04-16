@@ -68,7 +68,7 @@
                         android:layout_marginLeft="@dimen/space_5"
                         android:layout_toRightOf="@id/iv_loc"
                         android:gravity="center_vertical"
-                        android:text="Address"
+                        android:text="@string/address"
                       />
 
                     <ImageView
@@ -101,7 +101,7 @@
                         android:layout_marginLeft="@dimen/space_5"
                         android:layout_toRightOf="@id/iv_loc"
                         android:gravity="center_vertical"
-                        android:text="Address" />
+                        android:text="@string/address" />
 
                     <ImageView
                         android:layout_width="@dimen/space_7"
@@ -124,7 +124,7 @@
         <TextView
             android:layout_marginHorizontal="@dimen/space_4"
             style="@style/TextViewSemBold"
-            android:text="Popular Places"
+            android:text="@string/popular_places"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView

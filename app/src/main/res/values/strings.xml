@@ -5,6 +5,8 @@
     <string name="name_s">Name*</string>
     <string name="name">Name</string>
     <string name="email_id">Email ID</string>
+    <string name="address">Address</string>
+    <string name="popular_places">Popular Places</string>
     <string name="Login">Login</string>
     <string name="Signup">Signup</string>
     <string name="get_otp">Get OTP</string>
@@ -31,6 +33,13 @@
     <string name="i_agree">I agree to the Terms &amp; Conditions and Privacy Policy</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="outstation">Outstation</string>
+    <string name="local">Local</string>
+    <string name="search_destination">Search Destination</string>
+    <string name="why_us">Why Us?</string>
+    <string name="safe_rides">Safe Rides</string>
+    <string name="certified_riders">Certified Riders</string>
+    <string name="easy_payments">Easy Payments</string>
     <string name="searching_nearby">Searching for nearby available vechicle</string>
     <string name="available_rode_mate">Available Ride Mate</string>
     <string name="ride_mate">Ride Mate</string>
