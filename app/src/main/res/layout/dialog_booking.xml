@@ -165,7 +165,6 @@
             android:text="@string/call_ride_mate"
             android:textSize="@dimen/space_5" />
         <View
-           
             android:background="@color/grey_5"
             android:layout_width="1dp"
             android:layout_height="match_parent"/>
