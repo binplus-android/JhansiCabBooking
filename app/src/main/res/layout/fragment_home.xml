@@ -109,34 +109,7 @@
 
                             </LinearLayout>
                         </LinearLayout>
-                        <LinearLayout
-                            android:layout_marginTop="@dimen/space_5"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:layout_height="55pt">
 
-                            <ImageView
-                                android:id="@+id/iv1"
-                                android:background="@drawable/bg_shadow_box"
-                                android:layout_gravity="center"
-                                android:src="@drawable/logo"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"/>
-
-                            <ImageView
-                                android:id="@+id/iv2"
-                                android:background="@drawable/bg_shadow_box"
-                                android:layout_marginLeft="@dimen/space_5"
-                                android:layout_gravity="center"
-                                android:src="@drawable/logo"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"/>
-
-
-                        </LinearLayout>
                         <androidx.cardview.widget.CardView
                             android:layout_marginHorizontal="@dimen/space_1"
                             android:layout_marginTop="@dimen/space_8"
@@ -201,6 +174,7 @@
                                 android:orientation="vertical"
                                 android:layout_height="match_parent">
                                 <ImageView
+
                                     android:layout_gravity="center"
                                     android:src="@drawable/safe_rides"
                                     android:layout_width="32pt"

@@ -129,9 +129,12 @@
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/space_10"
                             android:text="@string/Cancel_Ride"
+                            android:textColor="@color/white"
+                            android:backgroundTint="@color/red_600"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/button_height"/>
                         <Button
+                            android:textColor="@color/white"
                             android:id="@+id/btn_pay"
                             android:layout_marginLeft="@dimen/space_8"
                             android:layout_weight="1"
