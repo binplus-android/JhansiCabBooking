@@ -63,6 +63,7 @@
                             android:weightSum="2"
                             android:layout_height="55pt">
                             <LinearLayout
+                                android:id="@+id/lin_local"
                                 android:background="@drawable/bg_shadow_box"
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
@@ -83,6 +84,7 @@
 
                             </LinearLayout>
                             <LinearLayout
+                                android:id="@+id/lin_outstation"
                                 android:layout_marginLeft="@dimen/space_5"
                                 android:background="@drawable/bg_shadow_box"
                                 android:layout_weight="1"
