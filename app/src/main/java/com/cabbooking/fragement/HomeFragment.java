@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void changeBackground(LinearLayout green_lay, LinearLayout shadow_lay) {
-        green_lay.setBackgroundTintList(getActivity().getColorStateList(R.color.green_500));
+        green_lay.setBackgroundTintList(getActivity().getColorStateList(R.color.light_green));
         shadow_lay.setBackgroundTintList(getActivity().getColorStateList(R.color.gray_edittext));
     }
 }
