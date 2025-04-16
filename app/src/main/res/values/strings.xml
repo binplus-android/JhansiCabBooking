@@ -61,4 +61,11 @@
     <string name="confirm_loc">Confirm Location</string> <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="do_not_allow">Don\'t Allow</string>
+    <string name="allow">Allow</string>
+
+<!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access your location while you use the app?</string>-->
+    <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
+
+<!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
