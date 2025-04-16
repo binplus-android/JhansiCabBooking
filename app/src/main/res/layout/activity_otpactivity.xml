@@ -39,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/not_to_share_otp"
                         android:layout_marginTop="@dimen/space_4"
-                        android:textSize="@dimen/space_5"
+                        android:textSize="@dimen/space_6"
                         style="@style/TextViewRegular" />
 
                         <RelativeLayout
@@ -81,13 +81,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/time_remaining"
-                                android:textSize="@dimen/space_5"
+                                android:textSize="@dimen/space_6"
                                 style="@style/TextViewRegular"/>
                             <TextView
                                 android:id="@+id/tv_min"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/space_5"
+                                android:textSize="@dimen/space_6"
                                 android:text="00"
                                 android:textColor="@color/red_600"
                                 android:layout_gravity="center"
@@ -103,7 +103,7 @@
                                 android:layout_width="wrap_content"
                                 android:paddingHorizontal="1dp"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/space_5"
+                                android:textSize="@dimen/space_6"
                                 android:textColor="@color/colorPrimary"
                                 />
                             <TextView
@@ -114,7 +114,7 @@
                                 android:layout_width="wrap_content"
                                 android:id="@+id/tv_sec"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/space_5"
+                                android:textSize="@dimen/space_6"
                                 android:textColor="@color/red_600"
                                 />
                         </LinearLayout>
