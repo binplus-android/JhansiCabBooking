@@ -87,7 +87,7 @@
                         android:layout_width="@dimen/space_7"
                         android:layout_height="@dimen/space_7"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_location" />
+                        android:src="@drawable/ic_send" />
                 </LinearLayout>
 
                 <LinearLayout
