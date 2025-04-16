@@ -57,17 +57,19 @@
             android:orientation="horizontal"
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/iv_loc"
                 android:layout_width="@dimen/space_20"
                 android:layout_height="@dimen/space_20"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/logo" />
             <LinearLayout
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="@dimen/space_5"
+                android:layout_marginLeft="@dimen/space_4"
                 android:layout_toRightOf="@id/iv_loc"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -95,13 +97,16 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"/>
         <RelativeLayout
+            android:gravity="center_vertical"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             
             <LinearLayout
-                android:layout_marginRight="@dimen/space_5"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:layout_marginRight="@dimen/space_4"
                 android:layout_toLeftOf="@id/iv_car"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -122,11 +127,12 @@
                     android:textSize="@dimen/space_4" />
             </LinearLayout>
             <ImageView
+                android:layout_centerVertical="true"
                 android:id="@+id/iv_car"
                 android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/space_20"
                 android:layout_height="@dimen/space_20"
-                android:layout_centerVertical="true"
+
                 android:src="@drawable/logo" />
         </RelativeLayout>
     </LinearLayout>
