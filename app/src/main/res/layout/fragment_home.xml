@@ -36,7 +36,7 @@
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
                         <ImageView
-                            android:layout_marginLeft="@dimen/space_8"
+
                             android:layout_gravity="center"
                             android:src="@drawable/active_dot"
                             android:layout_width="@dimen/space_5"
