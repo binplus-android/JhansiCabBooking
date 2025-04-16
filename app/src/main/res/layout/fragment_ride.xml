@@ -38,6 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <ImageView
+                android:id="@+id/iv_search"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/space_10"
                 android:src="@drawable/logo"
@@ -86,7 +87,7 @@
                         android:layout_width="@dimen/space_7"
                         android:layout_height="@dimen/space_7"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_location" />
+                        android:src="@drawable/ic_send" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -105,6 +106,7 @@
 
 
                         <TextView
+                            android:id="@+id/tv_pick"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -131,6 +133,7 @@
 
 
                         <TextView
+                            android:id="@+id/tv_destination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -157,6 +160,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <Button
+                    android:id="@+id/btn_bottom_cancle"
                     android:layout_weight="1"
                     android:layout_marginTop="@dimen/space_10"
                     android:text="@string/Cancel_Ride"

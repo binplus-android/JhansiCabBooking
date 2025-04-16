@@ -23,6 +23,7 @@ import com.cabbooking.databinding.ActivityMainBinding;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
+import com.cabbooking.utils.SessionManagment;
 
 import org.w3c.dom.Text;
 
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mytoolbar;
     RelativeLayout lin_toolbar;
     LinearLayout lin_back_main;
+    SessionManagment sessionManagment;
+
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
          tv_title.setText(title);
     }
     private void allClick() {
+        binding.tvLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sessionManagment.logout(MainActivity.this);
+            }
+        });
         binding.appBar.findViewById(R.id.iv_backarrow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        sessionManagment=new SessionManagment(MainActivity.this);
         common=new Common(MainActivity.this);
         setSupportActionBar(binding.appBar.findViewById(R.id.mytoolbar));
          mytoolbar=binding.appBar.findViewById(R.id.mytoolbar);

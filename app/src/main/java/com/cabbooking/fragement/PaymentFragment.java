@@ -67,7 +67,12 @@ public class PaymentFragment extends Fragment {
     public void getList() {
         list.clear();
         list.add(new DestinationModel());
-        adapter=new RideMateAdapter(getActivity(),list);
+        adapter=new RideMateAdapter(getActivity(), list, new RideMateAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                adapter.notifyDataSetChanged();
+            }
+        });
         binding.recList.setAdapter(adapter);
     }
 

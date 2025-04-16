@@ -38,6 +38,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                         <TextView
+                            android:id="@+id/tv_price"
                             android:textSize="@dimen/space_8"
                             style="@style/TextViewSemBold"
                             android:layout_alignParentEnd="true"
@@ -75,7 +76,7 @@
                             android:layout_width="8pt"
                             android:layout_height="8pt"/>
                         <TextView
-
+                            android:id="@+id/tv_confirm_address"
                             android:textSize="@dimen/space_7"
                             android:layout_marginLeft="@dimen/space_8"
                             android:text="Address"
@@ -94,21 +95,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <RadioButton
+                            android:id="@+id/rd_upi"
                             android:buttonTint="@color/green_500"
                             android:text="@string/Upi"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                         <RadioButton
+                            android:id="@+id/rd_credit"
                             android:buttonTint="@color/green_500"
                             android:text="@string/Credit_Card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                         <RadioButton
+                            android:id="@+id/rd_debit"
                             android:buttonTint="@color/green_500"
                             android:text="@string/Debit_Card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                         <RadioButton
+                            android:id="@+id/rd_cash"
                             android:buttonTint="@color/green_500"
                             android:text="@string/cash"
                             android:layout_width="match_parent"
@@ -120,6 +125,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <Button
+                            android:id="@+id/btn_cancle"
                             android:layout_weight="1"
                             android:layout_marginTop="@dimen/space_10"
                             android:text="@string/Cancel_Ride"

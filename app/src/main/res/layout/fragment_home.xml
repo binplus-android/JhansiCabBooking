@@ -42,9 +42,10 @@
                             android:layout_width="@dimen/space_5"
                             android:layout_height="@dimen/space_5"/>
                         <TextView
+                            android:id="@+id/tv_address"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/space_8"
-                            android:text="Address"
+                            android:text="@string/address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
@@ -72,6 +73,7 @@
                                 android:orientation="vertical"
                                 android:layout_height="match_parent">
                                 <ImageView
+                                    android:id="@+id/iv_local"
                                     android:layout_gravity="center"
                                     android:src="@drawable/local"
                                     android:layout_width="match_parent"
@@ -94,6 +96,7 @@
                                 android:orientation="vertical"
                                 android:layout_height="match_parent">
                                 <ImageView
+                                    android:id="@+id/uv_outstation"
                                     android:layout_gravity="center"
                                     android:src="@drawable/outstation"
                                     android:layout_width="match_parent"
@@ -114,6 +117,7 @@
                             android:layout_height="55pt">
 
                             <ImageView
+                                android:id="@+id/iv1"
                                 android:background="@drawable/bg_shadow_box"
                                 android:layout_gravity="center"
                                 android:src="@drawable/logo"
@@ -122,6 +126,7 @@
                                 android:layout_height="match_parent"/>
 
                             <ImageView
+                                android:id="@+id/iv2"
                                 android:background="@drawable/bg_shadow_box"
                                 android:layout_marginLeft="@dimen/space_5"
                                 android:layout_gravity="center"
@@ -151,15 +156,15 @@
                                     android:background="@drawable/bg_shadow_box"
                                     android:gravity="center_vertical"
                                     android:layout_gravity="center"
-                                    android:padding="@dimen/space_4"
+                                    android:padding="@dimen/space_6"
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
                                     <ImageView
                                         android:layout_marginLeft="@dimen/space_2"
-                                        android:src="@drawable/logo"
-                                        android:layout_width="15pt"
-                                        android:layout_height="15pt"/>
+                                        android:src="@drawable/search"
+                                        android:layout_width="12pt"
+                                        android:layout_height="10pt"/>
                                     <TextView
                                         style="@style/TextViewSemBold"
                                         android:textSize="@dimen/space_7"

@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <LinearLayout
-    android:layout_margin="@dimen/space_2"
+    android:id="@+id/lin_main"
+    android:layout_marginVertical="@dimen/space_2"
     android:padding="@dimen/space_1"
-    android:background="@color/gray_edittext"
+    android:background="@drawable/bg_shadow_box"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <RelativeLayout
-        android:background="@drawable/bg_shadow_box"
-        android:id="@+id/rel_main"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:padding="@dimen/space_2">
 
         <ImageView
-            android:id="@+id/iv_loc"
+            android:id="@+id/iv_rimg"
             android:layout_width="@dimen/space_20"
             android:layout_height="@dimen/space_20"
             android:layout_centerVertical="true"
@@ -27,11 +27,12 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/space_8"
-            android:layout_toRightOf="@id/iv_loc"
+            android:layout_toRightOf="@id/iv_rimg"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/tv_ridername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -39,6 +40,7 @@
                 android:text="Rider Name"
                 />
             <RatingBar
+                android:id="@+id/rv_rate"
                 android:rating="3"
               style="@style/customRatingBar"
                 android:progressTint="@color/yellow"
@@ -50,11 +52,12 @@
 
 
         <TextView
+            android:id="@+id/tv_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="Rs.100"/>
+            android:text="Rs.0"/>
     </RelativeLayout>
     <View
         android:layout_marginHorizontal="@dimen/space_8"
@@ -71,7 +74,7 @@
         android:padding="@dimen/space_2">
 
         <ImageView
-            android:id="@+id/iv_locs"
+            android:id="@+id/iv_vimg"
             android:layout_width="@dimen/space_20"
             android:layout_height="@dimen/space_20"
             android:layout_centerVertical="true"
@@ -80,11 +83,12 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/space_8"
-            android:layout_toRightOf="@id/iv_locs"
+            android:layout_toRightOf="@id/iv_vimg"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/tv_vname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -92,6 +96,7 @@
                 android:text="Mini"
                 />
             <TextView
+                android:id="@+id/tv_vdesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
