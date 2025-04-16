@@ -176,6 +176,5 @@
             android:text="@string/Cancel_Ride"
             android:textSize="@dimen/space_5" />
     </LinearLayout>
-    
 </LinearLayout>
 </RelativeLayout>
