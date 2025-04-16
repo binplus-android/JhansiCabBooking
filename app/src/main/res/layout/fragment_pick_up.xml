@@ -27,7 +27,7 @@
                     android:layout_height="match_parent">
                     <TextView
                         android:layout_marginTop="@dimen/space_15"
-                        android:text="Confirm your pickup"
+                        android:text="@string/confirm_your_pickup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                     <LinearLayout
@@ -49,7 +49,7 @@
 
                             android:textSize="@dimen/space_7"
                             android:layout_marginLeft="@dimen/space_8"
-                            android:text="Address"
+                            android:text="@string/address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
@@ -57,7 +57,7 @@
                     <Button
                         android:id="@+id/btn_confirm"
                         android:layout_marginTop="@dimen/space_10"
-                        android:text="Confirm Location"
+                        android:text="@string/confirm_loc"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/button_height"/>
                 </LinearLayout>

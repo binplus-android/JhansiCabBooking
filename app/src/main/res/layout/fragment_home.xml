@@ -36,7 +36,7 @@
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
                         <ImageView
-                            android:layout_marginLeft="@dimen/space_8"
+
                             android:layout_gravity="center"
                             android:src="@drawable/active_dot"
                             android:layout_width="@dimen/space_5"
@@ -78,7 +78,7 @@
                                     android:layout_height="40pt"/>
                                 <TextView
                                     android:layout_marginTop="@dimen/space_5"
-                                    android:text="Local"
+                                    android:text="@string/local"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
 
@@ -100,7 +100,7 @@
                                     android:layout_height="40pt"/>
                                 <TextView
                                     android:layout_marginTop="@dimen/space_5"
-                                    android:text="Outstation"
+                                    android:text="@string/outstation"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
 
@@ -164,7 +164,7 @@
                                         style="@style/TextViewSemBold"
                                         android:textSize="@dimen/space_7"
                                         android:layout_marginLeft="@dimen/space_8"
-                                        android:text="Search Destination"
+                                        android:text="@string/search_destination"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"/>
                                 </LinearLayout>
@@ -177,7 +177,7 @@
                         <TextView
                             android:textAlignment="center"
                             android:layout_marginTop="@dimen/space_10"
-                            android:text="Why Us?"
+                            android:text="@string/why_us"
                             style="@style/TextViewExtraBold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
@@ -204,7 +204,7 @@
                                     android:textStyle="bold"
                                     android:textSize="@dimen/space_5"
                                     android:layout_marginTop="@dimen/space_5"
-                                    android:text="Safe Rides"
+                                    android:text="@string/safe_rides"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
 
@@ -225,7 +225,7 @@
                                 android:textStyle="bold"
                                 android:textSize="@dimen/space_5"
                                 android:layout_marginTop="@dimen/space_5"
-                                android:text="Certified Riders"
+                                android:text="@string/certified_riders"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
 
@@ -248,7 +248,7 @@
                                     android:textStyle="bold"
                                     android:textSize="@dimen/space_5"
                                     android:layout_marginTop="@dimen/space_5"
-                                    android:text="Easy Payments"
+                                    android:text="@string/easy_payments"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"/>
 

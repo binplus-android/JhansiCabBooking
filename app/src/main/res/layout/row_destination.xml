@@ -28,13 +28,13 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:text="Address"
+                android:text="@string/address"
                 />
             <TextView
                 android:layout_below="@id/tv_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Address"
+                android:text="@string/address"
                 android:textSize="@dimen/space_5" />
         </LinearLayout>
 

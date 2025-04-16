@@ -25,7 +25,7 @@
             android:layout_marginLeft="@dimen/space_5"
             android:layout_toRightOf="@id/iv_loc"
             android:gravity="center_vertical"
-            android:text="Address"
+            android:text="@string/address"
             android:textSize="@dimen/space_5" />
 
         <ImageView

@@ -34,7 +34,7 @@
             android:layout_height="match_parent">
             <TextView
 
-                android:text="Searching for nearby available vechicle"
+                android:text="@string/searching_nearby_vechicle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <ImageView
@@ -46,7 +46,7 @@
             <Button
                 android:id="@+id/btn_cancle"
                 android:layout_marginTop="@dimen/space_10"
-                android:text="Cancel Ride"
+                android:text="@string/Cancel_Ride"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height"/>
         </LinearLayout>
@@ -110,7 +110,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/space_5"
                             android:gravity="center_vertical"
-                            android:text="Address"
+                            android:text="@string/address"
                             />
 
                     </RelativeLayout>
@@ -136,7 +136,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/space_5"
                             android:gravity="center_vertical"
-                            android:text="Address" />
+                            android:text="@string/address" />
 
                     </RelativeLayout>
 
