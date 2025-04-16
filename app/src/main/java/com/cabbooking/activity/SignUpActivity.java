@@ -37,20 +37,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up);
         initView();
+        allClick();
 
         String text = "I agree to the " +
                 "<font color='#0000FF'>Terms & Conditions</font> and " +
                 "<font color='#0000FF'>Privacy Policy</font>";
 
         binding.tvCheck.setText(Html.fromHtml(text));
-        allClick();
-
     }
 
     public void allClick() {
         binding.btnOtp.setOnClickListener(this);
         binding.tvCheck.setOnClickListener(this);
         binding.linLogin.setOnClickListener(this);
+
+        checkBoxCode();
     }
 
     public void initView() {
