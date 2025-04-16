@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void allClicks() {
         binding.linDestination.setOnClickListener(this);
         binding.linLocal.setOnClickListener(this);
-        binding.linDestination.setOnClickListener(this);
+        binding.linOutstation.setOnClickListener(this);
     }
 
     private void getDestinatioList() {
