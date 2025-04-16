@@ -118,6 +118,13 @@
         <item name="fontFamily">@font/poppins_medium</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetFullScreen</item>
+    </style>
+
+    <style name="BottomSheetFullScreen" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:layout_height">match_parent</item>
+    </style>
 
     <style name="HintTextAppearance" parent="TextAppearance.Design.Hint">
         <item name="fontFamily">@font/poppins_regular</item>

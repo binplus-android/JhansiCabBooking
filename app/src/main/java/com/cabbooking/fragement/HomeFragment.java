@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,13 +29,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
+import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.fragement.DestinationFragment;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.RecyclerTouchListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 
@@ -44,6 +50,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ArrayList<DestinationModel> list;
     DestinationHomeAdapter adapter;
     Common common;
+    ArrayList<DestinationModel> deslist;
+    DestinationAdapter desadapter;
+
 
     private ActivityResultLauncher<String> locationPermissionLauncher;
 
@@ -208,6 +217,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initView() {
+        deslist=new ArrayList<>();
         common = new Common(getActivity());
         list = new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -216,12 +226,70 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
-            common.switchFragment(new DestinationFragment());
+          //  common.switchFragment(new DestinationFragment());
+              openBottomDestination();
         } else if (v.getId() == R.id.lin_local) {
             changeBackground(binding.linLocal, binding.linOutstation);
         } else if (v.getId() == R.id.lin_outstation) {
             changeBackground(binding.linOutstation, binding.linLocal);
         }
+    }
+
+    private void openBottomDestination() {
+        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_destination, null);
+        mBottomSheetDialog.setContentView(view);
+        FrameLayout bottomSheet = mBottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+        if (bottomSheet != null) {
+            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
+            ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            bottomSheet.setLayoutParams(layoutParams);
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            behavior.setSkipCollapsed(true);
+        }
+        RecyclerView recDestination=bottomSheet.findViewById(R.id.rec_destination);
+        recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
+        getMainDestinatioList(recDestination);
+
+        recDestination.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recDestination,
+                new RecyclerTouchListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                mBottomSheetDialog.dismiss();
+                openVechileFragment();
+            
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
+
+        mBottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mBottomSheetDialog.show();
+
+
+    }
+
+    private void openVechileFragment() {
+        final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity());
+        mBottomSheetDialog.setContentView(R.layout.fragment_vechile);
+        mBottomSheetDialog.show();
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+
+
+    }
+
+    private void getMainDestinatioList(RecyclerView rec) {
+        deslist.clear();
+        deslist.add(new DestinationModel());
+        deslist.add(new DestinationModel());
+        deslist.add(new DestinationModel());
+        desadapter=new DestinationAdapter(getActivity(),deslist);
+        rec.setAdapter(desadapter);
     }
 
     @SuppressLint("UseCompatLoadingForColorStateLists")
