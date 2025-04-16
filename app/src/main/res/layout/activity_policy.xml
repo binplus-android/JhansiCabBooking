@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         tools:context=".activity.PolicyActivity">
         <TextView
+            android:id="@+id/tv_data"
             android:text="Data"
             android:layout_margin="@dimen/space_8"
             android:layout_width="match_parent"

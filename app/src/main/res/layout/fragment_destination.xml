@@ -62,11 +62,11 @@
 
 
                     <TextView
+                        android:id="@+id/tv_pick"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/space_5"
-                        android:layout_toRightOf="@id/iv_loc"
                         android:gravity="center_vertical"
                         android:text="@string/address"
                       />
@@ -95,11 +95,11 @@
 
 
                     <TextView
+                        android:id="@+id/tv_desctination"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/space_5"
-                        android:layout_toRightOf="@id/iv_loc"
                         android:gravity="center_vertical"
                         android:text="@string/address" />
 
