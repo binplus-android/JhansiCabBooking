@@ -56,7 +56,9 @@
     <string name="booking_date">Booking date : 14-04-2025 | 09:30 PM</string>
     <string name="otp">OTP:1234</string>
     <string name="call_ride_mate">Call Ride Mate</string>
-    <string name="landmark">Landmark</string>
+    <string name="landmark">Landmark</string>     <string name="vechicle_recommendation">Vechicle Recommendation</string>
+    <string name="confirm_your_pickup">Confirm your pickup</string>
+    <string name="confirm_loc">Confirm Location</string> <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
