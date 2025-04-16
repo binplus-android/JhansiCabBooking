@@ -3,21 +3,14 @@ package com.cabbooking.fragement;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
-import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentPickUpBinding;
-import com.cabbooking.databinding.FragmentVechileBinding;
-import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,7 +68,7 @@ public class PickUpFragment extends Fragment {
         binding.btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                common.switchFragment(new CancleRideFragment());
+                common.switchFragment(new RideFragment());
             }
         });
     }

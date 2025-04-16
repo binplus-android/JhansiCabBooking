@@ -104,6 +104,9 @@
         <item name="fontFamily">@font/poppins_medium</item>
 
     </style>
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small">
+    </style>
 <!--    <item name="android:textCursorDrawable">@drawable/edit_text_cursor</item>>-->
     <style name="button" parent="Widget.AppCompat.Button">
         <item name="android:textAllCaps">false</item>

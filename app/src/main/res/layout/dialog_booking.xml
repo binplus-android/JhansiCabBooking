@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:backgroundTint="@color/white"
+    android:layout_margin="@dimen/space_1"
+    android:padding="@dimen/space_4"
+    android:background="@drawable/bg_button"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/active_dot"
+            android:layout_width="7pt"
+            android:layout_height="7pt"/>
+        <TextView
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/space_5"
+            android:textSize="@dimen/space_7"
+            style="@style/TextViewSemBold"
+            android:text="@string/booking_confirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <TextView
+        android:textSize="@dimen/space_5"
+        android:layout_marginTop="@dimen/space_4"
+        android:textAlignment="center"
+        android:text="@string/booking_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/> 
+    <TextView
+        android:textStyle="bold"
+        android:paddingVertical="@dimen/space_2"
+        android:paddingHorizontal="@dimen/space_5"
+        android:layout_marginTop="@dimen/space_5"
+       android:layout_gravity="center"
+        android:text="@string/otp"
+        android:background="@drawable/bg_curve_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_marginTop="@dimen/space_5"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_loc"
+                android:layout_width="@dimen/space_20"
+                android:layout_height="@dimen/space_20"
+                android:layout_centerVertical="true"
+                android:src="@drawable/logo" />
+            <LinearLayout
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="@dimen/space_5"
+                android:layout_toRightOf="@id/iv_loc"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="@dimen/space_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:text="Rider Name"
+                    />
+                <RatingBar
+                    android:rating="3"
+                    style="@style/customRatingBar"
+                    android:progressTint="@color/yellow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:layout_marginVertical="@dimen/space_2"
+            android:background="@color/grey_5"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            
+            <LinearLayout
+                android:layout_marginRight="@dimen/space_5"
+                android:layout_toLeftOf="@id/iv_car"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="Car Name"
+                    android:textSize="@dimen/space_5"
+                    />
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Comfy,economical cars"
+                    android:textSize="@dimen/space_4" />
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_car"
+                android:layout_alignParentEnd="true"
+                android:layout_width="@dimen/space_20"
+                android:layout_height="@dimen/space_20"
+                android:layout_centerVertical="true"
+                android:src="@drawable/logo" />
+        </RelativeLayout>
+    </LinearLayout>
+    <View
+        android:layout_marginVertical="@dimen/space_5"
+        android:background="@color/grey_5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    
+    <LinearLayout
+        android:weightSum="3"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/call_ride_mate"
+            android:textSize="@dimen/space_5" />
+        <View
+           
+            android:background="@color/grey_5"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/landmark"
+            android:textSize="@dimen/space_5" />
+        <View
+           
+            android:background="@color/grey_5"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Cancel_Ride"
+            android:textSize="@dimen/space_5" />
+    </LinearLayout>
+    
+</LinearLayout>
+</RelativeLayout>

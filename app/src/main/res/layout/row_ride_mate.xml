@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_margin="@dimen/space_2"
+    android:padding="@dimen/space_1"
+    android:background="@color/gray_edittext"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:background="@drawable/bg_shadow_box"
+        android:id="@+id/rel_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/space_2">
+
+        <ImageView
+            android:id="@+id/iv_loc"
+            android:layout_width="@dimen/space_20"
+            android:layout_height="@dimen/space_20"
+            android:layout_centerVertical="true"
+            android:src="@drawable/logo" />
+        <LinearLayout
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/space_8"
+            android:layout_toRightOf="@id/iv_loc"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:text="Rider Name"
+                />
+            <RatingBar
+                android:rating="3"
+              style="@style/customRatingBar"
+                android:progressTint="@color/yellow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               />
+        </LinearLayout>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="Rs.100"/>
+    </RelativeLayout>
+    <View
+        android:layout_marginHorizontal="@dimen/space_8"
+        android:background="@color/grey_5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <RelativeLayout
+        android:background="@drawable/bg_shadow_box"
+        android:id="@+id/rel_mains"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+      
+        android:gravity="center_vertical"
+        android:padding="@dimen/space_2">
+
+        <ImageView
+            android:id="@+id/iv_locs"
+            android:layout_width="@dimen/space_20"
+            android:layout_height="@dimen/space_20"
+            android:layout_centerVertical="true"
+            android:src="@drawable/logo" />
+        <LinearLayout
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/space_8"
+            android:layout_toRightOf="@id/iv_locs"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:text="Mini"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="Comfy,economical cars"
+                android:textSize="@dimen/space_5" />
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+</LinearLayout>
+   
+
+
+</RelativeLayout>

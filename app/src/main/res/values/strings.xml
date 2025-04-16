@@ -31,6 +31,23 @@
     <string name="i_agree">I agree to the Terms &amp; Conditions and Privacy Policy</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="searching_nearby">Searching for nearby available vechicle</string>
+    <string name="available_rode_mate">Available Ride Mate</string>
+    <string name="ride_mate">Ride Mate</string>
+    <string name="estiamte_price">Estimate Price</string>
+    <string name="booking_confirmed">Booking Confirmed</string>
+    <string name="Cancel_Ride">Cancel Ride</string>
+    <string name="lets_go">Lets\'s go</string>
+    <string name="payment">Payment</string>
+    <string name="payment_mode">Payment Mode</string>
+    <string name="Upi">Upi</string>
+    <string name="Credit_Card">Credit Card</string>
+    <string name="Debit_Card">Debit Card</string>
+    <string name="cash">Cash</string>
+    <string name="booking_date">Booking date : 14-04-2025 | 09:30 PM</string>
+    <string name="otp">OTP:1234</string>
+    <string name="call_ride_mate">Call Ride Mate</string>
+    <string name="landmark">Landmark</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
