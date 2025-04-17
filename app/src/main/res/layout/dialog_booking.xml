@@ -18,7 +18,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:layout_gravity="center"
-            android:src="@drawable/active_dot"
+            android:src="@drawable/ic_confirm"
             android:layout_width="7pt"
             android:layout_height="7pt"/>
         <TextView

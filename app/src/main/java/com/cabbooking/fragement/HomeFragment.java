@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         } else {
             if (isLocationEnabled()) {
                 // Location services are on
-                Toast.makeText(getContext(), "Location permission and GPS both are enabled", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(), "Location permission and GPS both are enabled", Toast.LENGTH_SHORT).show();
                 // TODO: Start using location here
             } else {
                 showEnableLocationDialog();
@@ -226,8 +226,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
-          //  common.switchFragment(new DestinationFragment());
-              openBottomDestination();
+            //common.switchFragment(new DestinationFragment());
+            openBottomDestination();
         } else if (v.getId() == R.id.lin_local) {
             changeBackground(binding.linLocal, binding.linOutstation);
         } else if (v.getId() == R.id.lin_outstation) {
