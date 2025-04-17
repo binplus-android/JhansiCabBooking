@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.DestinationModel;
@@ -86,8 +88,10 @@ public class DestinationFragment extends Fragment {
 
     public void initView() {
         common=new Common(getActivity());
-        ((MainActivity)getActivity()).setTitle("Destination");
+        ((MapActivity)getActivity()).setTitle("Destination");
         list=new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
     }
 }

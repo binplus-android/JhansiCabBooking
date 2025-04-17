@@ -4,22 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         tools:context=".fragement.PickUpFragment">
         <ScrollView
             android:fillViewport="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <LinearLayout
+
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/iv_map"
-                    android:src="@drawable/map_dummy"
-                    android:scaleType="fitXY"
-                    android:layout_width="match_parent"
-                    android:layout_height="200pt"/>
+<!--<include layout="@layout/common_map"/>-->
                 <LinearLayout
                     android:layout_marginHorizontal="@dimen/space_8"
                     android:orientation="vertical"
@@ -55,6 +52,7 @@
 
                     </LinearLayout>
                     <Button
+                        style="@style/button"
                         android:id="@+id/btn_confirm"
                         android:layout_marginTop="@dimen/space_10"
                         android:text="@string/confirm_loc"
@@ -63,8 +61,5 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
-
-
-
     </RelativeLayout>
 </layout>

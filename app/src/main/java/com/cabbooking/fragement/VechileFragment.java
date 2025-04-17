@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
@@ -97,7 +98,7 @@ public class VechileFragment extends Fragment {
 
     public void initView() {
         common = new Common(getActivity());
-        ((MainActivity) getActivity()).setTitle("");
+        ((MapActivity) getActivity()).setTitle("");
         list = new ArrayList<>();
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

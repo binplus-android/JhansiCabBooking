@@ -79,21 +79,19 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/tv_ridername"
-                    android:textSize="@dimen/space_5"
+                    android:textSize="@dimen/space_6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:gravity="center_vertical"
                     android:text="Rider Name"
                     />
-                <RatingBar
-                    android:id="@+id/rv_rate"
-                    android:rating="3"
-                    style="@style/customRatingBar"
-                    android:progressTint="@color/yellow"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_vnumb"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:text="999999999"
+                    android:textSize="@dimen/space_5" />
             </LinearLayout>
         </LinearLayout>
         <View
@@ -123,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:text="Car Name"
-                    android:textSize="@dimen/space_5"
+                    android:textSize="@dimen/space_6"
                     />
                 <TextView
                     android:id="@+id/tv_vdesc"
@@ -175,7 +173,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/landmark"
+            android:text="@string/driver_live_location"
             android:textSize="@dimen/space_5" />
         <View
            

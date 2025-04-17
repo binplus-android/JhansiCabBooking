@@ -4,12 +4,19 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -18,6 +25,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class Common {
     Context context;
@@ -109,11 +118,70 @@ public class Common {
         toastMsg.toastIconError(msg);
     }
 
+    public void setMap(Boolean is_search,boolean is_map,int size,ImageView img,LinearLayout lin_search  ){
+
+        ViewGroup.LayoutParams params = img.getLayoutParams();
+
+// Always keep width as MATCH_PARENT
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        int heightInPx = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_PT, size,  img.getResources().getDisplayMetrics());
+        params.height = heightInPx;
+//            // Set height to MATCH_PARENT
+//            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        if(is_search){
+            lin_search.setVisibility(View.VISIBLE);
+        }else{
+            lin_search.setVisibility(View.GONE);
+        }if(is_map){
+            img.setVisibility(View.VISIBLE);
+        }else{
+            img.setVisibility(View.GONE);
+        }
+
+        img.setLayoutParams(params);
+    }
     public void successToast(String msg) {
         if (msg == null || msg.isEmpty()) {
             return;
         }
 
         toastMsg.toastIconSuccess(msg);
+    }
+
+    public void dialogScrollOff(BottomSheetDialog mBottomSheetDialog) {
+        mBottomSheetDialog.setOnShowListener(dialogInterface -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
+            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setSkipCollapsed(true);
+                behavior.setHideable(false);
+
+                // 🔐 Ultimate lock: Block collapse/dismiss even on scroll
+                behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING ||
+                                newState == BottomSheetBehavior.STATE_SETTLING ||
+                                newState == BottomSheetBehavior.STATE_COLLAPSED ||
+                                newState == BottomSheetBehavior.STATE_HIDDEN) {
+                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        }
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                        // no-op
+                    }
+                });
+            }
+            mBottomSheetDialog.setCanceledOnTouchOutside(false);
+            mBottomSheetDialog.setCancelable(true);
+
+        });
     }
 }

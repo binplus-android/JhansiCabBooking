@@ -36,10 +36,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+
                 android:gravity="center_vertical"
                 android:text="Rider Name"
                 />
             <RatingBar
+                android:visibility="gone"
                 android:id="@+id/rv_rate"
                 android:rating="3"
               style="@style/customRatingBar"
@@ -52,6 +54,7 @@
 
 
         <TextView
+            android:textSize="@dimen/space_7"
             android:id="@+id/tv_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
     <RelativeLayout
-        android:background="@drawable/bg_shadow_box"
         android:id="@+id/rel_mains"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

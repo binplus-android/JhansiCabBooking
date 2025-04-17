@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,8 +37,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.DestinationHomeAdapter;
+import com.cabbooking.adapter.RideMateAdapter;
 import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.fragement.DestinationFragment;
@@ -59,6 +63,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     DestinationAdapter desadapter;
     ArrayList<VechicleModel> vechlist;
     VechicleAdapter vadapter;
+    ArrayList<DestinationModel>ridelist;
+    RideMateAdapter rideMateAdapter;
+    BottomSheetDialog destinationDialog,vechicleDialog,pickUpDialog,rideDialog,paymentDialog;
 
 
     private ActivityResultLauncher<String> locationPermissionLauncher;
@@ -71,7 +78,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getDestinatioList();
         setupLocationPermissionLauncher();
         checkLocationPermission();
-      setMap(false);
+        // Set back key listener
+        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    showExitDialog();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Ensure focusable behavior
+        binding.getRoot().setFocusableInTouchMode(true);
+        binding.getRoot().requestFocus();
         return binding.getRoot();
     }
 
@@ -225,6 +246,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initView() {
+        ridelist=new ArrayList<>();
         deslist=new ArrayList<>();
         vechlist=new ArrayList<>();
         common = new Common(getActivity());
@@ -236,126 +258,50 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
             //common.switchFragment(new DestinationFragment());
-            openBottomDestination();
+            Intent intent=new Intent(getActivity(), MapActivity.class);
+            startActivity(intent);
         } else if (v.getId() == R.id.lin_local) {
             changeBackground(binding.linLocal, binding.linOutstation);
         } else if (v.getId() == R.id.lin_outstation) {
             changeBackground(binding.linOutstation, binding.linLocal);
         }
     }
-    public void setMap(Boolean home){
-        ViewGroup.LayoutParams params = binding.ivMap.getLayoutParams();
+    private void showExitDialog()
+    {
+        Dialog dialog;
 
-// Always keep width as MATCH_PARENT
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        dialog = new Dialog (getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dilalog_exit);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
 
-        if (home) {
-            // Set height to 180dp
-            int heightInPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_PT, 100,  binding.ivMap.getResources().getDisplayMetrics());
-            params.height = heightInPx;
-        } else {
-            // Set height to MATCH_PARENT
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-
-        binding.ivMap.setLayoutParams(params);
-    }
-
-    private void openBottomDestination() {
-        setMap(false);
-        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_destination, null);
-        mBottomSheetDialog.setContentView(view);
-        mBottomSheetDialog.getWindow().setDimAmount(0f);
-        mBottomSheetDialog.setCancelable(true);
-        FrameLayout bottomSheet = mBottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-        if (bottomSheet != null) {
-            BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
-            ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
-            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            bottomSheet.setLayoutParams(layoutParams);
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            behavior.setSkipCollapsed(true);
-        }
-        RecyclerView recDestination=bottomSheet.findViewById(R.id.rec_destination);
-        recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
-        getMainDestinatioList(recDestination);
-
-        recDestination.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recDestination,
-                new RecyclerTouchListener.OnItemClickListener() {
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
             @Override
-            public void onItemClick(View view, int position) {
-                mBottomSheetDialog.dismiss();
-                openVechileFragment();
-            
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-
-        mBottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mBottomSheetDialog.show();
-
-
-    }
-
-    private void openVechileFragment() {
-       setMap(false);
-        final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity());
-        mBottomSheetDialog.setContentView(R.layout.fragment_vechile);
-        mBottomSheetDialog.show();
-        mBottomSheetDialog.getWindow().setDimAmount(0f);
-        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        mBottomSheetDialog.setCancelable(true);
-        mBottomSheetDialog.setOnShowListener(dialogInterface -> {
-            BottomSheetDialog d = (BottomSheetDialog) dialogInterface;
-            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            if (bottomSheet != null) {
-                BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(bottomSheet);
-
-                behavior.setHideable(false); // prevents swipe to dismiss
-                behavior.setDraggable(false); // disables dragging entirely (optional)
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED); // opens fully
+            public void onClick(View v) {
+                dialog.dismiss ();
             }
         });
-        mBottomSheetDialog.setCanceledOnTouchOutside(false);
-        RecyclerView recDestination=mBottomSheetDialog.findViewById(R.id.rec_list);
-        Button btnBook=mBottomSheetDialog.findViewById(R.id.btn_book);
-        recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
-        getVechicleList(recDestination,btnBook);
 
-    }
-
-    private void getVechicleList(RecyclerView recDestination,Button btnBook) {
-        vechlist.clear();
-        vechlist.add(new VechicleModel("Mini"));
-        vechlist.add(new VechicleModel("Suv"));
-        vechlist.add(new VechicleModel("Auto"));
-        vechlist.add(new VechicleModel("Mini"));
-        vechlist.add(new VechicleModel("Suv"));
-        vechlist.add(new VechicleModel("Auto"));
-        btnBook.setText("Book "+vechlist.get(0).getName());
-        vadapter = new VechicleAdapter(getActivity(), vechlist, new VechicleAdapter.onTouchMethod() {
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
             @Override
-            public void onSelection(int pos) {
-                btnBook.setText("Book "+vechlist.get(pos).getName());
-                vadapter.notifyDataSetChanged();
+            public void onClick(View v) {
+                dialog.dismiss ();
+                getActivity().finishAffinity();
             }
         });
-        recDestination.setAdapter(vadapter);
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
     }
 
-    private void getMainDestinatioList(RecyclerView rec) {
-        deslist.clear();
-        deslist.add(new DestinationModel());
-        deslist.add(new DestinationModel());
-        deslist.add(new DestinationModel());
-        desadapter=new DestinationAdapter(getActivity(),deslist);
-        rec.setAdapter(desadapter);
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @SuppressLint("UseCompatLoadingForColorStateLists")

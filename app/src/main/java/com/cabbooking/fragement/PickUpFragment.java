@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cabbooking.activity.MainActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentPickUpBinding;
 import com.cabbooking.utils.Common;
 
@@ -76,7 +77,7 @@ public class PickUpFragment extends Fragment {
 
     public void initView() {
         common = new Common(getActivity());
-        ((MainActivity) getActivity()).setTitle("");
+        ((MapActivity) getActivity()).setTitle("");
 
     }
 

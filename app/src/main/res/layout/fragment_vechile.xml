@@ -11,7 +11,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+<!--            <include layout="@layout/common_map"/>-->
             <LinearLayout
                 android:padding="@dimen/space_4"
                 android:weightSum="2"
@@ -31,11 +31,12 @@
                         android:layout_height="@dimen/space_7"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_location" />
-                    <TextView
+                    <View
+
                         android:layout_gravity="center"
-                        android:text=".\n."
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:background="@drawable/dotted_line"
+                        android:layout_width="3dp"
+                        android:layout_height="12pt"/>
                     <ImageView
                         android:layout_gravity="center"
                         android:layout_width="@dimen/space_7"
@@ -102,6 +103,7 @@
 
                 </LinearLayout>
             </LinearLayout>
+
             <TextView
                 style="@style/TextViewRegular"
                 android:layout_marginHorizontal="@dimen/space_8"

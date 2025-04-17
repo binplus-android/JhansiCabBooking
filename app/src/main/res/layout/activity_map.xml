@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_barLayout"
         android:layout_width="match_parent"
@@ -14,6 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <androidx.appcompat.widget.Toolbar
+                android:visibility="gone"
                 android:id="@+id/mytoolbar"
                 android:background="@color/white"
                 android:layout_width="match_parent"
@@ -22,71 +20,8 @@
                 app:contentInsetStart="0dp"
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways">
-            <RelativeLayout
-
-                    android:id="@+id/lin_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
                 <LinearLayout
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageView
 
-                        android:layout_gravity="center"
-                        android:layout_centerInParent="true"
-                        android:id="@+id/logo"
-                        android:layout_width="14pt"
-                        android:layout_marginVertical="1dp"
-                        android:layout_height="14pt"
-                        android:src="@drawable/logo" />
-                    <LinearLayout
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/space_1"
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:textSize="@dimen/space_8"
-                            style="@style/TextViewExtraBold"
-                            android:text="Jhansi"
-                            android:textAllCaps="true"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:layout_marginTop="-4dp"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/space_5"
-                            android:text="Cab Booking"
-                            android:layout_below="@+id/iv_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-
-
-
-
-
-                <ImageView
-                    android:layout_alignParentRight="true"
-                        android:layout_width="10pt"
-                        android:layout_height="10pt"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/space_3"
-                        android:layout_marginRight="@dimen/space_5"
-
-                   android:src="@drawable/notification"/>
-
-
-                </RelativeLayout>
-                <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/lin_back_main"
                     android:background="@color/colorAccent"
                     android:layout_width="match_parent"
@@ -145,7 +80,6 @@
                 android:gravity="center">
                 <LinearLayout
                     android:elevation="@dimen/space_2"
-                    android:visibility="gone"
                     android:id="@+id/lin_only_back"
                     android:background="@android:color/transparent"
                     android:layout_width="match_parent"
@@ -174,18 +108,21 @@
 
 
                 </LinearLayout>
-                <LinearLayout
+                <RelativeLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
+                    <include
+                        android:id="@+id/map"
+                        layout="@layout/common_map"/>
                     <FrameLayout
+                        android:layout_below="@id/map"
                         android:id="@+id/main_framelayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                      >
+                        >
                     </FrameLayout>
-                </LinearLayout>
+                </RelativeLayout>
 
 
             </RelativeLayout>
@@ -194,4 +131,5 @@
 
 
     </com.google.android.material.appbar.AppBarLayout>
-</RelativeLayout>
+
+</layout>
