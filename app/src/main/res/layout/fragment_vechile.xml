@@ -5,17 +5,13 @@
     <RelativeLayout
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".fragement.VechileFragment">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/iv_map"
-                android:src="@drawable/map_dummy"
-                android:layout_width="match_parent"
-                android:layout_height="100pt"/>
+            android:layout_height="wrap_content">
+
             <LinearLayout
                 android:padding="@dimen/space_4"
                 android:weightSum="2"
@@ -64,6 +60,7 @@
 
 
                         <TextView
+                            style="@style/TextViewRegular"
                             android:id="@+id/tv_pick"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -91,6 +88,7 @@
 
 
                         <TextView
+                            style="@style/TextViewRegular"
                             android:id="@+id/tv_destination"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -105,6 +103,7 @@
                 </LinearLayout>
             </LinearLayout>
             <TextView
+                style="@style/TextViewRegular"
                 android:layout_marginHorizontal="@dimen/space_8"
                 android:layout_marginTop="@dimen/space_8"
                 android:text="@string/vechicle_recommendation"
@@ -117,6 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <Button
+                style="@style/button"
                 android:id="@+id/btn_book"
                 android:layout_margin="@dimen/space_8"
                 android:text="Book"

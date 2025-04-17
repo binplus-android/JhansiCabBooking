@@ -1,7 +1,9 @@
 package com.cabbooking.activity;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         lin_toolbar.setVisibility(View.GONE);
                         lin_back_main.setVisibility(View.VISIBLE);
                         lin_only_back.setVisibility(View.GONE);
+                       // setMap(false);
                     }else {
                         mytoolbar.setVisibility(View.GONE);
                         toggle.syncState();
@@ -74,12 +77,14 @@ public class MainActivity extends AppCompatActivity {
                         lin_toolbar.setVisibility(View.GONE);
                         lin_back_main.setVisibility(View.GONE);
                         lin_only_back.setVisibility(View.VISIBLE);
+                       // setMap(false);
                     }
                 }
             }
         });
 
     }
+
     public void setTitle(String title){
         TextView tv_title= binding.appBar.findViewById(R.id.tv_title);
          tv_title.setText(title);
