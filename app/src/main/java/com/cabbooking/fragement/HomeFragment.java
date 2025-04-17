@@ -239,6 +239,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_destination, null);
         mBottomSheetDialog.setContentView(view);
+        mBottomSheetDialog.getWindow().setDimAmount(0f);
         FrameLayout bottomSheet = mBottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
         if (bottomSheet != null) {
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
@@ -277,6 +278,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(getActivity());
         mBottomSheetDialog.setContentView(R.layout.fragment_vechile);
         mBottomSheetDialog.show();
+        mBottomSheetDialog.getWindow().setDimAmount(0f);
         mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
 
