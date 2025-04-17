@@ -72,5 +72,9 @@
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="one_way">One-way</string>
+    <string name="round_trip">Round trip</string>
+    <string name="get_drop">Get dropped off</string>
+    <string name="keep_the_car">Keep the car till return</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

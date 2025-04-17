@@ -18,6 +18,7 @@ public class SessionManagment {
     public static String KEY_NAME="user_name";
     public static String KEY_ID="user_id";
     public static String KEY_MOBILE="user_number";
+    public static String KEY_TYPE="type";
     String LOGIN = "login";
 
 

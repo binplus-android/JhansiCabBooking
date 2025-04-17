@@ -1,4 +1,6 @@
 package com.cabbooking.fragement;
+import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -12,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -48,6 +51,7 @@ import com.cabbooking.model.DestinationModel;
 import com.cabbooking.model.VechicleModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.RecyclerTouchListener;
+import com.cabbooking.utils.SessionManagment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -59,13 +63,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ArrayList<DestinationModel> list;
     DestinationHomeAdapter adapter;
     Common common;
-    ArrayList<DestinationModel> deslist;
-    DestinationAdapter desadapter;
-    ArrayList<VechicleModel> vechlist;
-    VechicleAdapter vadapter;
-    ArrayList<DestinationModel>ridelist;
-    RideMateAdapter rideMateAdapter;
-    BottomSheetDialog destinationDialog,vechicleDialog,pickUpDialog,rideDialog,paymentDialog;
+    SessionManagment sessionManagment;
+
 
 
     private ActivityResultLauncher<String> locationPermissionLauncher;
@@ -246,9 +245,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initView() {
-        ridelist=new ArrayList<>();
-        deslist=new ArrayList<>();
-        vechlist=new ArrayList<>();
+        sessionManagment=new SessionManagment(getActivity());
+        sessionManagment.setValue(KEY_TYPE,"0");
         common = new Common(getActivity());
         list = new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -261,11 +259,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             Intent intent=new Intent(getActivity(), MapActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.lin_local) {
+            sessionManagment.setValue(KEY_TYPE,"0");
             changeBackground(binding.linLocal, binding.linOutstation);
+            commonDestination();
         } else if (v.getId() == R.id.lin_outstation) {
+            sessionManagment.setValue(KEY_TYPE,"1");
             changeBackground(binding.linOutstation, binding.linLocal);
+            commonDestination();
         }
     }
+
+    private void commonDestination() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent=new Intent(getActivity(), MapActivity.class);
+                startActivity(intent);
+            }
+        }, 1000);
+
+    }
+
     private void showExitDialog()
     {
         Dialog dialog;

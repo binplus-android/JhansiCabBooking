@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import com.cabbooking.model.VechicleModel;
 import com.cabbooking.model.VechicleModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.RecyclerTouchListener;
+import com.cabbooking.utils.SessionManagment;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,7 @@ public class VechileFragment extends Fragment {
     Common common;
     ArrayList<VechicleModel> list;
     VechicleAdapter adapter;
+    SessionManagment sessionManagment;
 
 
     public VechileFragment() {
@@ -97,9 +101,16 @@ public class VechileFragment extends Fragment {
     }
 
     public void initView() {
+        sessionManagment=new SessionManagment(getActivity());
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         list = new ArrayList<>();
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if(sessionManagment.getValue(KEY_TYPE).equalsIgnoreCase("1")){
+           binding.linOutstationData.setVisibility(View.VISIBLE);
+        }
+        else {
+            binding.linOutstationData.setVisibility(View.GONE);
+        }
     }
 }
