@@ -112,64 +112,71 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/lin_outstation_data"
                 android:layout_marginHorizontal="@dimen/space_8"
                 android:weightSum="2"
                 android:layout_marginTop="@dimen/space_8"
+                android:background="@drawable/bg_outline_box_grey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:elevation="@dimen/space_2"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:layout_margin="@dimen/space_2"
+                        android:id="@+id/img_one_way"
+                        android:layout_margin="@dimen/space_3"
                         android:elevation="@dimen/space_5"
                         android:layout_alignParentEnd="true"
-                        android:layout_width="@dimen/space_8"
-                        android:layout_height="@dimen/space_8"
+                        android:layout_width="@dimen/space_6"
+                        android:layout_height="@dimen/space_6"
                         android:src="@drawable/ic_confirm"
                         app:tint="@color/colorAccent" />
+
                     <LinearLayout
-                        android:padding="@dimen/space_4"
-                        android:background="@drawable/bg_outline_box"
-                        android:orientation="vertical"
+                        android:id="@+id/lin_one_way"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_outline_box_blue"
+                        android:orientation="vertical"
+                        android:padding="@dimen/space_4">
+
                         <TextView
                             style="@style/TextViewSemBold"
-                            android:layout_marginHorizontal="@dimen/space_8"
-                            android:text="@string/one_way"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/space_8"
+                            android:text="@string/one_way" />
+
                         <TextView
-                            android:textSize="@dimen/space_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/space_8"
                             android:text="@string/get_drop"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="@dimen/space_5" />
                     </LinearLayout>
                 </RelativeLayout>
                 <RelativeLayout
-                    android:layout_marginLeft="-5dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
                     <ImageView
-                        android:layout_margin="@dimen/space_2"
+                        android:id="@+id/img_round_trip"
+                        android:layout_margin="@dimen/space_3"
                         android:elevation="@dimen/space_5"
                         android:layout_alignParentEnd="true"
-                        android:layout_width="@dimen/space_8"
-                        android:layout_height="@dimen/space_8"
+                        android:layout_width="@dimen/space_6"
+                        android:layout_height="@dimen/space_6"
                         android:src="@drawable/ic_confirm"
-                        app:tint="@color/colorAccent" />
+                        app:tint="@color/colorAccent"
+                        android:visibility="gone"/>
                     <LinearLayout
+                        android:id="@+id/lin_round_trip"
                         android:padding="@dimen/space_4"
-                        android:background="@drawable/bg_outline_box"
+                        android:elevation="1dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

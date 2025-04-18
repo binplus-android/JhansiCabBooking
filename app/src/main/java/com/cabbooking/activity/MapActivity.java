@@ -31,9 +31,8 @@ import com.cabbooking.utils.SessionManagment;
 public class MapActivity extends AppCompatActivity {
     Common common;
     ActivityMapBinding binding;
-
-   
     SessionManagment sessionManagment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -69,8 +69,7 @@ public class VechileFragment extends Fragment {
         initView();
         getList();
         allClick();
-
-
+        manageTripTypeClick();
 
         return binding.getRoot();
     }
@@ -113,4 +112,51 @@ public class VechileFragment extends Fragment {
             binding.linOutstationData.setVisibility(View.GONE);
         }
     }
+
+//    public void manageTripTypeClick(){
+//
+//        binding.linOneWay.setOnClickListener(v -> {
+//            // One-way active
+//            binding.linOneWay.setBackgroundResource(R.drawable.bg_outline_box_blue);
+//            binding.imgOneWay.setVisibility(View.VISIBLE);
+//
+//            // Round-trip inactive
+//            binding.linRoundTrip.setBackgroundResource(R.drawable.bg_outline_box_grey);
+//            binding.imgRoundTrip.setVisibility(View.GONE);
+//        });
+//
+//        binding.linRoundTrip.setOnClickListener(v -> {
+//            // Round-trip active
+//            binding.linRoundTrip.setBackgroundResource(R.drawable.bg_outline_box_blue);
+//            binding.imgRoundTrip.setVisibility(View.VISIBLE);
+//
+//            // One-way inactive
+//            binding.linOneWay.setBackgroundResource(R.drawable.bg_outline_box_grey);
+//            binding.imgOneWay.setVisibility(View.GONE);
+//        });
+//    }
+
+    public void manageTripTypeClick() {
+
+        binding.linOneWay.setOnClickListener(v -> {
+            // One-way active
+            binding.linOneWay.setBackgroundResource(R.drawable.bg_outline_box_blue);
+            binding.imgOneWay.setVisibility(View.VISIBLE);
+
+            // Round-trip inactive - remove background
+            binding.linRoundTrip.setBackground(null); // No background
+            binding.imgRoundTrip.setVisibility(View.GONE);
+        });
+
+        binding.linRoundTrip.setOnClickListener(v -> {
+            // Round-trip active
+            binding.linRoundTrip.setBackgroundResource(R.drawable.bg_outline_box_blue);
+            binding.imgRoundTrip.setVisibility(View.VISIBLE);
+
+            // One-way inactive - remove background
+            binding.linOneWay.setBackground(null); // No background
+            binding.imgOneWay.setVisibility(View.GONE);
+        });
+    }
+
 }

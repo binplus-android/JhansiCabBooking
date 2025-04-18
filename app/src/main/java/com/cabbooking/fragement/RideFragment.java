@@ -60,7 +60,6 @@ public class RideFragment extends Fragment {
         allClick();
         getList();
 
-
         return binding.getRoot();
     }
 

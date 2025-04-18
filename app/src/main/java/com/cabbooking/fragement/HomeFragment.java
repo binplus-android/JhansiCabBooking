@@ -517,7 +517,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
 
                 // Apply selected date text color
-                view.setDateTextAppearance(R.style.SelectedDateTextStyle);
+//                view.setDateTextAppearance(R.style.SelectedDateTextStyle);
 
                 // Format the selected date
                 String day = "", mon = "";

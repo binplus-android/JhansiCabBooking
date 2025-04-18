@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
@@ -94,6 +95,10 @@ public class PaymentFragment extends Fragment {
         dialog.getWindow().setGravity(Gravity.CENTER);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         dialog.setContentView (R.layout.dialog_booking);
+
+        ImageView img_close = dialog.findViewById(R.id.img_close);
+        img_close.setOnClickListener(v -> dialog.dismiss());
+
         dialog.setCanceledOnTouchOutside (false);
         dialog.show ();
     }
