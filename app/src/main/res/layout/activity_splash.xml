@@ -17,18 +17,19 @@
             android:layout_gravity="center"
             android:id="@+id/iv_logo"
             android:src="@drawable/logo"
-            android:layout_width="170dp"
-            android:layout_height="170dp"/>
+            android:layout_width="70pt"
+            android:layout_height="70pt"/>
         <TextView
             android:textSize="@dimen/space_25"
             android:textAlignment="center"
             style="@style/TextViewExtraBold"
             android:text="Jhansi"
+            android:textAllCaps="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <TextView
-
-        android:textAlignment="center"
+            android:layout_marginTop="-8dp"
+            android:textAlignment="center"
         android:textSize="@dimen/space_14"
         android:text="Cab Booking"
         android:layout_below="@+id/iv_logo"

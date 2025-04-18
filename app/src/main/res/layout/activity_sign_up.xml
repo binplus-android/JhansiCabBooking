@@ -13,10 +13,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView
-                android:src="@drawable/logo"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/space_90"/>
+            <include layout="@layout/common_background"></include>
             <LinearLayout
                 android:layout_marginTop="@dimen/space_18"
                 android:layout_marginHorizontal="@dimen/space_8"

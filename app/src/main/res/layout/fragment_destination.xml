@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <RelativeLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <FrameLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragement.DestinationFragment">
@@ -11,7 +12,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/gray_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -33,11 +36,11 @@
                     android:layout_height="@dimen/space_7"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_location" />
-                <TextView
+                <View
                     android:layout_gravity="center"
-                    android:text=".\n."
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:background="@drawable/dotted_line"
+                    android:layout_width="3dp"
+                    android:layout_height="12pt"/>
                 <ImageView
                     android:layout_gravity="center"
                     android:layout_width="@dimen/space_7"
@@ -72,8 +75,8 @@
                       />
 
                     <ImageView
-                        android:layout_width="@dimen/space_7"
-                        android:layout_height="@dimen/space_7"
+                        android:layout_width="@dimen/space_6"
+                        android:layout_height="@dimen/space_6"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_close" />
@@ -104,8 +107,8 @@
                         android:text="@string/address" />
 
                     <ImageView
-                        android:layout_width="@dimen/space_7"
-                        android:layout_height="@dimen/space_7"
+                        android:layout_width="@dimen/space_6"
+                        android:layout_height="@dimen/space_6"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_close" />
@@ -129,7 +132,7 @@
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_destination"
-            android:layout_marginTop="@dimen/space_5"
+            android:layout_marginTop="@dimen/space_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -137,5 +140,5 @@
 
 </LinearLayout>
 
-    </RelativeLayout>
+    </FrameLayout>
 </layout>

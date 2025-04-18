@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FF000000</color>
-    <color name="colorAccent">#FF2541CF</color>
+    <color name="colorAccent">#1E48F4</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="hint_color">#C7C7C7</color>
     <color name="gray_edittext">#FBFAFA</color>
+    <color name="grey">#EEEEEE</color>
     <color name="dark_gray">#7D7B7B</color>
 
     <color name="grey_5">#f2f2f2</color>
@@ -15,8 +16,8 @@
     <color name="grey_60">#666666</color>
     <color name="grey_90">#263238</color>
     <color name="highlight">#FF2541CF</color>
-    <color name="red_600">#E53935</color>
-    <color name="green_500">#4CAF50</color>
+    <color name="red_600">#D81B1B</color>
+    <color name="green_500">#1EA114</color>
     <color name="shadow">#d5d5d5d5</color>
     <color name="dark_grey">#858282</color>
     <color name="transparent_red">#CC858282</color>
@@ -24,8 +25,8 @@
     <color name="dark_orangr">#FFC107</color> <!-- Match your reference image -->
     <color name="custom_thumb_color">#FFFFFF</color>
     <color name="gray">#989393</color>
-    <color name="light_green">#C7F6C7</color>
+    <color name="light_green">#C9FFCD</color>
 
-    <color name="yellow">#FFC107</color>
+    <color name="yellow">#FFB901</color>
 
 </resources>

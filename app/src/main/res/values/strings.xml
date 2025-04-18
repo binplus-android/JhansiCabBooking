@@ -56,18 +56,27 @@
     <string name="booking_date">Booking date : 14-04-2025 | 09:30 PM</string>
     <string name="otp">OTP : 1234</string>
     <string name="call_ride_mate">Call Ride Mate</string>
-    <string name="landmark">Landmark</string>     <string name="vechicle_recommendation">Vechicle Recommendation</string>
+    <string name="driver_live_location">Driver Live Location</string>
+    <string name="vechicle_recommendation">Vechicle Recommendation</string>
     <string name="confirm_your_pickup">Confirm your pickup</string>
-    <string name="confirm_loc">Confirm Location</string> <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
+    <string name="confirm_loc">Confirm Location</string>
+    <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
+    <string name="searching">Searching...</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="do_not_allow">Don\'t Allow</string>
     <string name="choose_return_time">Choose Return Time</string>
     <string name="select_return_date">Select Return Date</string>
     <string name="allow">Allow</string>
-
-<!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access your location while you use the app?</string>-->
+    <string name="leaving_so_soon">Leaving so soon ?</string>
+    <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
+    <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access your location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
-
-<!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="one_way">One-way</string>
+    <string name="round_trip">Round trip</string>
+    <string name="get_drop">Get dropped off</string>
+    <string name="keep_the_car">Keep the car till return</string>
+    <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

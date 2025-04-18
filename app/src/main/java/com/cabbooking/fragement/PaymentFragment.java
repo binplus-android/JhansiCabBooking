@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MainActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.RideMateAdapter;
 import com.cabbooking.databinding.FragmentPaymentBinding;
 import com.cabbooking.databinding.FragmentRideBinding;
@@ -100,7 +101,7 @@ public class PaymentFragment extends Fragment {
 
     public void initView() {
         common = new Common(getActivity());
-        ((MainActivity) getActivity()).setTitle("");
+        ((MapActivity) getActivity()).setTitle("");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
 
