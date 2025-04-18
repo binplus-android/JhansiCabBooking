@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout lin_back_main;
     SessionManagment sessionManagment;
 
-   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

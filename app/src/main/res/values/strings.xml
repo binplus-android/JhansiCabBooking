@@ -62,6 +62,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="do_not_allow">Don\'t Allow</string>
+    <string name="choose_return_time">Choose Return Time</string>
+    <string name="select_return_date">Select Return Date</string>
     <string name="allow">Allow</string>
 
 <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access your location while you use the app?</string>-->

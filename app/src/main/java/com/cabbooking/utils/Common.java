@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
@@ -18,6 +19,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Common {
     Context context;
@@ -115,5 +123,72 @@ public class Common {
         }
 
         toastMsg.toastIconSuccess(msg);
+    }
+
+    public String getCurrentDate(){
+        LocalDate currentDate = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            currentDate = LocalDate.now();
+        }
+        Log.e("dcfgh", String.valueOf(currentDate));
+
+        return String.valueOf(currentDate);
+    }
+
+    public String getCurrentTime(){
+        String formattedFutureTime="";
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            LocalTime currentTime = LocalTime.now();
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+//            formattedTime = currentTime.format(formatter);
+//        }
+
+
+        // Get current time
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalTime currentTime = LocalTime.now();
+
+            // Add 30 minutes to the current time
+            LocalTime futureTime = currentTime.plusMinutes(30);
+
+            // Format the times (optional)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String formattedCurrentTime = currentTime.format(formatter);
+            formattedFutureTime = futureTime.format(formatter);
+
+            System.out.println("Current Time: " + formattedCurrentTime);
+            System.out.println("Time after adding 30 minutes: " + formattedFutureTime);
+        }
+
+        return formattedFutureTime;
+    }
+
+    public String timeConversion12hrs(String time){
+//      covert 24 hrs format to 12 hrs
+        try {
+            final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            final Date dateObj = sdf.parse(time);
+            return new SimpleDateFormat("KK:mm aa").format(dateObj);
+        } catch (final ParseException e) {
+            e.printStackTrace();
+            return time;
+        }
+    }
+
+    public String convertDateFormat(String myDate){
+        String inputDateStr = myDate;
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            Date date = inputFormat.parse(inputDateStr);
+            String outputDateStr = outputFormat.format(date);
+
+            return outputDateStr;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return myDate;
+        }
     }
 }
