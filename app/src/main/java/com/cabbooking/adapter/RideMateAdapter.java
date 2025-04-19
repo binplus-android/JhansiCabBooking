@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,15 +21,17 @@ public class RideMateAdapter extends RecyclerView.Adapter<RideMateAdapter.ViewHo
     Context context;
     ArrayList<DestinationModel> list;
     int pos=0;
-   onTouchMethod listener;
+    onTouchMethod listener;
+    String page_type="";
     public interface onTouchMethod{
         void onSelection(int pos);
     }
 
-    public RideMateAdapter(Context context, ArrayList<DestinationModel> list, onTouchMethod listener) {
+    public RideMateAdapter(String page_type,Context context, ArrayList<DestinationModel> list, onTouchMethod listener) {
         this.context = context;
         this.list = list;
         this.listener=listener;
+        this.page_type=page_type;
     }
 
     @NonNull
@@ -41,6 +45,11 @@ public class RideMateAdapter extends RecyclerView.Adapter<RideMateAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         DestinationModel DestinationModel = list.get(position);
+        if(page_type.equalsIgnoreCase("payment")){
+            holder.tv_rate.setVisibility(View.GONE);
+        } else{
+            holder.tv_rate.setVisibility(View.VISIBLE);
+        }
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,15 +75,19 @@ public class RideMateAdapter extends RecyclerView.Adapter<RideMateAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-//        TextView tv_title;
-//        ImageView img_icon;
-LinearLayout lin_main;
+        TextView tv_rate,tv_ridername,tv_vname,tv_vdesc;
+         ImageView iv_vimg,iv_rimg;
+        LinearLayout lin_main;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             lin_main = itemView.findViewById(R.id.lin_main);
-//            tv_title = itemView.findViewById(R.id.tv_title);
-//            img_icon = itemView.findViewById(R.id.iv_icon);
+            tv_rate = itemView.findViewById(R.id.tv_rate);
+            tv_ridername = itemView.findViewById(R.id.tv_ridername);
+            tv_vname = itemView.findViewById(R.id.tv_vname);
+            tv_vdesc = itemView.findViewById(R.id.tv_vdesc);
+            iv_vimg = itemView.findViewById(R.id.iv_vimg);
+            iv_rimg = itemView.findViewById(R.id.iv_rimg);
         }
     }
 }

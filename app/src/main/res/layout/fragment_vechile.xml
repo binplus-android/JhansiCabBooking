@@ -112,7 +112,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/lin_outstation_data"
                 android:layout_marginHorizontal="@dimen/space_8"
                 android:weightSum="2"
@@ -196,11 +196,45 @@
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
-
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/lin_retun_date"
+                android:layout_marginHorizontal="@dimen/space_8"
+                android:layout_marginTop="@dimen/space_4"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/tv_bookdate"
+                    style="@style/TextViewRegular"
+                    android:textAlignment="center"
+                    android:text="@string/return_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_marginLeft="@dimen/space_2"
+                    android:id="@+id/tv_booktime"
+                    style="@style/TextViewRegular"
+                    android:textAlignment="center"
+                    android:text="09:30 PM"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textColor="@color/colorAccent"
+                    android:id="@+id/tv_trip"
+                    style="@style/TextViewRegular"
+                    android:textAlignment="textEnd"
+                    android:text="@string/round_trip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
             <TextView
                 style="@style/TextViewRegular"
                 android:layout_marginHorizontal="@dimen/space_8"
-                android:layout_marginTop="@dimen/space_8"
+                android:layout_marginTop="@dimen/space_5"
                 android:text="@string/vechicle_recommendation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

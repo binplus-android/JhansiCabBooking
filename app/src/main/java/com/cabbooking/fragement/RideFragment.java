@@ -66,7 +66,7 @@ public class RideFragment extends Fragment {
     public void getList() {
         list.clear();
         list.add(new DestinationModel());
-        adapter=new RideMateAdapter(getActivity(), list, new RideMateAdapter.onTouchMethod() {
+        adapter=new RideMateAdapter("",getActivity(), list, new RideMateAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
                 adapter.notifyDataSetChanged();

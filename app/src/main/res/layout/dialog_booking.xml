@@ -38,21 +38,38 @@
         <ImageView
             android:id="@+id/img_close"
             android:src="@drawable/ic_close"
-            android:layout_width="@dimen/space_8"
-            android:layout_height="@dimen/space_8"
+            android:layout_width="@dimen/space_10"
+            android:layout_height="@dimen/space_10"
             android:padding="@dimen/space_2"
             android:layout_alignParentRight="true"
             app:tint="@color/red_600"/>
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_bookdate"
-        android:textSize="@dimen/space_5"
+    <LinearLayout
         android:layout_marginTop="@dimen/space_4"
-        android:textAlignment="center"
-        android:text="@string/booking_date"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/> 
+        android:layout_height="wrap_content"
+>
+        <TextView
+            android:id="@+id/tv_bookdate"
+            android:textSize="@dimen/space_5"
+            android:textAlignment="center"
+            android:text="@string/booking_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:visibility="gone"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/tv_trip"
+            android:textSize="@dimen/space_5"
+            android:textAlignment="textEnd"
+            android:text="@string/one_way_trip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_otp"
         android:textStyle="bold"
@@ -181,7 +198,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"/>
         <TextView
-            android:id="@+id/tv_landmark"
+            android:id="@+id/tv_location"
             android:textStyle="bold"
             android:textAlignment="center"
             android:layout_weight="1"
