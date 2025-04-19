@@ -62,14 +62,18 @@ public class AfterPaymentDoneFragment extends Fragment {
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){
+            binding.tvTripType.setVisibility(View.VISIBLE);
             if(outstation_type.equalsIgnoreCase("0")){
                 binding.tvTripType.setText(getActivity().getString(R.string.one_way_trip));
+                binding.tvReturnDate.setVisibility(View.GONE);
             }
             else {
                 binding.tvTripType.setText(getActivity().getString(R.string.round_trip));
+                binding.tvReturnDate.setVisibility(View.VISIBLE);
             }
-            binding.tvTripType.setVisibility(View.VISIBLE);
+
         }else{
+            binding.tvReturnDate.setVisibility(View.GONE);
             binding.tvTripType.setVisibility(View.GONE);
         }
     }

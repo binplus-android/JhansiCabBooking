@@ -106,8 +106,9 @@ public class PaymentFragment extends Fragment {
         dialog.setContentView (R.layout.dialog_booking);
         TextView tv_trip=dialog.findViewById(R.id.tv_trip);
         ImageView img_close = dialog.findViewById(R.id.img_close);
-        TextView tv_call_ride,tv_location,tv_cancle;
+        TextView tv_call_ride,tv_location,tv_cancle,tv_returndate;
         tv_call_ride = dialog.findViewById(R.id.tv_call_ride);
+        tv_returndate = dialog.findViewById(R.id.tv_returndate);
         img_close = dialog.findViewById(R.id.img_close);
         tv_location = dialog.findViewById(R.id.tv_location);
         tv_cancle = dialog.findViewById(R.id.tv_cancle);
@@ -115,13 +116,16 @@ public class PaymentFragment extends Fragment {
         if(trip_type.equalsIgnoreCase("1")){
             tv_trip.setVisibility(View.VISIBLE);
             if(outstation_type.equalsIgnoreCase("0")){
+              tv_returndate.setVisibility(View.GONE);
                tv_trip.setText(getActivity().getString(R.string.one_way_trip));
             }
             else{
+                tv_returndate.setVisibility(View.VISIBLE);
                 tv_trip.setText(getActivity().getString(R.string.round_trip));
             }
         }
         else{
+            tv_returndate.setVisibility(View.GONE);
             tv_trip.setVisibility(View.GONE);
         }
         tv_location.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +159,17 @@ public class PaymentFragment extends Fragment {
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){
             binding.linAddress.setVisibility(View.VISIBLE);
+            if(outstation_type.equalsIgnoreCase("1")){
+                binding.relReturnDate.setVisibility(View.VISIBLE);
+            }
+            else {
+                binding.relReturnDate.setVisibility(View.GONE);
+            }
         }else{
             binding.linAddress.setVisibility(View.GONE);
+            binding.relReturnDate.setVisibility(View.GONE);
         }
+
 
     }
 }

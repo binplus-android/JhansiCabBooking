@@ -1,5 +1,8 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
+import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import com.cabbooking.databinding.FragmentPickUpBinding;
 import com.cabbooking.databinding.FragmentRideBinding;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.SessionManagment;
 
 import java.util.ArrayList;
 
@@ -30,6 +34,8 @@ public class RideFragment extends Fragment {
     Common common;
     ArrayList<DestinationModel>list;
     RideMateAdapter adapter;
+    String trip_type="",outstation_type="";
+    SessionManagment sessionManagment;
 
     public RideFragment() {
         // Required empty public constructor
@@ -90,6 +96,21 @@ public class RideFragment extends Fragment {
         ((MapActivity) getActivity()).setTitle("");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
+        sessionManagment = new SessionManagment(getActivity());
+        trip_type=sessionManagment.getValue(KEY_TYPE);
+        outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
+       if(trip_type.equalsIgnoreCase("0")){
+            binding.relReturnDate.setVisibility(View.GONE);
+        }
+        else {
+            if(outstation_type.equalsIgnoreCase("1")){
+                binding.relReturnDate.setVisibility(View.VISIBLE);
+            }
+            else {
+                binding.relReturnDate.setVisibility(View.GONE);
+            }
+
+        }
 
     }
 }
