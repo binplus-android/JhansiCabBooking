@@ -330,8 +330,17 @@ public class VechileFragment extends Fragment {
         ImageView iv_close = dialog.findViewById(R.id.iv_close);
         Button btn_apply = dialog.findViewById(R.id.btn_apply);
         CalendarView calendarView = dialog.findViewById(R.id.calendarView);
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1; // Months are 0-based
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        String dayStr = day < 10 ? "0" + day : String.valueOf(day);
+        String monStr = month < 10 ? "0" + month : String.valueOf(month);
+
+        sel_date = dayStr + "-" + monStr + "-" + year;
         // Add Listener in calendar
+        Log.d("selec_date", "openSelectDate: "+sel_date);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
