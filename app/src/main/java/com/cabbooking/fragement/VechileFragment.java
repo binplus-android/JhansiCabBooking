@@ -128,6 +128,7 @@ public class VechileFragment extends Fragment {
         sessionManagment=new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
+        sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         list = new ArrayList<>();

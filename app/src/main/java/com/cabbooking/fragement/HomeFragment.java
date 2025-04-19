@@ -291,7 +291,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Intent intent=new Intent(getActivity(), MapActivity.class);
                 startActivity(intent);
             }
-        }, 600);
+        }, 400);
 
     }
 

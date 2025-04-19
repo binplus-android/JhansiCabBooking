@@ -127,12 +127,14 @@ public class PaymentFragment extends Fragment {
         tv_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 common.switchFragment(new AfterPaymentDoneFragment());
             }
         });
         tv_call_ride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 common.switchFragment(new AfterPaymentDoneFragment());
             }
         });
@@ -151,6 +153,11 @@ public class PaymentFragment extends Fragment {
         sessionManagment=new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
+        if(trip_type.equalsIgnoreCase("1")){
+            binding.linAddress.setVisibility(View.VISIBLE);
+        }else{
+            binding.linAddress.setVisibility(View.GONE);
+        }
 
     }
 }

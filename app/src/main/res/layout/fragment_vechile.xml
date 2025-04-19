@@ -116,7 +116,7 @@
                 android:id="@+id/lin_outstation_data"
                 android:layout_marginHorizontal="@dimen/space_8"
                 android:weightSum="2"
-                android:layout_marginTop="@dimen/space_8"
+                android:layout_marginTop="@dimen/space_5"
                 android:background="@drawable/bg_outline_box_grey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

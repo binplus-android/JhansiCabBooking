@@ -127,7 +127,7 @@
                 <!--<include layout="@layout/common_map"/>-->
                 <LinearLayout
                     android:layout_marginHorizontal="@dimen/space_8"
-                    android:layout_marginTop="@dimen/space_8"
+                    android:layout_marginTop="@dimen/space_4"
                     android:id="@+id/lin_ride"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -137,23 +137,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            android:textSize="@dimen/space_5"
                             android:gravity="center"
                             android:layout_centerVertical="true"
                             android:layout_alignParentStart="true"
                             android:text="@string/booking_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-                        <TextView
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
-                            android:id="@+id/tv_otp"
-                            android:textStyle="bold"
-                            android:paddingVertical="@dimen/space_2"
-                            android:paddingHorizontal="@dimen/space_7"
-                            android:text="@string/otp"
-                            android:background="@drawable/bg_curve_box"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:visibility="gone"
+                                android:layout_gravity="end"
+                                android:id="@+id/tv_trip_type"
+                                android:textStyle="bold"
+                                android:text="@string/one_way_trip"
+                                android:textSize="@dimen/space_5"
+                                android:textColor="@color/colorAccent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:gravity="end"
+                                android:layout_gravity="end"
+                               android:layout_marginTop="@dimen/space_2"
+                                android:id="@+id/tv_otp"
+                                android:textStyle="bold"
+                                android:paddingVertical="@dimen/space_2"
+                                android:paddingHorizontal="@dimen/space_7"
+                                android:text="@string/otp"
+                                android:textSize="@dimen/space_5"
+                                android:background="@drawable/bg_curve_box"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
                     </RelativeLayout>
                     <LinearLayout
                         android:id="@+id/lin_main"

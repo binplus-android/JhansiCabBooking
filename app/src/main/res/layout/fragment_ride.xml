@@ -159,6 +159,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/rec_list"/>
             <LinearLayout
+                android:layout_marginTop="@dimen/space_15"
                 android:weightSum="2"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -167,7 +168,7 @@
                     style="@style/button"
                     android:id="@+id/btn_bottom_cancle"
                     android:layout_weight="1"
-                    android:layout_marginTop="@dimen/space_10"
+
                     android:text="@string/Cancel_Ride"
                     android:textColor="@color/white"
                     android:backgroundTint="@color/red_600"
@@ -178,7 +179,6 @@
                     android:id="@+id/btn_go"
                     android:layout_marginLeft="@dimen/space_8"
                     android:layout_weight="1"
-                    android:layout_marginTop="@dimen/space_10"
                     android:text="@string/lets_go"
                     android:textColor="@color/white"
                     android:backgroundTint="@color/colorAccent"
