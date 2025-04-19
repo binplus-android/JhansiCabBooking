@@ -368,9 +368,7 @@ public class VechileFragment extends Fragment {
                 Log.e("Selected Date", sel_date);
             }
         });
-
         calendarView.setMinDate(System.currentTimeMillis() - 1000);
-
         btn_apply.setOnClickListener(v -> {
             if (sel_date.isEmpty()) {
                 common.errorToast("Please select date");
