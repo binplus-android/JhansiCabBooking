@@ -3,6 +3,8 @@ package com.cabbooking.activity;
 import android.app.Activity;
 import android.content.Intent;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -185,10 +187,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(!pickupPlacesSelected) {
             if (riderMarket != null)
                 riderMarket.remove();
+            // Resize the drawable
+            int height = 130; // you can adjust
+            int width = 130;  // you can adjust
+            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_blue_loc);
+            Bitmap b = bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-            riderMarket = mMap.addMarker(new MarkerOptions().position(location)
+
+            riderMarket = mMap.addMarker(new MarkerOptions()
+                    .position(location)
                     .title("You")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_destination_marker)));
+                    .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
             binding.tvAddress.setText(address);
@@ -343,8 +354,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 if(destinationMarker!=null)
                     destinationMarker.remove();
+
+                int height = 70; // you can adjust
+                int width = 50;  // you can adjust
+
+                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_location);
+                Bitmap b = bitmapdraw.getBitmap();
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
                 destinationMarker=mMap.addMarker(new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_destination_marker))
+                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                         .title("Destination"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
             }

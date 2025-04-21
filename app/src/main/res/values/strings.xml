@@ -96,5 +96,6 @@
     <string name="request_send">Request send</string>
 
     <string name="sent_failed">Sent failed</string>
+    <string name="error_toast">Something went wrong ! try later</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
