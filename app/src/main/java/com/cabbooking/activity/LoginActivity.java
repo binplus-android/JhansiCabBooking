@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     public void login(String number){
-        loadingBar.show();
+      //  loadingBar.show();
 //        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
 //        Apis signUpApi = retrofit.create(Apis.class);
 //        JsonObject object = new JsonObject();
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        call.enqueue(new Callback<JsonObject>() {
 //            @Override
 //            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-               loadingBar.dismiss();
+              // loadingBar.dismiss();
 //
 //                try {
 //                    if (response.code() == 200 && response.body() != null) {
