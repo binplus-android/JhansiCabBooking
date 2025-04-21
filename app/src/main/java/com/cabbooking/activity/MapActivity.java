@@ -116,7 +116,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linOnlyBack.setVisibility(View.GONE);
                         toggle.syncState();
                         binding.mytoolbar.setNavigationIcon(R.drawable.menu);
-                        common.setMap(true,true,160,binding.mapContainer,
+                        common.setMap(true,true,130,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                         binding.main.setVisibility(View.VISIBLE);
                     }
@@ -128,7 +128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linOnlyBack.setVisibility(View.GONE);
                         // setMap(false);
                          binding.main.setVisibility(View.GONE);
-                        common.setMap(false,false,160,binding.mapContainer,
+                        common.setMap(false,false,0,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                            }
                      else {

@@ -13,14 +13,13 @@
             android:layout_height="match_parent">
             <LinearLayout
                 android:background="@color/white"
-                android:layout_marginVertical="@dimen/space_4"
+                android:layout_marginVertical="@dimen/space_5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
-                        android:layout_marginTop="@dimen/space_5"
                         android:id="@+id/lin_home"
                         android:layout_marginHorizontal="@dimen/space_8"
                         android:orientation="vertical"
