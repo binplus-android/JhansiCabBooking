@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".fragement.VechileFragment">
-
+        <ScrollView
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -252,6 +255,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height"/>
         </LinearLayout>
+        </ScrollView>
 
     </RelativeLayout>
 </layout>

@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     }
     public void gotonext(){
         if (sessionManagment.isLogin()) {
-            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+            Intent intent = new Intent(SplashActivity.this, MapActivity.class);
             startActivity(intent);
             finish();
         }else {

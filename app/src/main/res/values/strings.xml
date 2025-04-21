@@ -79,6 +79,22 @@
     <string name="one_way_trip">One-way Trip</string>
     <string name="round_trip">Round trip</string>
     <string name="get_drop">Get dropped off</string>
-    <string name="keep_the_car">Keep the car till return</string>
+    <string name="keep_the_car">Keep the car till return
+    </string>  <string name="permission_denied">Permission denied</string>
+    <string name="permission_denied_location">Permission is required to obtain location</string>
+
+    <string name="pickup_here">Pickup here</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyC4fngsamEvebR4RPeb83BmgOjzu-R1pLo</string>
+    <string name="cannot_get_location">Cannot get your location</string>
+
+    <string name="channel_arrived">Arrived</string>
+    <string name="channel_arrived_descrition">Driver notifications</string>
+
+    <string name="could_not_login">Could not login</string>
+
+    <string name="device_not_supported">This device is not supported</string>
+    <string name="request_send">Request send</string>
+
+    <string name="sent_failed">Sent failed</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

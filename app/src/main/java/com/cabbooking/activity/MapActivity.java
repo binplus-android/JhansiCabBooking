@@ -1,13 +1,20 @@
 package com.cabbooking.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,43 +32,116 @@ import com.cabbooking.databinding.ActivityMainBinding;
 import com.cabbooking.databinding.ActivityMapBinding;
 import com.cabbooking.fragement.DestinationFragment;
 import com.cabbooking.fragement.HomeFragment;
+import com.cabbooking.messages.Errors;
+import com.cabbooking.messages.ShowMessage;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.CustomInfoWindow;
+import com.cabbooking.utils.Location;
 import com.cabbooking.utils.SessionManagment;
 
-public class MapActivity extends AppCompatActivity {
+import com.cabbooking.utils.locationListener;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnInfoWindowClickListener {
     Common common;
     ActivityMapBinding binding;
     SessionManagment sessionManagment;
-
+    private GoogleApiClient mGoogleApiClient;
+    private GoogleMap mMap;
+    Location location;
+    private Marker riderMarket, destinationMarker;
+    private Double currentLat, currentLng;
+    private String mPlaceLocation, mPlaceDestination;
+    private SupportMapFragment mapFragment;
+    private DatabaseReference driversAvailable;
+    private ArrayList<Marker> driverMarkers=new ArrayList<>();
+    private boolean pickupPlacesSelected=false;
+    private int radius=1, distance=1; // km
+    private static final int LIMIT=3;
+    private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
+    ActionBarDrawerToggle toggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         initView();
+        verifyGoogleAccount();
+        mapCode();
         allClick();
-        loadFragment(new DestinationFragment());
+        loadFragment(new HomeFragment());
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
                 if (fragment != null && fragment.getClass() != null) {
                     String frgmentName = fragment.getClass().getSimpleName();
-                     if(frgmentName.contains("DestinationFragment")) {
+                    if (frgmentName.contains("HomeFragment")) {
+                        binding.mytoolbar.setVisibility(View.VISIBLE);
+                        binding.linToolbar.setVisibility(View.VISIBLE);
+                        binding.linBackMain.setVisibility(View.GONE);
+                        binding.linOnlyBack.setVisibility(View.GONE);
+                        toggle.syncState();
+                        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+                        common.setMap(true,true,160,binding.mapContainer,
+                                binding.main.findViewById(R.id.lin_search));
+                        binding.main.setVisibility(View.VISIBLE);
+                    }
+                     else if(frgmentName.contains("DestinationFragment")) {
+                        binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
                         binding.linBackMain.setVisibility(View.VISIBLE);
                         binding.linOnlyBack.setVisibility(View.GONE);
                         // setMap(false);
-                         binding.map.setVisibility(View.GONE);
-                           }else {
-                         common.setMap(false,true,150,binding.map.findViewById(R.id.iv_map),binding.map.findViewById(R.id.lin_search));
+                         binding.main.setVisibility(View.GONE);
+                        common.setMap(false,false,160,binding.mapContainer,
+                                binding.main.findViewById(R.id.lin_search));
+                           }
+                     else {
+
+                        common.setMap(false,true,160,binding.mapContainer,
+                                binding.main.findViewById(R.id.lin_search));
                          binding.mytoolbar.setVisibility(View.GONE);
+                        binding.linToolbar.setVisibility(View.GONE);
                          binding.mytoolbar.setNavigationIcon(null);
                          binding.linBackMain.setVisibility(View.GONE);
                          binding.linOnlyBack.setVisibility(View.VISIBLE);
                         // setMap(false);
-                         binding.map.setVisibility(View.VISIBLE);
+                         binding.main.setVisibility(View.VISIBLE);
                      }
                 }
             }
@@ -69,6 +149,87 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
+    public void mapCode() {
+        location=new Location(this, new locationListener() {
+            @Override
+            public void locationResponse(LocationResult response) {
+                currentLat=response.getLastLocation().getLatitude();
+                currentLng=response.getLastLocation().getLongitude();
+                Common.currenLocation=new LatLng(currentLat,currentLng);
+                displayLocation();
+            }
+        });
+         mapFragment = SupportMapFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.map_container, mapFragment)
+                .commit();
+
+        mapFragment.getMapAsync(this);
+    }
+    public void displayLocation(){
+        if (currentLat!=null && currentLng!=null){
+            Log.d("jdsagd", "displayLocation: "+currentLat+"--"+currentLng);
+           loadAllAvailableDriver(new LatLng(currentLat, currentLng));
+
+        }
+        else{
+          //  ShowMessage.messageError(this, Errors.WITHOUT_LOCATION);
+        }
+
+    }
+    private void loadAllAvailableDriver(final LatLng location) {
+        for (Marker driverMarker:driverMarkers) {
+            driverMarker.remove();
+        }
+        driverMarkers.clear();
+        if(!pickupPlacesSelected) {
+            if (riderMarket != null)
+                riderMarket.remove();
+
+            riderMarket = mMap.addMarker(new MarkerOptions().position(location)
+                    .title("You")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_destination_marker)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+            String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
+            binding.tvAddress.setText(address);
+        }
+    }
+
+
+
+    public String getAddressFromLatLng(Activity context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                return address.getAddressLine(0); // Full address
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Address not found";
+    }
+
+    private void verifyGoogleAccount() {
+        GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleApiClient=new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        OptionalPendingResult<GoogleSignInResult> opr=Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        if (opr.isDone()){
+            GoogleSignInResult result= opr.get();
+
+        }else {
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                    //handleSignInResult(googleSignInResult);
+                }
+            });
+        }
+    }
     public void setTitle(String title){
          binding.tvTitle.setText(title);
     }
@@ -98,23 +259,19 @@ public class MapActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        binding.tvLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sessionManagment.logout(MapActivity.this);
+            }
+        });
+
     }
 
     @Override
     public void onBackPressed() {
-
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
-        if (fragment != null && fragment.getClass() != null) {
-            String frgmentName = fragment.getClass().getSimpleName();
-            if (frgmentName.contains("DestinationFragment")) {
-                Intent intent=new Intent(MapActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            else{
-                super.onBackPressed();
-            }
-        }
+    super.onBackPressed();
     }
 
     public void loadFragment(Fragment fragment) {
@@ -127,8 +284,80 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void initView() {
+
         sessionManagment=new SessionManagment(MapActivity.this);
         common=new Common(MapActivity.this);
+        setSupportActionBar(binding.mytoolbar);
+        toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.mytoolbar, R.string.drawer_open, R.string.drawer_close);
+        binding.drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        toggle.setDrawerIndicatorEnabled(false);
+        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+        binding.mytoolbar.setNavigationOnClickListener(view -> {
+            if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
+                binding.drawer.closeDrawer(GravityCompat.START);
+            } else {
+                binding.drawer.openDrawer(GravityCompat.START);
+            }
+        });
 
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if(!marker.getTitle().equals("You")){
+//            Intent intent=new Intent(MapActivity.this, CallDriverActivity.class);
+//            String ID= marker.getSnippet().replace("Driver ID: ", "");
+//            intent.putExtra("driverID", ID);
+//            intent.putExtra("lat", currentLat);
+//            intent.putExtra("lng", currentLng);
+//            startActivity(intent);
+        }
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.setInfoWindowAdapter(new CustomInfoWindow(this));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.uber_style_map));
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(destinationMarker!=null)
+                    destinationMarker.remove();
+                destinationMarker=mMap.addMarker(new MarkerOptions().position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_destination_marker))
+                        .title("Destination"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+            }
+        });
+        mMap.setOnInfoWindowClickListener(this);
+        displayLocation();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //displayLocation();
+        location.inicializeLocation();
+    }
+
 }

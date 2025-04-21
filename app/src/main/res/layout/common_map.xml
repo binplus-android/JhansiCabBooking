@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-        <ImageView
-            android:scaleType="fitXY"
-            android:id="@+id/iv_map"
-            android:src="@drawable/map_dummy"
-            android:layout_width="match_parent"
-            android:layout_height="130pt"/>
+    <ImageView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="180pt"
+       />
         <LinearLayout
             android:id="@+id/lin_search"
             android:layout_marginTop="1dp"

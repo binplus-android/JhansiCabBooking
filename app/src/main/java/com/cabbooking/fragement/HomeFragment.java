@@ -72,13 +72,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ArrayList<DestinationModel> list;
     DestinationHomeAdapter adapter;
     Common common;
-    String date = "";
-    String time = "";
-    String sel_date="";
     SessionManagment sessionManagment;
-
-
-
     private ActivityResultLauncher<String> locationPermissionLauncher;
 
     @Override
@@ -109,7 +103,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         return binding.getRoot();
     }
+    @Override
+    public void onResume() {
+        super.onResume();
 
+    }
     private void setupLocationPermissionLauncher() {
         locationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
@@ -270,9 +268,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
-            //common.switchFragment(new DestinationFragment());
-            Intent intent=new Intent(getActivity(), MapActivity.class);
-            startActivity(intent);
+            common.switchFragment(new DestinationFragment());
         } else if (v.getId() == R.id.lin_local) {
             sessionManagment.setValue(KEY_TYPE,"0");
             changeBackground(binding.linLocal, binding.linOutstation);
@@ -288,10 +284,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent=new Intent(getActivity(), MapActivity.class);
-                startActivity(intent);
+                common.switchFragment(new DestinationFragment());
             }
-        }, 400);
+        }, 200);
 
     }
 
@@ -328,10 +323,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         dialog.show ();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
+
 
     @SuppressLint("UseCompatLoadingForColorStateLists")
     private void changeBackground(LinearLayout green_lay, LinearLayout shadow_lay) {

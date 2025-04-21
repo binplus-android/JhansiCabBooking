@@ -217,7 +217,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     private void verifyOTP(String mobile, String otp) {
         sessionManagment.setLoginValue();
         sessionManagment.setValue(KEY_MOBILE,mobile);
-        Intent intent = new Intent(OTPActivity.this, MainActivity.class);
+        Intent intent = new Intent(OTPActivity.this, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

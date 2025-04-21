@@ -35,6 +35,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -49,6 +50,7 @@ import java.util.Date;
 public class Common {
     Context context;
     ToastMsg toastMsg;
+    public static LatLng currenLocation;
 
     public Common(Context context) {
         this.context = context;
@@ -138,7 +140,7 @@ public class Common {
         toastMsg.toastIconError(msg);
     }
 
-    public void setMap(Boolean is_search,boolean is_map,int size,ImageView img,LinearLayout lin_search  ){
+    public void setMap(Boolean is_search,boolean is_map,int size,FrameLayout img,LinearLayout lin_search  ){
 
         ViewGroup.LayoutParams params = img.getLayoutParams();
 
