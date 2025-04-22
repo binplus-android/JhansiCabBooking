@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Intent i = new Intent(LoginActivity.this, OTPActivity.class);
                             i.putExtra("mobile",number);
                             i.putExtra("otp",otp);
+                            i.putExtra("is_login","1");
                             startActivity(i);
                             finish();
 //                        }

@@ -19,16 +19,28 @@ import androidx.databinding.DataBindingUtil;
 
 import com.cabbooking.R;
 import com.cabbooking.databinding.ActivityOtpactivityBinding;
+import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
+import com.cabbooking.utils.LoadingBar;
+import com.cabbooking.utils.RetrofitClient;
 import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.SmsListener;
 import com.cabbooking.utils.SmsReceiver;
 import com.cabbooking.utils.ToastMsg;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class OTPActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityOtpactivityBinding binding;
@@ -36,9 +48,10 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     CountDownTimer cTimer ;
     long mTimeLeftInMillis = 60000;
     String number="",otpget="";
-    String msg_status="0";
+    String msg_status="0",is_login="";
     public static final String OTP_REGEX = "[0-9]{3,6}";
     SessionManagment sessionManagment;
+    LoadingBar loadingBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +75,12 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void initView() {
+        loadingBar=new LoadingBar(this);
         sessionManagment=new SessionManagment(this);
         common=new Common(this);
         number=getIntent ().getStringExtra ("mobile");
         otpget=getIntent ().getStringExtra ("otp");
+        is_login=getIntent().getStringExtra("is_login");
     }
 
     @Override
@@ -97,6 +112,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 //        LoginApi api = retrofit.create(LoginApi.class);
 //        JsonObject object = new JsonObject();
 //        object.addProperty("mobile_number",number);
+//        object.addProperty("is_login",is_login);
 //
 //        Call<JsonObject> call = api.resendOTP(Config.API_KEY, object);
 //
@@ -113,7 +129,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 //                            String message = responseBody.get("message").getAsString();
  //                           otpget = responseBody.get("otp").getAsString();
         otpget="123456";
-        String  message="OTP Verified successfull.";
+        String  message="OTP Resend Successfully.";
 
                             new ToastMsg(OTPActivity.this).toastIconSuccess(message);
                             setCounterTimer();
@@ -151,7 +167,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
             binding.otpView.requestFocus ();
         } else {
             if (etOtp.equals(otpget)) {
-                verifyOTP(number,etOtp);
+                callOtpApi(number,etOtp);
             } else{
                 common.errorToast (getString (R.string.OTP_wrong));
             }
@@ -214,16 +230,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 
     }
 
-    private void verifyOTP(String mobile, String otp) {
-        sessionManagment.setLoginValue();
-        sessionManagment.setValue(KEY_MOBILE,mobile);
-        Intent intent = new Intent(OTPActivity.this, MapActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
-    }
+
     public void gerenateOtp(){
         if(msg_status.equalsIgnoreCase("0")) {
             Handler handler = new Handler();
@@ -236,6 +243,72 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
         } else{
             getsmsOtp ();
         }
+    }
+
+    private void callOtpApi(String mobile,String otp)
+    {
+//        loadingBar.show();
+//        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
+//        Apis api = retrofit.create(Apis.class);
+//        JsonObject object = new JsonObject();
+//        JSONObject jsonObject = null;
+//        try {
+//                object.addProperty("mobile_number",mobile);
+//                object.addProperty("otp",otp);
+//                object.addProperty("is_login",is_login);
+//
+//        } catch (Exception e) {
+//          e.printStackTrace();
+//        }
+//
+//        Call<JsonObject> call = api.verifyOTP(object);
+//        call.enqueue(new Callback<JsonObject>() {
+//
+//
+//            @Override
+//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+//                loadingBar.dismiss();
+//
+//                try {
+//                    if (response.code() == 200 && response.body() != null) {
+//                        JsonObject responseBody = response.body();
+//                        Log.e("Response", responseBody.toString());
+//
+//                        if (responseBody.get("response").getAsBoolean()) { // Success status check
+//                            //  JsonObject data = responseBody.get("data").getAsJsonObject();
+//                            String message = responseBody.get("message").getAsString();
+//                            new ToastMsg(OTPActivity.this).toastIconSuccess(message);
+//                            JSONObject jsonObject=new JSONObject(String.valueOf(responseBody.getAsJsonObject("data").getAsJsonObject()));
+                            sessionManagment.setLoginValue();
+                            sessionManagment.setValue(KEY_MOBILE,mobile);
+                            Intent intent = new Intent(OTPActivity.this, MapActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+//                        }
+//                        else {
+//                            String message = responseBody.get("message").getAsString();
+//                            new ToastMsg(OTPActivity.this).toastIconError(message);
+//
+//                        }
+//                    } else {
+//                        Log.e("Error", "Response code: " + response.code());
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Log.e("Error", "Exception: " + e.getMessage());
+//                }
+//            }
+//            @Override
+//            public void onFailure(Call<JsonObject> call, Throwable t) {
+//                loadingBar.dismiss();
+//                new ToastMsg(OtpVerificationActivity.this).toastIconError(getString(R.string.error_toast));
+//            }
+//        });
+
+
     }
 
 }
