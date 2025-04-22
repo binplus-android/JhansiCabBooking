@@ -13,11 +13,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.LoginResp;
 import com.cabbooking.databinding.ActivityLoginBinding;
 import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.RetrofitClient;
 import com.cabbooking.utils.ToastMsg;
 import com.google.gson.JsonObject;
@@ -33,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ActivityLoginBinding binding;
     Common common;
     LoadingBar loadingBar;
+    Repository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         binding.linSignup.setOnClickListener(this);
     }
     public void initView() {
+        repository=new Repository(LoginActivity.this);
         loadingBar=new LoadingBar(this);
         common=new Common(this);
     }
@@ -73,57 +78,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     public void login(String number){
-      //  loadingBar.show();
-//        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
-//        Apis signUpApi = retrofit.create(Apis.class);
-//        JsonObject object = new JsonObject();
+//        JsonObject object=new JsonObject();
 //        object.addProperty("mobile",number);
-//        Call<JsonObject> call = signUpApi.userlogin(object);
-//        call.enqueue(new Callback<JsonObject>() {
+//        repository.callLoginApi(object, new ResponseService() {
 //            @Override
-//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-              // loadingBar.dismiss();
-//
+//            public void onResponse(Object data) {
 //                try {
-//                    if (response.code() == 200 && response.body() != null) {
-//                        JsonObject responseBody = response.body();
-//                        Log.e("Response", responseBody.toString());
-//
-//                        if (responseBody.get("response").getAsBoolean()) { // Success status check
-//                            Log.e("hhhhh", "onResponse: " + response.body());
-//                            JSONObject jsonObject=new JSONObject(String.valueOf(responseBody.getAsJsonObject("data").getAsJsonObject()));
-
-
-                            String otp = "123456";
-                            String message="OTP send successfully.";
-                            new ToastMsg(LoginActivity.this).toastIconSuccess(message);
-                            Intent i = new Intent(LoginActivity.this, OTPActivity.class);
-                            i.putExtra("mobile",number);
-                            i.putExtra("otp",otp);
-                            i.putExtra("is_login","1");
-                            startActivity(i);
-                            finish();
-//                        }
-//                        else {
-//
-//                            new ToastMsg(LoginActivity.this).toastIconError(responseBody.get("message").getAsString());
-//                        }
-//                    } else {
-//                        Log.e("Error", "Response code: " + response.code());
+//                    LoginResp resp = (LoginResp) data;
+//                    Log.e("callLoginApi ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        LoginResp.RecordList recordList = resp.getRecordList();
+//                      String user_id = String.valueOf(recordList.id);
+ //                       common.successToast(resp.getMessage ());
+                        String otp = "123456";
+                        String message="OTP send successfully.";
+                        new ToastMsg(LoginActivity.this).toastIconSuccess(message);
+                        Intent i = new Intent(LoginActivity.this, OTPActivity.class);
+                        i.putExtra("mobile",number);
+                        i.putExtra("otp",otp);
+                        i.putExtra("is_login","1");
+                        startActivity(i);
+                        finish();
+//                    }else{
+//                        common.errorToast(resp.getError());
 //                    }
 //                } catch (Exception e) {
 //                    e.printStackTrace();
-//                    Log.e("Error", "Exception: " + e.getMessage());
 //                }
 //            }
 //            @Override
-//            public void onFailure(Call<JsonObject> call, Throwable t) {
-//                loadingBar.dismiss();
-//                new ToastMsg(LoginActivity.this).toastIconError(getString(R.string.error_toast));
+//            public void onServerError(String errorMsg) {
+//                Log.e("errorMsg",errorMsg);
 //            }
-//        });
-
-
+//        }, true);
 
     }
 }

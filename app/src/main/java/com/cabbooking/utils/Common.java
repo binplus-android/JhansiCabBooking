@@ -1,13 +1,19 @@
 package com.cabbooking.utils;
 
+import static android.content.ContentValues.TAG;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -34,10 +40,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,11 +63,94 @@ public class Common {
     Context context;
     ToastMsg toastMsg;
     public static LatLng currenLocation;
+    SessionManagment sessionManagment;
+    Repository repository;
+     String deviceId = "";
+
 
     public Common(Context context) {
         this.context = context;
         toastMsg = new ToastMsg(context);
-        //sessionManagment=new SessionManagment(context);
+        sessionManagment=new SessionManagment(context);
+        repository = new Repository(context);
+    }
+    public void repositoryResponseCode(int code){
+        switch (code) {
+            case 401:
+                // Handle unauthorized access
+                commonTokenExpiredLogout(new Activity());
+                break;
+        }
+    }
+    public String getDeviceId(){
+        try {
+            deviceId = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return deviceId;
+    }
+//    public void logoutUser(Activity activity) {
+//        sessionManagment = new SessionManagment(context);
+//        if (!sessionManagment.getUserDetails().get(KEY_ID).isEmpty()) {
+//            JsonObject object = new JsonObject();
+//            object.addProperty("id", sessionManagment.getUserDetails().get(KEY_ID));
+//
+//            repository.callLogout(object, new ResponseService() {
+//                @Override
+//                public void onResponse(Object data) {
+//                    try {
+//                        CommonResp resp = (CommonResp) data;
+//                        Log.e("callAddWaitListAPI ", resp.toString());
+//                        errorToast("Session Out");
+//                        sessionManagment.logout(context);
+//                        unSubscribeToTopic();
+//                        Intent intent = new Intent(context, LoginActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        context.startActivity(intent);
+//                        activity.finish();
+////                    if (resp.getStatus()==200) {
+////                        ZIMKit.disconnectUser();
+////                        errorToast("Session Out");
+////                        sessionMangement.logout();
+////                        Intent intent=new Intent (context, LoginActivity.class );
+////                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+////                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+////                        intent.putExtra("page","login");
+////                        context.startActivity(intent);
+////                        activity.finish();
+////                    }else{
+////                        errorToast(resp.getError());
+////                    }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                @Override
+//                public void onServerError(String errorMsg) {
+//                    Log.e("errorMsg", errorMsg);
+//                    errorToast("Session Out");
+//                    sessionManagment.logout(context);
+//                    unSubscribeToTopic();
+//                    Intent intent = new Intent(context, LoginActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                    intent.putExtra("page", "login");
+//                    context.startActivity(intent);
+//                    activity.finish();
+//                }
+//            }, true);
+//        }
+//    }
+    public void commonTokenExpiredLogout(Activity activity){
+        unSubscribeToTopic();
+        sessionManagment.logout(activity);
     }
     public boolean isValidEmailAddress(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
@@ -273,4 +368,37 @@ public class Common {
 
         });
     }
+
+    public void unSubscribeToTopic(){
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d(TAG, msg);
+//                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+
+    public void subscribeToTopic(){
+        FirebaseMessaging.getInstance().subscribeToTopic("user")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d(TAG, msg);
+//                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

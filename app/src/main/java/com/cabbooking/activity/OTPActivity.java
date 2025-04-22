@@ -279,14 +279,23 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 //                            String message = responseBody.get("message").getAsString();
 //                            new ToastMsg(OTPActivity.this).toastIconSuccess(message);
 //                            JSONObject jsonObject=new JSONObject(String.valueOf(responseBody.getAsJsonObject("data").getAsJsonObject()));
-                            sessionManagment.setLoginValue();
-                            sessionManagment.setValue(KEY_MOBILE,mobile);
-                            Intent intent = new Intent(OTPActivity.this, MapActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            startActivity(intent);
-                            finish();
+                            if(is_login.equalsIgnoreCase("0")){
+                                Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                startActivity(intent);
+                                finish();
+                            }else {
+                                sessionManagment.setLoginValue();
+                                sessionManagment.setValue(KEY_MOBILE, mobile);
+                                Intent intent = new Intent(OTPActivity.this, MapActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                startActivity(intent);
+                                finish();
+                            }
 //                        }
 //                        else {
 //                            String message = responseBody.get("message").getAsString();

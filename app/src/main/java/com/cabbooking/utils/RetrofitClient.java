@@ -1,5 +1,9 @@
 package com.cabbooking.utils;
 
+import static com.cabbooking.utils.SessionManagment.KEY_TOKEN;
+import static com.cabbooking.utils.SessionManagment.KEY_TOKEN_TYPE;
+
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
@@ -17,27 +21,28 @@ public class RetrofitClient {
 
 
 
-    public static final String BASE_URL = "";
+    public static final String BASE_URL="https://jhansicab.anshuwap.com/api/user/";
+    public static final String IMAGE_BASE_URL="hhttps://jhansicab.anshuwap.com/";
     public static String ApiUserId="",ApiKey="";
     private static Retrofit retrofit;
 
 
 
-    public static Retrofit getRetrofitInstance() {
+    public static Retrofit getRetrofitInstance(Context context) {
         OkHttpClient.Builder builder=new OkHttpClient.Builder();
         HttpLoggingInterceptor interceptor=new HttpLoggingInterceptor();
 
         builder.addInterceptor(new Interceptor() {
             @Override public Response intercept(Chain chain) throws IOException {
+                String tokenType = ((new SessionManagment(context).getUserDetails().get(KEY_TOKEN_TYPE) == "") || (new SessionManagment(context).getUserDetails().get(KEY_TOKEN_TYPE) == null) ? "Bearer" : new SessionManagment(context).getUserDetails().get(KEY_TOKEN_TYPE));
+                String token = ((new SessionManagment(context).getUserDetails().get(KEY_TOKEN) == "") || (new SessionManagment(context).getUserDetails().get(KEY_TOKEN) == null) ? "invalid token" : new SessionManagment(context).getUserDetails().get(KEY_TOKEN));
 
-                String str = ApiUserId+":"+ApiKey;
-                String header = "Basic "+ Base64.encodeToString(str.getBytes(), Base64.NO_WRAP);
-                Log.e("dcfvgbhj",header);
                 Request request;
 
                 request = chain.request().newBuilder()
-                        .addHeader("authorization", header)
-                        .addHeader("Content-Type", "application/json").
+                        .addHeader("Authorization", tokenType + " " + token)
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "application/json").
                         addHeader("Accept-Language", "en").build();
 
 

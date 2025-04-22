@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         sessionManagment=new SessionManagment(MainActivity.this);
         common=new Common(MainActivity.this);
+        common.subscribeToTopic();
         setSupportActionBar(binding.appBar.findViewById(R.id.mytoolbar));
          mytoolbar=binding.appBar.findViewById(R.id.mytoolbar);
          lin_toolbar=binding.appBar.findViewById(R.id.lin_toolbar);

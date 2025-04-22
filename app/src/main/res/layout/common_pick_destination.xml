@@ -61,7 +61,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/space_5"
                         android:gravity="center_vertical"
-                        android:text="@string/address"
+                        android:text=""
                         />
 
                     <ImageView
@@ -95,7 +95,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/space_5"
                         android:gravity="center_vertical"
-                        android:text="@string/address" />
+                        android:text="" />
 
                     <ImageView
                         android:id="@+id/iv_destination"

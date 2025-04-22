@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.cabbooking.activity.LoginActivity;
 
+import java.util.HashMap;
+
 
 public class SessionManagment {
     Context context;
@@ -21,6 +23,11 @@ public class SessionManagment {
     public static String KEY_TYPE="type";
     public static String KEY_OUTSTATION_TYPE="outstation_type";
     String LOGIN = "login";
+    public static final String IS_LOGIN_SUCCESS="is_login_success";
+    public static final String KEY_TOKEN="token";
+    public static final String KEY_REFERCODE="refercode";
+    public static final String KEY_TOKEN_TYPE="tokenType";
+
 
 
     public SessionManagment(Context context) {
@@ -29,6 +36,25 @@ public class SessionManagment {
         editor = prefs.edit();
 
     }
+    public void createLoginSession(String id, String token, String token_type,String refer_code) {
+        editor.putBoolean(LOGIN, true);
+        editor.putString(KEY_ID, id);
+        editor.putString(KEY_TOKEN, token);
+        editor.putString (KEY_REFERCODE, refer_code);
+        editor.putString(KEY_TOKEN_TYPE, token_type);
+        editor.commit();
+    }
+
+    public HashMap<String, String> getUserDetails() {
+        HashMap<String, String> user = new HashMap<String, String>();
+
+        user.put(KEY_ID, prefs.getString(KEY_ID, ""));
+        user.put(KEY_TOKEN, prefs.getString(KEY_TOKEN, ""));
+        user.put(KEY_TOKEN_TYPE, prefs.getString(KEY_TOKEN_TYPE, ""));
+        user.put(KEY_REFERCODE, prefs.getString(KEY_REFERCODE, ""));
+        return user;
+    }
+
     public void setValue(String key,String value) {
         editor.putString(key, value);
         editor.apply();

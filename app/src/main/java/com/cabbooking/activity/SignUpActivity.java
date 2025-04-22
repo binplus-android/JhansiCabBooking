@@ -157,6 +157,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         tvCheck.setHighlightColor(Color.TRANSPARENT);
     }
 
+
+
     private void Signup(String number,String name,String email) {
 //        loadingBar.show();
 //        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
@@ -183,10 +185,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             String otp = "123456";
                             String message="OTP send successfully.";
                             new ToastMsg(SignUpActivity.this).toastIconSuccess(message);
+
                             Intent i = new Intent(SignUpActivity.this, OTPActivity.class);
                             i.putExtra("mobile",number);
                             i.putExtra("otp",otp);
-        i.putExtra("is_login","1");
+                         i.putExtra("is_login","1");
                             startActivity(i);
                             finish();
 //                        }

@@ -95,6 +95,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int LIMIT=3;
     private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
+    TextView tvpick,tvDestination;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +204,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
             binding.tvAddress.setText(address);
+
+
+            tvpick.setText(address);
         }
     }
 
@@ -291,6 +295,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setSupportActionBar(binding.mytoolbar);
         toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.mytoolbar, R.string.drawer_open, R.string.drawer_close);
         binding.drawer.addDrawerListener(toggle);
+        tvpick=binding.commonAddress.findViewById(R.id.tv_pick);
+        tvDestination=binding.commonAddress.findViewById(R.id.tv_desctination);
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
         binding.mytoolbar.setNavigationIcon(R.drawable.menu);
@@ -355,6 +361,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                         .title("Destination"));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                tvDestination.setText(address);
             }
         });
         mMap.setOnInfoWindowClickListener(this);
