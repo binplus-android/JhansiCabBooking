@@ -152,14 +152,14 @@ public class PaymentFragment extends Fragment {
     public void initView() {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
-        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
+
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){
-            binding.linAddress.setVisibility(View.VISIBLE);
+            ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
             if(outstation_type.equalsIgnoreCase("1")){
                 binding.relReturnDate.setVisibility(View.VISIBLE);
             }
@@ -167,7 +167,7 @@ public class PaymentFragment extends Fragment {
                 binding.relReturnDate.setVisibility(View.GONE);
             }
         }else{
-            binding.linAddress.setVisibility(View.GONE);
+            ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
             binding.relReturnDate.setVisibility(View.GONE);
         }
 
