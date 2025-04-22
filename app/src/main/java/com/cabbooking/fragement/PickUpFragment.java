@@ -78,6 +78,7 @@ public class PickUpFragment extends Fragment {
     public void initView() {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
 
     }
 

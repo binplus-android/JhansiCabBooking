@@ -249,18 +249,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding.ivBackarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
-                if (fragment != null && fragment.getClass() != null) {
-                    String frgmentName = fragment.getClass().getSimpleName();
-                    if (frgmentName.contains("DestinationFragment")) {
-                        Intent intent=new Intent(MapActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else{
-                        onBackPressed();
-                    }
-                }
+                onBackPressed();
+
 
             }
         }); 
@@ -369,6 +359,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
         mMap.setOnInfoWindowClickListener(this);
         displayLocation();
+    }
+    public void showCommonPickDestinationArea(boolean status,boolean is_close){
+       if(status){
+           binding.commonAddress.setVisibility(View.VISIBLE);
+           if(is_close){
+               binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.VISIBLE);
+               binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.VISIBLE);
+           }
+           else{
+               binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
+               binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
+           }
+       }
+       else{
+           binding.commonAddress.setVisibility(View.GONE);
+       }
     }
 
     @Override

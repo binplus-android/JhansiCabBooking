@@ -94,6 +94,7 @@ public class RideFragment extends Fragment {
     public void initView() {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment = new SessionManagment(getActivity());

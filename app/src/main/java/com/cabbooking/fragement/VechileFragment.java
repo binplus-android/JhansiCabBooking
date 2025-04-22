@@ -131,6 +131,7 @@ public class VechileFragment extends Fragment {
         sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         list = new ArrayList<>();
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(trip_type.equalsIgnoreCase("1")){

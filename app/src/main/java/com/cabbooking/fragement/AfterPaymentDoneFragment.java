@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cabbooking.R;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentAfterPaymentDoneBinding;
 import com.cabbooking.databinding.FragmentPaymentBinding;
 import com.cabbooking.utils.SessionManagment;
@@ -58,6 +59,7 @@ public class AfterPaymentDoneFragment extends Fragment {
     }
 
     private void initView() {
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);

@@ -152,6 +152,7 @@ public class PaymentFragment extends Fragment {
     public void initView() {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());

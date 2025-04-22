@@ -258,6 +258,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initView() {
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         sessionManagment=new SessionManagment(getActivity());
         sessionManagment.setValue(KEY_TYPE,"0");
         common = new Common(getActivity());

@@ -89,6 +89,7 @@ public class DestinationFragment extends Fragment {
     public void initView() {
         common=new Common(getActivity());
         ((MapActivity)getActivity()).setTitle("Destination");
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,true);
         list=new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
 
