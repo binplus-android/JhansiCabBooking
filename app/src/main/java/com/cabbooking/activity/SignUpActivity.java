@@ -3,7 +3,6 @@ package com.cabbooking.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -14,37 +13,29 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.LoginResp;
 import com.cabbooking.databinding.ActivitySignUpBinding;
-import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
-import com.cabbooking.utils.RetrofitClient;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.ToastMsg;
 import com.google.gson.JsonObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
     ActivitySignUpBinding binding;
     Common common;
     LoadingBar loadingBar;
     SessionManagment sessionManagment;
+    Repository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +53,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void initView() {
+        repository=new Repository(this);
         sessionManagment=new SessionManagment(this);
         loadingBar=new LoadingBar(this);
         common = new Common(this);
@@ -88,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         String name = binding.etName.getText().toString();
                         String number = binding.etMob.getText().toString();
                         String email = binding.etEmail.getText().toString();
-                        Signup(number,name,email);
+                        signUp(number,name,email);
                     }
                 }
                 else {
@@ -100,7 +92,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         String name = binding.etName.getText().toString();
                         String number = binding.etMob.getText().toString();
                         String email = binding.etEmail.getText().toString();
-                     Signup(number,name,email);
+                     signUp(number,name,email);
                     }
                 }
             } else {
@@ -158,60 +150,41 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-
-    private void Signup(String number,String name,String email) {
-//        loadingBar.show();
-//        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
-//        Apis signUpApi = retrofit.create(Apis.class);
-//        JsonObject object = new JsonObject();
-//        object.addProperty("name",name);
-//        object.addProperty("mobile_number",mobile);
-//        object.addProperty("email",email);
-//        Call<JsonObject> call = signUpApi.user_register(object);
-//        call.enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-//                loadingBar.dismiss();
-//
-//                try {
-//                    if (response.code() == 200 && response.body() != null) {
-//                        JsonObject responseBody = response.body();
-//                        Log.e("Response", responseBody.toString());
-//
-//                        if (responseBody.get("response").getAsBoolean()) { // Success status check
-//                            Log.e("hhhhh", "onResponse: " + response.body());
-//
-//                            new ToastMsg(RegistrationActivity.this).toastIconSuccess(responseBody.get("message").getAsString());
-                            String otp = "123456";
-                            String message="OTP send successfully.";
-                            new ToastMsg(SignUpActivity.this).toastIconSuccess(message);
-
-                            Intent i = new Intent(SignUpActivity.this, OTPActivity.class);
-                            i.putExtra("mobile",number);
-                            i.putExtra("otp",otp);
-                         i.putExtra("is_login","1");
-                            startActivity(i);
-                            finish();
-//                        }
-//                        else {
-//
-//                            new ToastMsg(SignUpActivity.this).toastIconError(responseBody.get("message").getAsString());
-//                        }
-//                    } else {
-//                        Log.e("Error", "Response code: " + response.code());
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.e("Error", "Exception: " + e.getMessage());
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<JsonObject> call, Throwable t) {
-//                loadingBar.dismiss();
-//                new ToastMsg(SignUpActivity.this).toastIconError(getString(R.string.error_toast));
-//            }
-//        });
-
+    public void signUp(String number,String name,String email){
+        JsonObject object=new JsonObject();
+        object.addProperty("contactNo",number);
+        repository.callSignUpApi(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    LoginResp resp = (LoginResp) data;
+                    Log.e("callSignupApi ",data.toString());
+                    if (resp.getStatus()==200) {
+                        LoginResp.RecordList recordList = resp.getRecordList();
+                        common.successToast(resp.getMessage ());
+                        JsonObject respObj=new JsonObject();
+                        respObj.addProperty("mobile",number);
+                        respObj.addProperty("otp",recordList.getOtp());
+                        respObj.addProperty("is_login","0");
+                        respObj.addProperty("name",name);
+                        respObj.addProperty("email",email);
+                        Intent i = new Intent(SignUpActivity.this, OTPActivity.class);;
+                        i.putExtra("respobj",respObj.toString());
+                        startActivity(i);
+                        finish();
+                    }else{
+                        common.errorToast(resp.getMessage());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
     }
+
 
 }

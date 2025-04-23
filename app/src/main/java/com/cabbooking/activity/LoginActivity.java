@@ -78,39 +78,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     public void login(String number){
-//        JsonObject object=new JsonObject();
-//        object.addProperty("mobile",number);
-//        repository.callLoginApi(object, new ResponseService() {
-//            @Override
-//            public void onResponse(Object data) {
-//                try {
-//                    LoginResp resp = (LoginResp) data;
-//                    Log.e("callLoginApi ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        LoginResp.RecordList recordList = resp.getRecordList();
-//                      String user_id = String.valueOf(recordList.id);
- //                       common.successToast(resp.getMessage ());
-                        String otp = "123456";
-                        String message="OTP send successfully.";
+        JsonObject object=new JsonObject();
+        object.addProperty("contactNo",number);
+        repository.callLoginApi(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    LoginResp resp = (LoginResp) data;
+                    Log.e("callLoginApi ",data.toString());
+                    if (resp.getStatus()==200) {
+                        LoginResp.RecordList recordList = resp.getRecordList();
+                        common.successToast(resp.getMessage ());
+                        String message=resp.getMessage();
                         new ToastMsg(LoginActivity.this).toastIconSuccess(message);
+                        JsonObject respObj=new JsonObject();
+                        respObj.addProperty("mobile",number);
+                        respObj.addProperty("otp",recordList.getOtp());
+                        respObj.addProperty("is_login","1");
                         Intent i = new Intent(LoginActivity.this, OTPActivity.class);
-                        i.putExtra("mobile",number);
-                        i.putExtra("otp",otp);
-                        i.putExtra("is_login","1");
+                        i.putExtra("respobj",respObj.toString());
                         startActivity(i);
                         finish();
-//                    }else{
-//                        common.errorToast(resp.getError());
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            @Override
-//            public void onServerError(String errorMsg) {
-//                Log.e("errorMsg",errorMsg);
-//            }
-//        }, true);
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
 
     }
 }

@@ -13,10 +13,9 @@ public interface Apis {
 
     @POST("login")
     Call<LoginResp> login(@Body  JsonObject jsonObject);// commom for login and registration
-    @POST("user_register")
-    Call<JsonObject> user_register(
-            @Body JsonObject jsonObject);
-    @POST("OTP_VERIFICATION")
+    @POST("signUp")
+    Call<LoginResp> signUp(@Body JsonObject jsonObject);
+    @POST("verifyOtp")
     Call<OTPverificatioResp> OtpVerification(@Body  JsonObject jsonObject);// commom for login and registration
 
 

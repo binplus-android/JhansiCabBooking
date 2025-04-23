@@ -18,11 +18,15 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.databinding.ActivityOtpactivityBinding;
 import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.RetrofitClient;
 import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.SmsListener;
@@ -49,6 +53,8 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     long mTimeLeftInMillis = 60000;
     String number="",otpget="";
     String msg_status="0",is_login="";
+    Repository repository;
+    String name="",email="";
     public static final String OTP_REGEX = "[0-9]{3,6}";
     SessionManagment sessionManagment;
     LoadingBar loadingBar;
@@ -75,12 +81,26 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void initView() {
+        repository=new Repository(this);
         loadingBar=new LoadingBar(this);
         sessionManagment=new SessionManagment(this);
         common=new Common(this);
-        number=getIntent ().getStringExtra ("mobile");
-        otpget=getIntent ().getStringExtra ("otp");
-        is_login=getIntent().getStringExtra("is_login");
+
+        String jsonString=getIntent().getStringExtra("respobj");
+        try {
+            JSONObject receivedJson = new JSONObject(jsonString);
+            number=receivedJson.getString("mobile");
+            otpget=receivedJson.getString("otp");
+            is_login=receivedJson.getString("is_login");
+            if(is_login.equalsIgnoreCase("0")){
+                name=receivedJson.getString("name");
+                email=receivedJson.getString("email");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -107,54 +127,67 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
         resendOTP();
     }
     private void resendOTP() {
-//        loadingBar.show();
-//        Retrofit retrofit = RetrofitClient.getRetrofitInstanceNewWork();
-//        LoginApi api = retrofit.create(LoginApi.class);
-//        JsonObject object = new JsonObject();
-//        object.addProperty("mobile_number",number);
-//        object.addProperty("is_login",is_login);
-//
-//        Call<JsonObject> call = api.resendOTP(Config.API_KEY, object);
-//
-//        call.enqueue(new Callback<JsonObject>() {
-//            @Override
-//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-//                loadingBar.dismiss();
-//                try {
-//                    if (response.code() == 200 && response.body() != null) {
-//                        JsonObject responseBody = response.body();
-//                        Log.e("Response", responseBody.toString());
-//
-//                        if (responseBody.get("response").getAsBoolean()) { // Success status check
-//                            String message = responseBody.get("message").getAsString();
- //                           otpget = responseBody.get("otp").getAsString();
-        otpget="123456";
-        String  message="OTP Resend Successfully.";
+     if(is_login.equalsIgnoreCase("1")) {
+    JsonObject object = new JsonObject();
+    object.addProperty("contactNo", number);
+    repository.callLoginApi(object, new ResponseService() {
+        @Override
+        public void onResponse(Object data) {
+            try {
+                LoginResp resp = (LoginResp) data;
+                Log.e("callLoginApi ", data.toString());
+                if (resp.getStatus() == 200) {
+                    LoginResp.RecordList recordList = resp.getRecordList();
+                    otpget = recordList.getOtp();
+                    common.successToast(resp.getMessage ());
+                    setCounterTimer();
+                    gerenateOtp();
+                } else {
+                    common.errorToast(resp.getError());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-                            new ToastMsg(OTPActivity.this).toastIconSuccess(message);
-                            setCounterTimer();
-                            gerenateOtp();
+        @Override
+        public void onServerError(String errorMsg) {
+            Log.e("errorMsg", errorMsg);
+        }
+    }, true);
+}
+else{
+    JsonObject object=new JsonObject();
+    object.addProperty("contactNo",number);
+    repository.callSignUpApi(object, new ResponseService() {
+        @Override
+        public void onResponse(Object data) {
+            try {
+                LoginResp resp = (LoginResp) data;
+                Log.e("callSignupApi ",data.toString());
+                if (resp.getStatus()==200) {
+                    LoginResp.RecordList recordList = resp.getRecordList();
+                    common.successToast(resp.getMessage ());
+                    otpget = recordList.getOtp();
+                    common.successToast(resp.getMessage ());
+                    setCounterTimer();
+                    gerenateOtp();
+                }else{
+                    common.errorToast(resp.getMessage());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        public void onServerError(String errorMsg) {
+            Log.e("errorMsg",errorMsg);
+        }
+    }, true);
+}
 
-//                        } else {
-//                            String message = responseBody.get("message").getAsString();
-//                            new ToastMsg(OtpVerificationActivity.this).toastIconSuccess(message);
+
 //
-//                            Log.e("Error", "Response status is false.");
-//                        }
-//                    } else {
-//                        Log.e("Error", "Response code: " + response.code());
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.e("Error", "Exception: " + e.getMessage());
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<JsonObject> call, Throwable t) {
-//                loadingBar.dismiss();
-//                new ToastMsg(OtpVerificationActivity.this).toastIconError(getString(R.string.error_toast));
-//            }
-//        });
     }
 
     public void onValidation() {
@@ -247,76 +280,58 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
 
     private void callOtpApi(String mobile,String otp)
     {
-//        loadingBar.show();
-//        Retrofit retrofit = RetrofitClient.getRetrofitInstance();
-//        Apis api = retrofit.create(Apis.class);
-//        JsonObject object = new JsonObject();
-//        JSONObject jsonObject = null;
-//        try {
-//                object.addProperty("mobile_number",mobile);
-//                object.addProperty("otp",otp);
-//                object.addProperty("is_login",is_login);
-//
-//        } catch (Exception e) {
-//          e.printStackTrace();
-//        }
-//
-//        Call<JsonObject> call = api.verifyOTP(object);
-//        call.enqueue(new Callback<JsonObject>() {
-//
-//
-//            @Override
-//            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-//                loadingBar.dismiss();
-//
-//                try {
-//                    if (response.code() == 200 && response.body() != null) {
-//                        JsonObject responseBody = response.body();
-//                        Log.e("Response", responseBody.toString());
-//
-//                        if (responseBody.get("response").getAsBoolean()) { // Success status check
-//                            //  JsonObject data = responseBody.get("data").getAsJsonObject();
-//                            String message = responseBody.get("message").getAsString();
-//                            new ToastMsg(OTPActivity.this).toastIconSuccess(message);
-//                            JSONObject jsonObject=new JSONObject(String.valueOf(responseBody.getAsJsonObject("data").getAsJsonObject()));
-                            if(is_login.equalsIgnoreCase("0")){
-                                Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                startActivity(intent);
-                                finish();
-                            }else {
-                                sessionManagment.setLoginValue();
-                                sessionManagment.setValue(KEY_MOBILE, mobile);
-                                Intent intent = new Intent(OTPActivity.this, MapActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                startActivity(intent);
-                                finish();
-                            }
-//                        }
-//                        else {
-//                            String message = responseBody.get("message").getAsString();
-//                            new ToastMsg(OTPActivity.this).toastIconError(message);
-//
-//                        }
-//                    } else {
-//                        Log.e("Error", "Response code: " + response.code());
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.e("Error", "Exception: " + e.getMessage());
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<JsonObject> call, Throwable t) {
-//                loadingBar.dismiss();
-//                new ToastMsg(OtpVerificationActivity.this).toastIconError(getString(R.string.error_toast));
-//            }
-//        });
 
+        JsonObject object=new JsonObject();
+        object.addProperty("contactNo",mobile);
+        object.addProperty("otp",otp);
+        object.addProperty("isLogin",is_login);
+
+        if(is_login.equalsIgnoreCase("0")) {
+            if (!email.equalsIgnoreCase("")) {
+                object.addProperty("email", email);
+            }
+            object.addProperty("name", name);
+            object.addProperty("referral_code","");
+        }
+
+
+        repository.getOtpApi(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    OTPverificatioResp resp = (OTPverificatioResp) data;
+                   // sessionManagment.createLoginSession(user_id, resp.getToken(),resp.getToken_type(),refercode);
+                    Log.e("callOtpApi ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        if(is_login.equalsIgnoreCase("0")){
+//                            Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                            startActivity(intent);
+//                            finish();
+//                        }else {
+//                            sessionManagment.setLoginValue();
+//                            sessionManagment.setValue(KEY_MOBILE, mobile);
+//                            Intent intent = new Intent(OTPActivity.this, MapActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//                    }else{
+//                        common.errorToast(resp.getMessage());
+//                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
 
     }
 

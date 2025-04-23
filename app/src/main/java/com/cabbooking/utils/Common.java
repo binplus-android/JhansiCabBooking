@@ -65,7 +65,7 @@ public class Common {
     public static LatLng currenLocation;
     SessionManagment sessionManagment;
     Repository repository;
-     String deviceId = "";
+     String deviceId = "", fcmToken = "";;
 
 
     public Common(Context context) {
@@ -90,6 +90,30 @@ public class Common {
             e.printStackTrace();
         }
         return deviceId;
+    }
+    public String getFcmToken(){
+        try {
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            if (task!=null) {
+                                if (task.getResult()!=null)
+                                    fcmToken = task.getResult();
+                                }
+
+
+                        }
+                    });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return fcmToken;
     }
 //    public void logoutUser(Activity activity) {
 //        sessionManagment = new SessionManagment(context);
