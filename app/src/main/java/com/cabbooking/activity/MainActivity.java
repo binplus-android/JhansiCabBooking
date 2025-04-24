@@ -1,9 +1,14 @@
 package com.cabbooking.activity;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         binding.tvLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sessionManagment.logout(MainActivity.this);
+               showLogoutDialog();
             }
         });
         binding.appBar.findViewById(R.id.iv_backarrow).setOnClickListener(new View.OnClickListener() {
@@ -139,5 +144,38 @@ public class MainActivity extends AppCompatActivity {
                 binding.drawer.openDrawer(GravityCompat.START);
             }
         });
+    }
+
+    private void showLogoutDialog()
+    {
+        Dialog dialog;
+
+        dialog = new Dialog (MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_logout);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
+
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+            }
+        });
+
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+                sessionManagment.logout(MainActivity.this);
+            }
+        });
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
     }
 }

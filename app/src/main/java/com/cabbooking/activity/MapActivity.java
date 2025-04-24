@@ -1,15 +1,27 @@
 package com.cabbooking.activity;
 
+import static com.cabbooking.utils.RetrofitClient.BASE_URL;
+
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +29,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -96,6 +109,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
+    String sharelink=BASE_URL;
+    int is_forced=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +164,85 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
+   //     common.getAppSettingData(new OnConfig() {
+            //            @Override
+//            public void getAppSettingData(AppSettingModel model) {
+//        try {
+//            PackageInfo pInfo = getPackageManager ( ).getPackageInfo (MainActivity.this.getPackageName ( ), 0);
+//            version_code = pInfo.versionCode;
+//            if (version_code  < ver_code) {
+               callVersionDialog();
+//            }
+
+//          }
+//        catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace ( );
+//        }
+//        });
+    }
+
+    public void callVersionDialog() {
+        Dialog dialog;
+        dialog = new Dialog (this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_update_version);
+        Button btn_leave,btn_stay;
+        TextView tv_cancel,tv_message;
+        btn_stay=dialog.findViewById (R.id.update);
+        btn_leave=dialog.findViewById (R.id.cancel);
+        tv_cancel=dialog.findViewById (R.id.tv_cancel);
+        tv_message=dialog.findViewById (R.id.tv_message);
+        btn_stay.setText (getString (R.string.Update_Now));
+        tv_cancel.setText (getString (R.string.update_Available));
+        tv_message.setText (getString (R.string.a_new_version_of_the_app));
+
+        if (is_forced == 0) {
+            btn_leave.setText (getString (R.string.update_Later));
+
+        } else if (is_forced == 1) {
+            btn_leave.setText (getString (R.string.No_Thanks));
+
+        }
+
+        btn_leave.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+
+                if (is_forced == 0) {
+                    dialog.dismiss ( );
+
+                } else if (is_forced == 1) {
+                    dialog.dismiss ( );
+                    finishAffinity ( );
+                }
+            }
+        });
+
+        btn_stay.setOnClickListener (new View.OnClickListener ( ) {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                    intent.setData (Uri.parse (sharelink));
+                    startActivity (intent);
+                }catch (Exception e){
+                    e.printStackTrace ();
+                }
+            }
+        });
+        dialog.show ( );
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.setCancelable (false);
+
+        if (is_forced == 2) {
+            dialog.dismiss();
+        }
+
 
     }
 

@@ -71,7 +71,8 @@
     <string name="allow">Allow</string>
     <string name="leaving_so_soon">Leaving so soon ?</string>
     <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
-    <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access your location while you use the app?</string>-->
+    <string name="are_you_sure_you_want_to_logout_this_app">Are you sure you want to logout this application?</string>
+    <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -97,5 +98,10 @@
 
     <string name="sent_failed">Sent failed</string>
     <string name="error_toast">Something went wrong ! try later</string>
+    <string name="Update_Now">Update Now</string>
+    <string name="a_new_version_of_the_app">A new version of the app is now available </string>
+    <string name="update_Available">Update Available</string>
+    <string name="update_Later">Update Later</string>
+    <string name="No_Thanks">No Thanks</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
