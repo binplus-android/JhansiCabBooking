@@ -5,31 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:id="@+id/rel_top"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_5"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardBackgroundColor="@color/white">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/cell_padding_vertical"
+        android:paddingHorizontal="@dimen/space_10">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_12">
-
-                <LinearLayout
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_cancel"
                         android:textSize="@dimen/space_9"
                         style="@style/TextViewExtraSemBold"
                         android:layout_width="match_parent"
@@ -40,6 +31,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/tv_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Updated Version of this app is available . We recommend you to update"
@@ -85,9 +77,5 @@
                             />
                     </LinearLayout>
                 </LinearLayout>
-
-            </androidx.core.widget.NestedScrollView>
-
-        </RelativeLayout>
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

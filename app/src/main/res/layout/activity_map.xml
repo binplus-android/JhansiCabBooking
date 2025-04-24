@@ -214,6 +214,7 @@
                                         android:layout_width="@dimen/space_5"
                                         android:layout_height="@dimen/space_5"/>
                                     <TextView
+                                        android:text="Loading..."
                                         android:id="@+id/tv_address"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="@dimen/space_8"

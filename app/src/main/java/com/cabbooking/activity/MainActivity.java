@@ -113,39 +113,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void loadFragment(Fragment fragment) {
-        Bundle bundle=new Bundle();
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().
-                addToBackStack(null).add(R.id.main_framelayout,fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-    }
-
-    private void initView() {
-        sessionManagment=new SessionManagment(MainActivity.this);
-        common=new Common(MainActivity.this);
-        common.subscribeToTopic();
-        setSupportActionBar(binding.appBar.findViewById(R.id.mytoolbar));
-         mytoolbar=binding.appBar.findViewById(R.id.mytoolbar);
-         lin_toolbar=binding.appBar.findViewById(R.id.lin_toolbar);
-         lin_back_main=binding.appBar.findViewById(R.id.lin_back_main);
-        lin_only_back=binding.appBar.findViewById(R.id.lin_only_back);
-
-        toggle = new ActionBarDrawerToggle(this, binding.drawer, mytoolbar, R.string.drawer_open, R.string.drawer_close);
-        binding.drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        toggle.setDrawerIndicatorEnabled(false);
-        mytoolbar.setNavigationIcon(R.drawable.menu);
-        mytoolbar.setNavigationOnClickListener(view -> {
-            if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
-                binding.drawer.closeDrawer(GravityCompat.START);
-            } else {
-                binding.drawer.openDrawer(GravityCompat.START);
-            }
-        });
-    }
-
     private void showLogoutDialog()
     {
         Dialog dialog;
@@ -178,4 +145,37 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside (false);
         dialog.show ();
     }
+    public void loadFragment(Fragment fragment) {
+        Bundle bundle=new Bundle();
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().
+                addToBackStack(null).add(R.id.main_framelayout,fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+    }
+
+    private void initView() {
+        sessionManagment=new SessionManagment(MainActivity.this);
+        common=new Common(MainActivity.this);
+        common.subscribeToTopic();
+        setSupportActionBar(binding.appBar.findViewById(R.id.mytoolbar));
+         mytoolbar=binding.appBar.findViewById(R.id.mytoolbar);
+         lin_toolbar=binding.appBar.findViewById(R.id.lin_toolbar);
+         lin_back_main=binding.appBar.findViewById(R.id.lin_back_main);
+        lin_only_back=binding.appBar.findViewById(R.id.lin_only_back);
+
+        toggle = new ActionBarDrawerToggle(this, binding.drawer, mytoolbar, R.string.drawer_open, R.string.drawer_close);
+        binding.drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        toggle.setDrawerIndicatorEnabled(false);
+        mytoolbar.setNavigationIcon(R.drawable.menu);
+        mytoolbar.setNavigationOnClickListener(view -> {
+            if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
+                binding.drawer.closeDrawer(GravityCompat.START);
+            } else {
+                binding.drawer.openDrawer(GravityCompat.START);
+            }
+        });
+    }
+
+
 }

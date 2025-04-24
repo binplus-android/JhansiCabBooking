@@ -174,7 +174,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //            PackageInfo pInfo = getPackageManager ( ).getPackageInfo (MainActivity.this.getPackageName ( ), 0);
 //            version_code = pInfo.versionCode;
 //            if (version_code  < ver_code) {
-               callVersionDialog();
+ //              callVersionDialog();
 //            }
 
 //          }
@@ -366,10 +366,46 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding.tvLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sessionManagment.logout(MapActivity.this);
+                if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawer.closeDrawer(GravityCompat.START);
+                }
+                showLogoutDialog();
             }
         });
 
+    }
+
+    private void showLogoutDialog()
+    {
+        Dialog dialog;
+
+        dialog = new Dialog (MapActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_logout);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
+
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+            }
+        });
+
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+                sessionManagment.logout(MapActivity.this);
+            }
+        });
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
     }
 
     @Override
