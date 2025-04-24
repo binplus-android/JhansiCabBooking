@@ -82,6 +82,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +125,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapCode();
         allClick();
         loadFragment(new HomeFragment());
+
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
@@ -137,8 +142,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         common.setMap(true,true,130,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                         binding.main.setVisibility(View.VISIBLE);
-                    }
-                     else if(frgmentName.contains("DestinationFragment")) {
+
+                    } else if(frgmentName.contains("DestinationFragment")) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -148,13 +153,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                          binding.main.setVisibility(View.GONE);
                         common.setMap(false,false,0,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
-                           }
-                     else {
-
+                    } else {
                         common.setMap(false,true,160,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                          binding.mytoolbar.setVisibility(View.GONE);
-                        binding.linToolbar.setVisibility(View.GONE);
+                         binding.linToolbar.setVisibility(View.GONE);
                          binding.mytoolbar.setNavigationIcon(null);
                          binding.linBackMain.setVisibility(View.GONE);
                          binding.linOnlyBack.setVisibility(View.VISIBLE);
@@ -263,11 +266,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mapFragment.getMapAsync(this);
     }
+
     public void displayLocation(){
         if (currentLat!=null && currentLng!=null){
             Log.d("jdsagd", "displayLocation: "+currentLat+"--"+currentLng);
            loadAllAvailableDriver(new LatLng(currentLat, currentLng));
-
+            fetchNearbyLocations(currentLat, currentLng); // 🔥 Call to fetch 3 places
         }
         else{
           //  ShowMessage.messageError(this, Errors.WITHOUT_LOCATION);
@@ -486,4 +490,62 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         location.inicializeLocation();
     }
 
+    private void fetchNearbyLocations(double latitude, double longitude) {
+        String apiKey = getString(R.string.google_maps_key); // Make sure this is defined in your strings.xml
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+                + "location=" + latitude + "," + longitude
+                + "&radius=1500" // meters
+                + "&type=restaurant" // Change type if needed: restaurant, cafe, etc.
+                + "&key=" + apiKey;
+
+        Log.d("NearbyURLcvbjnkml,;.", url);
+
+        new Thread(() -> {
+            try {
+                java.net.URL requestUrl = new java.net.URL(url);
+                java.net.HttpURLConnection connection = (java.net.HttpURLConnection) requestUrl.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
+                    java.io.InputStream inputStream = connection.getInputStream();
+                    java.util.Scanner scanner = new java.util.Scanner(inputStream);
+                    scanner.useDelimiter("\\A");
+                    String result = scanner.hasNext() ? scanner.next() : "";
+
+                    runOnUiThread(() -> parseNearbyPlaces(result));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void parseNearbyPlaces(String json) {
+        try {
+            Log.e("josn",json);
+
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray results = jsonObject.getJSONArray("results");
+            Log.e("result",results.toString());
+            int limit = Math.min(results.length(), 3); // Limit to 3 results
+            for (int i = 0; i < limit; i++) {
+                JSONObject place = results.getJSONObject(i);
+                String name = place.getString("name");
+                JSONObject location = place.getJSONObject("geometry").getJSONObject("location");
+                double lat = location.getDouble("lat");
+                double lng = location.getDouble("lng");
+
+                Log.d("NearbyPlace", "Name: " + name + " LatLng: " + lat + "," + lng);
+
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(lat, lng))
+                        .title(name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

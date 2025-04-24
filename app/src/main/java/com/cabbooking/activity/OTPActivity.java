@@ -294,7 +294,6 @@ else{
             object.addProperty("referral_code","");
         }
 
-
         repository.getOtpApi(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
@@ -302,27 +301,29 @@ else{
                     OTPverificatioResp resp = (OTPverificatioResp) data;
                    // sessionManagment.createLoginSession(user_id, resp.getToken(),resp.getToken_type(),refercode);
                     Log.e("callOtpApi ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        if(is_login.equalsIgnoreCase("0")){
-//                            Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                            startActivity(intent);
-//                            finish();
-//                        }else {
-//                            sessionManagment.setLoginValue();
-//                            sessionManagment.setValue(KEY_MOBILE, mobile);
-//                            Intent intent = new Intent(OTPActivity.this, MapActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                            startActivity(intent);
-//                            finish();
-//                        }
-//                    }else{
-//                        common.errorToast(resp.getMessage());
-//                    }
+                    if (resp.getStatus() == 200) {
+                        common.successToast(resp.getMessage());
+                        if(is_login.equalsIgnoreCase("0")){
+                            Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            sessionManagment.setLoginValue();
+                            sessionManagment.createLoginSession(String.valueOf(resp.getRecordList().getId()), resp.getToken(), resp.getToken_type(), resp.getRecordList().getOwn_refer_code());
+                            sessionManagment.setValue(KEY_MOBILE, mobile);
+                            Intent intent = new Intent(OTPActivity.this, MapActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

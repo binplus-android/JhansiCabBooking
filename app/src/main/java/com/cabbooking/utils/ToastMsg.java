@@ -27,7 +27,7 @@ public class ToastMsg {
         }
 
         Toast toast = new Toast(context);
-        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setDuration(Toast.LENGTH_SHORT);
         View custom_view = inflater.inflate(R.layout.toast_icon_text, null);
         ((TextView) custom_view.findViewById(R.id.message)).setText(s);
         ((CardView) custom_view.findViewById(R.id.parent_view)).setCardBackgroundColor(context.getResources().getColor(R.color.red_600));
@@ -42,7 +42,7 @@ public class ToastMsg {
         }
 
         Toast toast = new Toast(context);
-        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setDuration(Toast.LENGTH_SHORT);
 
         View custom_view = inflater.inflate(R.layout.toast_icon_text, null);
         ((TextView) custom_view.findViewById(R.id.message)).setText(s);

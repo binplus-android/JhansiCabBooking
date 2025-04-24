@@ -47,7 +47,7 @@
               android:id="@+id/calendarView"
               android:theme="@style/CalenderViewCustom"
               android:layout_marginTop="@dimen/space_7"
-              android:dateTextAppearance="@style/TextViewRegular"
+              android:dateTextAppearance="@style/TextViewRegularDate"
               android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"/>

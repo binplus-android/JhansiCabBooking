@@ -142,7 +142,6 @@ public class VechileFragment extends Fragment {
         }
     }
 
-
     public void manageTripTypeClick() {
 
         binding.linOneWay.setOnClickListener(v -> {
@@ -169,7 +168,10 @@ public class VechileFragment extends Fragment {
 
            openSelectDate();
         });
-    } @SuppressLint("NewApi")
+
+    }
+
+    @SuppressLint("NewApi")
     private void openSelectTime() {
         if (date.isEmpty()) {
             date = common.getCurrentDate();

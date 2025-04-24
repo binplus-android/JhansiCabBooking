@@ -28,14 +28,13 @@ public class SessionManagment {
     public static final String KEY_REFERCODE="refercode";
     public static final String KEY_TOKEN_TYPE="tokenType";
 
-
-
     public SessionManagment(Context context) {
         this.context = context;
         prefs = context.getSharedPreferences(PREFS_NAME, PRIVATE_MODE);
         editor = prefs.edit();
 
     }
+
     public void createLoginSession(String id, String token, String token_type,String refer_code) {
         editor.putBoolean(LOGIN, true);
         editor.putString(KEY_ID, id);
@@ -58,7 +57,9 @@ public class SessionManagment {
     public void setValue(String key,String value) {
         editor.putString(key, value);
         editor.apply();
-    } public void setLoginValue() {
+    }
+
+    public void setLoginValue() {
         editor.putBoolean(LOGIN, true);
         editor.apply();
     }
