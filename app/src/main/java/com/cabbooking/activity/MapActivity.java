@@ -49,9 +49,11 @@ import com.cabbooking.fragement.DestinationFragment;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.messages.Errors;
 import com.cabbooking.messages.ShowMessage;
+import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.CustomInfoWindow;
 import com.cabbooking.utils.Location;
+import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.SessionManagment;
 
 import com.cabbooking.utils.locationListener;
@@ -114,7 +116,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
     String sharelink=BASE_URL;
-    int is_forced=0;
+    Integer ver_code, is_forced=0, version_code;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,21 +169,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
-   //     common.getAppSettingData(new OnConfig() {
-            //            @Override
-//            public void getAppSettingData(AppSettingModel model) {
-//        try {
-//            PackageInfo pInfo = getPackageManager ( ).getPackageInfo (MainActivity.this.getPackageName ( ), 0);
-//            version_code = pInfo.versionCode;
-//            if (version_code  < ver_code) {
- //              callVersionDialog();
-//            }
+        common.getAppSettingData(new OnConfig() {
+                        @Override
+            public void getAppSettingData(AppSettingModel model) {
+                            try {
+                                ver_code = (model.getVersion ( ));
+                                is_forced = (model.getIs_forced ( ));
+                                sharelink = model.getShare_link ();
+                                PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
+                                version_code = pInfo.versionCode;
+                                if (version_code < ver_code) {
+                                    callVersionDialog();
+                                }
 
-//          }
-//        catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace ( );
-//        }
-//        });
+                            } catch (PackageManager.NameNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+        });
+
     }
 
     public void callVersionDialog() {

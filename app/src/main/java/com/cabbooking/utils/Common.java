@@ -43,12 +43,14 @@ import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+import com.cabbooking.model.AppSettingModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.text.ParseException;
@@ -115,63 +117,7 @@ public class Common {
         }
         return fcmToken;
     }
-//    public void logoutUser(Activity activity) {
-//        sessionManagment = new SessionManagment(context);
-//        if (!sessionManagment.getUserDetails().get(KEY_ID).isEmpty()) {
-//            JsonObject object = new JsonObject();
-//            object.addProperty("id", sessionManagment.getUserDetails().get(KEY_ID));
-//
-//            repository.callLogout(object, new ResponseService() {
-//                @Override
-//                public void onResponse(Object data) {
-//                    try {
-//                        CommonResp resp = (CommonResp) data;
-//                        Log.e("callAddWaitListAPI ", resp.toString());
-//                        errorToast("Session Out");
-//                        sessionManagment.logout(context);
-//                        unSubscribeToTopic();
-//                        Intent intent = new Intent(context, LoginActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                        context.startActivity(intent);
-//                        activity.finish();
-////                    if (resp.getStatus()==200) {
-////                        ZIMKit.disconnectUser();
-////                        errorToast("Session Out");
-////                        sessionMangement.logout();
-////                        Intent intent=new Intent (context, LoginActivity.class );
-////                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-////                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-////                        intent.putExtra("page","login");
-////                        context.startActivity(intent);
-////                        activity.finish();
-////                    }else{
-////                        errorToast(resp.getError());
-////                    }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void onServerError(String errorMsg) {
-//                    Log.e("errorMsg", errorMsg);
-//                    errorToast("Session Out");
-//                    sessionManagment.logout(context);
-//                    unSubscribeToTopic();
-//                    Intent intent = new Intent(context, LoginActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                    intent.putExtra("page", "login");
-//                    context.startActivity(intent);
-//                    activity.finish();
-//                }
-//            }, true);
-//        }
-//    }
+
     public void commonTokenExpiredLogout(Activity activity){
         unSubscribeToTopic();
         sessionManagment.logout(activity);
@@ -423,6 +369,27 @@ public class Common {
 //                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void getAppSettingData(OnConfig listner){
+        repository.callAppSettingAPI( new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    AppSettingModel resp = (AppSettingModel) data;
+                    Log.e("indexApi", "onResponse: "+resp );
+                    listner.getAppSettingData(resp);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
     }
 
 }

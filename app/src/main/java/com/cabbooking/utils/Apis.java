@@ -2,6 +2,7 @@ package com.cabbooking.utils;
 
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
+import com.cabbooking.model.AppSettingModel;
 import com.google.gson.JsonObject;
 
 
@@ -17,7 +18,8 @@ public interface Apis {
     Call<LoginResp> signUp(@Body JsonObject jsonObject);
     @POST("verifyOtp")
     Call<OTPverificatioResp> OtpVerification(@Body  JsonObject jsonObject);// commom for login and registration
-
+  @POST("appSettings")
+  Call<AppSettingModel> appSetting();
 
 
 
