@@ -173,7 +173,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         startActivity(i);
                         finish();
                     }else{
-                        common.errorToast(resp.getMessage());
+                        common.errorToast(resp.getError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

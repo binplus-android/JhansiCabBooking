@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+
         initView();
         allClicks();
         getDestinatioList();
@@ -99,15 +100,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         binding.getRoot().setFocusableInTouchMode(true);
         binding.getRoot().requestFocus();
 
-
-
         return binding.getRoot();
     }
+
     @Override
     public void onResume() {
         super.onResume();
 
     }
+
     private void setupLocationPermissionLauncher() {
         locationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
@@ -288,11 +289,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 common.switchFragment(new DestinationFragment());
             }
         }, 200);
-
     }
 
-    private void showExitDialog()
-    {
+    private void showExitDialog() {
         Dialog dialog;
 
         dialog = new Dialog (getContext());
@@ -324,15 +323,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         dialog.show ();
     }
 
-
-
     @SuppressLint("UseCompatLoadingForColorStateLists")
     private void changeBackground(LinearLayout green_lay, LinearLayout shadow_lay) {
         green_lay.setBackgroundTintList(getResources().getColorStateList(R.color.light_green));
         shadow_lay.setBackgroundTintList(getResources().getColorStateList(R.color.gray_edittext));
     }
-
-
 
 //    private void openSelectDate(TextView tvDate, TextView tvTime) {
 //
