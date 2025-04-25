@@ -243,6 +243,7 @@ public class VechileFragment extends Fragment {
             binding.linRoundTrip.setBackground(null); // No background
             binding.imgRoundTrip.setVisibility(View.GONE);
             sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
+            outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
             binding.linRetunDate.setVisibility(View.GONE);
         });
 
@@ -255,6 +256,7 @@ public class VechileFragment extends Fragment {
             binding.linOneWay.setBackground(null); // No background
             binding.imgOneWay.setVisibility(View.GONE);
             sessionManagment.setValue(KEY_OUTSTATION_TYPE,"1");
+            outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
 
            openSelectDate();
         });
