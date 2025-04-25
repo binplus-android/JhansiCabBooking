@@ -154,13 +154,8 @@ int vechicle_pos;
                     if (resp.getStatus()==200) {
                         common.successToast(resp.getMessage());
                     Log.d("datts", "onResponse: "+resp.getRecordList());
-//                    common.switchFragment(new RideFragment());
+                   common.switchFragment(fragment);
 
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
-                    fragmentTransaction.replace (R.id.main_framelayout, fragment);
-                    fragmentTransaction.addToBackStack (null);
-                    fragmentTransaction.commit ( );
                     }else{
                         common.errorToast(resp.getError());
                     }

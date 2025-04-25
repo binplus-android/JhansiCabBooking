@@ -135,12 +135,7 @@ public class VechileFragment extends Fragment {
                 bundle.putString("pos", String.valueOf(sel_pos));
                 bundle.putString("returnDate",returnDateval);
                 fm.setArguments(bundle);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
-                fragmentTransaction.replace (R.id.main_framelayout,fm);
-                fragmentTransaction.addToBackStack (null);
-                fragmentTransaction.commit ( );
-                //common.switchFragment(new PickUpFragment());
+                common.switchFragment(fm);
             }
         });
     }

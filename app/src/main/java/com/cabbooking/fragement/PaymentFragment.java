@@ -214,11 +214,8 @@ public class PaymentFragment extends Fragment {
         Fragment fragment=new AfterPaymentDoneFragment();
         Bundle bundle=new Bundle();
         bundle.putString("tripId",tripId);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
-        fragmentTransaction.replace (R.id.main_framelayout, fragment);
-        fragmentTransaction.addToBackStack (null);
-        fragmentTransaction.commit ( );
+        fragment.setArguments(bundle);
+        common.switchFragment(fragment);
     }
 
 

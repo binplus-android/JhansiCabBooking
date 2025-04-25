@@ -189,11 +189,8 @@ public class RideFragment extends Fragment {
                 Fragment fragment=new PaymentFragment();
                 Bundle bundle=new Bundle();
                 bundle.putString("tripId",String.valueOf(tripId));
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
-                fragmentTransaction.replace (R.id.main_framelayout, fragment);
-                fragmentTransaction.addToBackStack (null);
-                fragmentTransaction.commit ( );
+                fragment.setArguments(bundle);
+                common.switchFragment(fragment);
             }
         });
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
