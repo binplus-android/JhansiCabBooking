@@ -472,7 +472,7 @@ public class VechileFragment extends Fragment {
             } else {
                 date = common.convertDateFormat(sel_date);
                 tv_date_value=(date);
-                binding.tvReturndate.setText(getActivity().getString(R.string.return_date)+tv_date_value);
+                binding.tvReturndate.setText(tv_date_value);
                 time = common.getCurrentTime();
                 tv_time_value=common.timeConversion12hrs(time);
                 binding.tvReturntime.setText(tv_time_value);

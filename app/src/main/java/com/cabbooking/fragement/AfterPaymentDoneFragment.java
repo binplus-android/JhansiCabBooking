@@ -132,6 +132,7 @@ public class AfterPaymentDoneFragment extends Fragment {
         }
     }
     private void startApiRefresh() {
+        handler = new Handler();
         apiRunnable = new Runnable() {
             @Override
             public void run() {
