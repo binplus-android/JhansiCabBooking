@@ -22,33 +22,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
-import com.cabbooking.databinding.ActivityMainBinding;
 import com.cabbooking.databinding.ActivityMapBinding;
-import com.cabbooking.fragement.DestinationFragment;
 import com.cabbooking.fragement.HomeFragment;
-import com.cabbooking.messages.Errors;
-import com.cabbooking.messages.ShowMessage;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.CustomInfoWindow;
@@ -57,10 +46,6 @@ import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.SessionManagment;
 
 import com.cabbooking.utils.locationListener;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -78,11 +63,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -117,6 +98,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TextView tvpick,tvDestination;
     String sharelink=BASE_URL;
     Integer ver_code, is_forced=0, version_code;
+    private boolean isAddressFetched = false; // Add this field
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,8 +116,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onBackStackChanged() {
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+
                 if (fragment != null && fragment.getClass() != null) {
                     String frgmentName = fragment.getClass().getSimpleName();
+
                     if (frgmentName.contains("HomeFragment")) {
                         binding.mytoolbar.setVisibility(View.VISIBLE);
                         binding.linToolbar.setVisibility(View.VISIBLE);
@@ -152,9 +138,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linBackMain.setVisibility(View.VISIBLE);
                         binding.linOnlyBack.setVisibility(View.GONE);
                         // setMap(false);
-                         binding.main.setVisibility(View.GONE);
+                        binding.main.setVisibility(View.GONE);
                         common.setMap(false,false,0,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
+
                     } else {
                         common.setMap(false,true,160,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
@@ -165,6 +152,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                          binding.linOnlyBack.setVisibility(View.VISIBLE);
                         // setMap(false);
                          binding.main.setVisibility(View.VISIBLE);
+
                      }
                 }
             }
@@ -273,21 +261,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
-    public void displayLocation(){
-        if (currentLat!=null && currentLng!=null){
-            Log.d("jdsagd", "displayLocation: "+currentLat+"--"+currentLng);
-           loadAllAvailableDriver(new LatLng(currentLat, currentLng));
-            fetchNearbyLocations(currentLat, currentLng); // 🔥 Call to fetch 3 places
-        }
-        else{
-          //  ShowMessage.messageError(this, Errors.WITHOUT_LOCATION);
-        }
+    public void displayLocation() {
+        if (currentLat != null && currentLng != null) {
+            Log.d("Tag", "displayLocation: " + currentLat + "--" + currentLng);
 
+            if (!isAddressFetched) {
+                loadAllAvailableDriver(new LatLng(currentLat, currentLng));
+//                fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
+                isAddressFetched = true;
+            }
+        }
     }
+
     private void loadAllAvailableDriver(final LatLng location) {
         for (Marker driverMarker:driverMarkers) {
             driverMarker.remove();
         }
+
         driverMarkers.clear();
         if(!pickupPlacesSelected) {
             if (riderMarket != null)
@@ -313,8 +303,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             tvpick.setText(address);
         }
     }
-
-
 
     public String getAddressFromLatLng(Activity context, double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
@@ -349,9 +337,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             });
         }
     }
+
     public void setTitle(String title){
          binding.tvTitle.setText(title);
     }
+
     private void allClick() {
        
         binding.ivBackarrow.setOnClickListener(new View.OnClickListener() {
@@ -361,7 +351,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
             }
-        }); 
+        });
+
         binding.ivBackOnly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -381,8 +372,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    private void showLogoutDialog()
-    {
+    private void showLogoutDialog() {
         Dialog dialog;
 
         dialog = new Dialog (MapActivity.this);
@@ -476,38 +466,92 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.setInfoWindowAdapter(new CustomInfoWindow(this));
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.uber_style_map));
 
+        // Set click listener
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                if(destinationMarker!=null)
-                    destinationMarker.remove();
+            public void onMapClick(@NonNull LatLng latLng) {
+                // Remove previous marker
+                if (riderMarket != null) riderMarket.remove();
 
-                int height = 70; // you can adjust
-                int width = 50;  // you can adjust
+                // Add new marker
+                riderMarket = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Selected Location")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
-                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_location);
-                Bitmap b = bitmapdraw.getBitmap();
-                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                destinationMarker=mMap.addMarker(new MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
-                        .title("Destination"));
+                // Move camera
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+
+                // Get address and update UI
                 String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                tvDestination.setText(address);
+                binding.tvAddress.setText(address);
+                if (tvpick != null) tvpick.setText(address);
             }
         });
-        mMap.setOnInfoWindowClickListener(this);
-        displayLocation();
+
+        // Optional: show current location once map is ready
+//        displayLocation();
+
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                LatLng center = mMap.getCameraPosition().target;
+
+                // Update the address from camera's center location
+                String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+                binding.tvAddress.setText(address);
+                if (tvpick != null) tvpick.setText(address);
+
+                // Optional: move marker to center
+                if (riderMarket != null) riderMarket.remove();
+                riderMarket = mMap.addMarker(new MarkerOptions()
+                        .position(center)
+                        .title("Selected Location")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            }
+        });
+//                displayLocation();
+
     }
+
+
+
+    //    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        mMap = googleMap;
+//        mMap.getUiSettings().setZoomControlsEnabled(true);
+//        mMap.getUiSettings().setZoomGesturesEnabled(true);
+//        mMap.setInfoWindowAdapter(new CustomInfoWindow(this));
+//        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.uber_style_map));
+//
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(LatLng latLng) {
+//                if(destinationMarker!=null)
+//                    destinationMarker.remove();
+//
+//                int height = 70; // you can adjust
+//                int width = 50;  // you can adjust
+//
+//                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_location);
+//                Bitmap b = bitmapdraw.getBitmap();
+//                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+//                destinationMarker=mMap.addMarker(new MarkerOptions().position(latLng)
+//                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+//                        .title("Destination"));
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+//                tvDestination.setText(address);
+//            }
+//        });
+//        mMap.setOnInfoWindowClickListener(this);
+//        displayLocation();
+//    }
     public void showCommonPickDestinationArea(boolean status,boolean is_close){
        if(status){
            binding.commonAddress.setVisibility(View.VISIBLE);
