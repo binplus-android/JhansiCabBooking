@@ -31,11 +31,11 @@ public interface Apis {
     Call<TripRiderResp> tripStatus(@Body  JsonObject jsonObject);
      @POST("driverDetail")
     Call<DriverDetailResp> driverDetail(@Body  JsonObject jsonObject);
-     @POST("driverDetail")
+     @POST("cancleRide")
     Call<CommonResp> cancleRide(@Body  JsonObject jsonObject);
-     @POST("driverDetail")
+     @POST("payment")
     Call<CommonResp> paymentApi(@Body  JsonObject jsonObject);
-     @POST("driverDetail")
+     @POST("driverLocation")
     Call<CommonResp> driverLocation(@Body  JsonObject jsonObject);
      @POST("tripDetail")
     Call<CommonResp> tripDetail(@Body  JsonObject jsonObject);

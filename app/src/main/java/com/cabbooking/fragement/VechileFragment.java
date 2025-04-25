@@ -401,6 +401,8 @@ public class VechileFragment extends Fragment {
                 binding.tvReturntime.setText(tv_time_value);
                 binding.linRetunDate.setVisibility(View.VISIBLE);
                 dialog.dismiss();
+
+                getList();
             }
         });
 
