@@ -278,9 +278,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void callOtpApi(String mobile,String otp)
-    {
-
+    private void callOtpApi(String mobile,String otp) {
         JsonObject object=new JsonObject();
         object.addProperty("contactNo",mobile);
         object.addProperty("otp",otp);
@@ -290,6 +288,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
             if (!email.equalsIgnoreCase("")) {
                 object.addProperty("email", email);
             }
+
             object.addProperty("name", name);
             object.addProperty("referral_code","");
         }
@@ -303,6 +302,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
                     Log.e("callOtpApi ",data.toString());
                     if (resp.getStatus() == 200) {
                         common.successToast(resp.getMessage());
+
                         if(is_login.equalsIgnoreCase("0")){
                             Intent intent = new Intent(OTPActivity.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -310,6 +310,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intent);
                             finish();
+
                         }else {
                             sessionManagment.setLoginValue();
                             sessionManagment.createLoginSession(String.valueOf(resp.getRecordList().getId()), resp.getToken(), resp.getToken_type(), resp.getRecordList().getOwn_refer_code());
@@ -320,7 +321,9 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intent);
                             finish();
+
                         }
+
                     }else{
                         common.errorToast(resp.getError());
                     }
