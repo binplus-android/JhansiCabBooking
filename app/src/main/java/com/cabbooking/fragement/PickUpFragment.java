@@ -146,24 +146,24 @@ int vechicle_pos;
             public void onResponse(Object data) {
                 try {
                     PickupResp resp = (PickupResp) data;
-                    Log.e("addTrip ",data.toString());
-                    //if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
-                    Log.d("datts", "onResponse: "+resp.getData());
-//                    common.switchFragment(new RideFragment());
                     Fragment fragment=new RideFragment();
                     Bundle bundle=new Bundle();
-                    bundle.putString("resp",String.valueOf(resp));
+                    bundle.putParcelable("pickupResp", resp);
                     fragment.setArguments(bundle);
+                    Log.e("addTrip ",data.toString());
+                    if (resp.getStatus()==200) {
+                        common.successToast(resp.getMessage());
+                    Log.d("datts", "onResponse: "+resp.getRecordList());
+//                    common.switchFragment(new RideFragment());
 
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
                     fragmentTransaction.replace (R.id.main_framelayout, fragment);
                     fragmentTransaction.addToBackStack (null);
                     fragmentTransaction.commit ( );
-//                    }else{
-//                        common.errorToast(resp.getError());
-//                    }
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

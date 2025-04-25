@@ -1,14 +1,17 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +19,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.RideMateAdapter;
@@ -26,7 +31,11 @@ import com.cabbooking.databinding.FragmentPaymentBinding;
 import com.cabbooking.databinding.FragmentRideBinding;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.firebase.database.core.Repo;
+import com.google.gson.JsonObject;
 
 import org.w3c.dom.Text;
 
@@ -43,8 +52,9 @@ public class PaymentFragment extends Fragment {
     Common common;
     ArrayList<DestinationModel>list;
     RideMateAdapter adapter;
-    String trip_type="",outstation_type="";
+    String trip_type="",outstation_type="",tripId="";
     SessionManagment sessionManagment;
+    Repository repository;
     public static PaymentFragment newInstance(String param1, String param2) {
         PaymentFragment fragment = new PaymentFragment();
         Bundle args = new Bundle();
@@ -91,10 +101,56 @@ public class PaymentFragment extends Fragment {
         binding.btnPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              infoDialog();
+                int selectedId = binding.rdGrp.getCheckedRadioButtonId();
+
+                if (selectedId == -1) {
+                   common.errorToast("Please select a payment method");
+                } else {
+                    RadioButton selectedRadio = binding.getRoot().findViewById(selectedId);
+                    String selectedText = selectedRadio.getText().toString();
+
+                    callPayment(selectedText);
+                }
+
+
             }
         });
     }
+
+    public void callPayment(String paymentTypeVal)
+        {
+            JsonObject object=new JsonObject();
+            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+            object.addProperty("tripId",tripId);
+            object.addProperty("paymentType",paymentTypeVal);
+            repository.paymentApi(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        CommonResp resp = (CommonResp) data;
+                        Log.e("paymentApi ",data.toString());
+                        if (resp.getStatus()==200) {
+                            common.successToast(resp.getMessage());
+                            infoDialog();
+
+                        }else{
+                            common.errorToast(resp.getError());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, false);
+
+        }
+
+
+
+
 
     private void infoDialog()   {
         Dialog dialog = new Dialog (getContext());
@@ -132,14 +188,20 @@ public class PaymentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                common.switchFragment(new AfterPaymentDoneFragment());
+                Fragment fragment=new AfterPaymentDoneFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId",tripId);
+                common.switchFragment(fragment);
             }
         });
         tv_call_ride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                common.switchFragment(new AfterPaymentDoneFragment());
+                Fragment fragment=new AfterPaymentDoneFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId",tripId);
+                common.switchFragment(fragment);
             }
         });
 
@@ -150,9 +212,10 @@ public class PaymentFragment extends Fragment {
 
 
     public void initView() {
+        repository=new Repository(getActivity());
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
-
+        tripId=getArguments().getString("tripId");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());

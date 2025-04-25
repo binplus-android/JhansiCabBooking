@@ -22,7 +22,7 @@ public class RetrofitClient {
 
 
     public static final String BASE_URL="https://jhansicab.anshuwap.com/api/user/";
-    public static final String IMAGE_BASE_URL="hhttps://jhansicab.anshuwap.com/";
+    public static final String IMAGE_BASE_URL="https://jhansicab.anshuwap.com/";
     public static String ApiUserId="",ApiKey="";
     private static Retrofit retrofit;
 

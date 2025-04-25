@@ -1,29 +1,62 @@
 package com.cabbooking.Response;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
-import java.util.Date;
 
-public class PickupResp {
-    public String message;
-    public Data data;
+public class PickupResp implements Parcelable {
+    public int status;
+    public String message, error;
+    public RecordList recordList;
 
-    public String getMessage() {
-        return message;
+    public PickupResp() {}
+
+    protected PickupResp(Parcel in) {
+        status = in.readInt();
+        message = in.readString();
+        error = in.readString();
+        recordList = in.readParcelable(RecordList.class.getClassLoader());
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public static final Creator<PickupResp> CREATOR = new Creator<PickupResp>() {
+        @Override
+        public PickupResp createFromParcel(Parcel in) {
+            return new PickupResp(in);
+        }
+
+        @Override
+        public PickupResp[] newArray(int size) {
+            return new PickupResp[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(status);
+        dest.writeString(message);
+        dest.writeString(error);
+        dest.writeParcelable(recordList, flags);
     }
 
-    public Data getData() {
-        return data;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setData(Data data) {
-        this.data = data;
-    }
+    // Getters and setters
 
-    public class Data{
+    public RecordList getRecordList() { return recordList; }
+    public void setRecordList(RecordList recordList) { this.recordList = recordList; }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+    public String getError() { return error; }
+    public void setError(String error) { this.error = error; }
+    public int getStatus() { return status; }
+    public void setStatus(int status) { this.status = status; }
+
+    // Static inner class RecordList
+    public static class RecordList implements Parcelable {
         public String userId;
         public String pickup;
         public double pickupLat;
@@ -37,10 +70,73 @@ public class PickupResp {
         public String distance;
         public int amount;
         public int tripStatus;
-        public String  updated_at;
-        public String  created_at;
+        public String upStringd_at;
+        public String created_at;
         public int id;
         public ArrayList<Status> status;
+
+        public RecordList() {}
+
+        protected RecordList(Parcel in) {
+            userId = in.readString();
+            pickup = in.readString();
+            pickupLat = in.readDouble();
+            pickupLng = in.readDouble();
+            destination = in.readString();
+            destinationLat = in.readDouble();
+            destinationLng = in.readDouble();
+            isOutstation = in.readString();
+            isRound = in.readString();
+            vehicleType = in.readInt();
+            distance = in.readString();
+            amount = in.readInt();
+            tripStatus = in.readInt();
+            upStringd_at = in.readString();
+            created_at = in.readString();
+            id = in.readInt();
+            status = in.createTypedArrayList(Status.CREATOR);
+        }
+
+        public static final Creator<RecordList> CREATOR = new Creator<RecordList>() {
+            @Override
+            public RecordList createFromParcel(Parcel in) {
+                return new RecordList(in);
+            }
+
+            @Override
+            public RecordList[] newArray(int size) {
+                return new RecordList[size];
+            }
+        };
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(userId);
+            dest.writeString(pickup);
+            dest.writeDouble(pickupLat);
+            dest.writeDouble(pickupLng);
+            dest.writeString(destination);
+            dest.writeDouble(destinationLat);
+            dest.writeDouble(destinationLng);
+            dest.writeString(isOutstation);
+            dest.writeString(isRound);
+            dest.writeInt(vehicleType);
+            dest.writeString(distance);
+            dest.writeInt(amount);
+            dest.writeInt(tripStatus);
+            dest.writeString(upStringd_at);
+            dest.writeString(created_at);
+            dest.writeInt(id);
+            dest.writeTypedList(status);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        // Getters and setters...
+
 
         public String getUserId() {
             return userId;
@@ -146,12 +242,12 @@ public class PickupResp {
             this.tripStatus = tripStatus;
         }
 
-        public String getUpdated_at() {
-            return updated_at;
+        public String getUpStringd_at() {
+            return upStringd_at;
         }
 
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
+        public void setUpStringd_at(String upStringd_at) {
+            this.upStringd_at = upStringd_at;
         }
 
         public String getCreated_at() {
@@ -177,27 +273,58 @@ public class PickupResp {
         public void setStatus(ArrayList<Status> status) {
             this.status = status;
         }
+    }
 
-        public class Status{
-            public String status;
-            public String time;
+    // Static inner class Status
+    public static class Status implements Parcelable {
+        public String status;
+        public String time;
 
-            public String getStatus() {
-                return status;
+        public Status() {}
+
+        protected Status(Parcel in) {
+            status = in.readString();
+            time = in.readString();
+        }
+
+        public static final Creator<Status> CREATOR = new Creator<Status>() {
+            @Override
+            public Status createFromParcel(Parcel in) {
+                return new Status(in);
             }
 
-            public void setStatus(String status) {
-                this.status = status;
+            @Override
+            public Status[] newArray(int size) {
+                return new Status[size];
             }
+        };
 
-            public String getTime() {
-                return time;
-            }
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(status);
+            dest.writeString(time);
+        }
 
-            public void setTime(String time) {
-                this.time = time;
-            }
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
         }
     }
 }
-
