@@ -117,6 +117,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TextView tvpick,tvDestination;
     String sharelink=BASE_URL;
     Integer ver_code, is_forced=0, version_code;
+     Double pickupLat=0.0,destinationLat=0.0;
+     Double pickupLng=0.0,destinationLng=0.0;
+     String pickAddres="",destinationAddress="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +128,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         initView();
         verifyGoogleAccount();
         mapCode();
+        mapAllClick();
         allClick();
         loadFragment(new HomeFragment());
 
@@ -188,6 +192,44 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
         });
 
+    }
+
+    public void getPickUpLatLng(Double Lat,Double Lng,String pickAddressValue){
+        pickupLat=Lat;
+        pickupLng=Lng;
+        pickAddres=pickAddressValue;
+
+
+    }
+
+    public String getPickupAddress() {
+        return pickAddres;
+    } public Double getPickupLat() {
+        return pickupLat;
+    }
+
+    public Double getPickupLng() {
+        return pickupLng;
+    }
+    public void getDestinationLatLng(Double Lat,Double Lng,String destinationAddressValue){
+        destinationLat=Lat;
+        destinationLng=Lng;
+       destinationAddress= destinationAddressValue;
+
+    }
+
+    public Double getDestinationLat() {
+        return destinationLat;
+    }
+
+    public Double getDestinationLng() {
+        return destinationLng;
+    }
+    public String getDestionationAddress() {
+        return destinationAddress;
+    }
+
+    private void mapAllClick() {
     }
 
     public void callVersionDialog() {
@@ -263,6 +305,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 currentLng=response.getLastLocation().getLongitude();
                 Common.currenLocation=new LatLng(currentLat,currentLng);
                 displayLocation();
+                getPickUpLatLng(currentLat,currentLng,tvpick.getText().toString());
             }
         });
          mapFragment = SupportMapFragment.newInstance();
@@ -311,6 +354,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
             tvpick.setText(address);
+            getPickUpLatLng(currentLat,currentLng,address);
         }
     }
 
@@ -503,6 +547,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
                 String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
                 tvDestination.setText(address);
+                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
             }
         });
         mMap.setOnInfoWindowClickListener(this);

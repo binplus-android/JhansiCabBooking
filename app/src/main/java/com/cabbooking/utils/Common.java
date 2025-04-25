@@ -42,6 +42,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.cabbooking.model.AppSettingModel;
 import com.google.android.gms.maps.model.LatLng;
@@ -340,18 +341,40 @@ public class Common {
     }
 
     public void unSubscribeToTopic(){
-        FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "Subscribe failed";
-                        }
-                        Log.d(TAG, msg);
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
+                            }
+                            Log.d(TAG, msg);
 //                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public  JsonObject  getCommonAddressPost(){
+        JsonObject object=new JsonObject();
+
+        JsonObject pickupObject = new JsonObject();
+        pickupObject.addProperty("lat", ((MapActivity) context).getPickupLat());
+        pickupObject.addProperty("lng", ((MapActivity)context).getPickupLng());
+        pickupObject.addProperty("address", ((MapActivity) context).getPickupAddress());
+
+        object.add("pickup", pickupObject);
+
+        JsonObject destinationObject = new JsonObject();
+        destinationObject.addProperty("lat", ((MapActivity) context).getDestinationLat());
+        destinationObject.addProperty("lng", ((MapActivity) context).getDestinationLng());
+        destinationObject.addProperty("address", ((MapActivity) context).getDestionationAddress());
+        object.add("destination", destinationObject);
+        return object;
+
 
     }
 
