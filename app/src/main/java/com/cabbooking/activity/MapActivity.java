@@ -542,7 +542,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Optional: show current location once map is ready
 //        displayLocation();
 
-
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
