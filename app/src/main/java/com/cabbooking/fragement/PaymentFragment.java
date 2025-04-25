@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -52,7 +54,7 @@ public class PaymentFragment extends Fragment {
     Common common;
     ArrayList<DestinationModel>list;
     RideMateAdapter adapter;
-    String trip_type="",outstation_type="",tripId="";
+    String trip_type="",outstation_type="",tripId="",driver_Number="999999999";
     SessionManagment sessionManagment;
     Repository repository;
     public static PaymentFragment newInstance(String param1, String param2) {
@@ -188,26 +190,35 @@ public class PaymentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Fragment fragment=new AfterPaymentDoneFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("tripId",tripId);
-                common.switchFragment(fragment);
+                commonIntent();
+
             }
         });
         tv_call_ride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                Fragment fragment=new AfterPaymentDoneFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("tripId",tripId);
-                common.switchFragment(fragment);
+               callDriver();
             }
         });
 
 
         dialog.setCanceledOnTouchOutside (false);
         dialog.show ();
+    }
+
+    public void callDriver() {
+        common.calling(driver_Number);
+    }
+
+    private void commonIntent() {
+        Fragment fragment=new AfterPaymentDoneFragment();
+        Bundle bundle=new Bundle();
+        bundle.putString("tripId",tripId);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
+        fragmentTransaction.replace (R.id.main_framelayout, fragment);
+        fragmentTransaction.addToBackStack (null);
+        fragmentTransaction.commit ( );
     }
 
 

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -188,7 +189,11 @@ public class RideFragment extends Fragment {
                 Fragment fragment=new PaymentFragment();
                 Bundle bundle=new Bundle();
                 bundle.putString("tripId",String.valueOf(tripId));
-                common.switchFragment(fragment);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager ( );
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
+                fragmentTransaction.replace (R.id.main_framelayout, fragment);
+                fragmentTransaction.addToBackStack (null);
+                fragmentTransaction.commit ( );
             }
         });
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {

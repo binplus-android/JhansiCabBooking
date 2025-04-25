@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
@@ -141,6 +142,12 @@ public class Common {
         fragmentTransaction.replace (R.id.main_framelayout, fragment);
         fragmentTransaction.addToBackStack (null);
         fragmentTransaction.commit ( );
+
+    }
+    public void calling(String phoneNumber){
+            Uri dialUri = Uri.parse("tel:" + phoneNumber);
+            Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
+            context.startActivity(dialIntent);
 
     }
     public boolean isValidName(String name){
