@@ -94,7 +94,7 @@ public class AfterPaymentDoneFragment extends Fragment {
 
                         binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+resp.getRecordList().getCreated_at());
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
-                        binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+"-");
+                        binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
                         binding.tvRidername.setText(resp.getRecordList().getName());

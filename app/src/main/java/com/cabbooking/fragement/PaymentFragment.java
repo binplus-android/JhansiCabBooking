@@ -263,7 +263,7 @@ public class PaymentFragment extends Fragment {
 //                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_loc);
 //        tv_ridername.setText(resp.getRecordList().getName());
 //        tv_vnumb.setText(resp.getRecordList().getContactNo());
-//        tv_otp.setText(getActivity().getString(R.string.otp)+" "+"0");
+ //      tv_otp.setText(getActivity().getString(R.string.otp)+" "+"-");
 //        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
 //                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
 //
