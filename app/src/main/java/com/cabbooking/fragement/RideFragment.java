@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
@@ -19,7 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
-import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.PickupResp;
 import com.cabbooking.Response.TripRiderResp;
@@ -35,6 +36,7 @@ import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -54,9 +56,14 @@ public class RideFragment extends Fragment {
     SessionManagment sessionManagment;
     PickupResp pickupResp;
     Repository repository;
+
+
     private Handler handler;
     private Runnable apiRunnable;
-    private static final long API_REFRESH_INTERVAL = 10000;
+    private boolean isFragmentVisible = false;
+    private int currentStatus = 0; // 0 = keep refreshing, 1 = stop refreshing
+
+    private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
 
     public RideFragment() {
         // Required empty public constructor
@@ -104,7 +111,9 @@ public class RideFragment extends Fragment {
                         Log.e("TripRiderResp ",data.toString());
                         if (resp.getStatus()==200) {
                         int tripStatus=resp.getRecordList().getTripStatus();
+                            onStatusReceivedFromApi(tripStatus);
                        if(tripStatus==1){
+
                          binding.linSearch.setVisibility(View.GONE); 
                          binding.linRide.setVisibility(View.VISIBLE);
                           callGetRiderDetail(resp.getRecordList().getTripId());
@@ -130,22 +139,52 @@ public class RideFragment extends Fragment {
             }, false);
 
         }
+    @Override
+    public void onResume() {
+        super.onResume();
+        isFragmentVisible = true;
+        startApiRefresh();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFragmentVisible = false;
+        stopApiRefresh();
+    }
     private void startApiRefresh() {
-        handler = new Handler();
-        apiRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Call the API
-                getRiderStatus();
-                // Schedule the next run
-                handler.postDelayed(this, API_REFRESH_INTERVAL);
-            }
-        };
+        if (handler == null) {
+            handler = new Handler();
+        }
+        if (apiRunnable == null) {
+            apiRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isFragmentVisible && currentStatus == 0) {
+                        getRiderStatus();
+                        handler.postDelayed(this, API_REFRESH_INTERVAL);
+                    }
+                }
+            };
+        }
         handler.postDelayed(apiRunnable, API_REFRESH_INTERVAL);
     }
+    private void stopApiRefresh() {
+        if (handler != null && apiRunnable != null) {
+            handler.removeCallbacks(apiRunnable);
+        }
+    }
+
+    // Call this inside your API response
+    private void onStatusReceivedFromApi(int status) {
+        currentStatus = status;
+        if (currentStatus == 1) {
+            stopApiRefresh();
+        }
+    }
+
 
     public void callGetRiderDetail(int tripId) {
-
+        list.clear();
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
         object.addProperty("tripId",tripId);
@@ -155,19 +194,28 @@ public class RideFragment extends Fragment {
                 try {
                     DriverDetailResp resp = (DriverDetailResp) data;
                     Log.e("RiderResp ",data.toString());
-                    //if (resp.getStatus()==200) {
-                    list.clear();
-                    list.add(new DestinationModel());
-                    adapter=new RideMateAdapter("",getActivity(), list, new RideMateAdapter.onTouchMethod() {
-                        @Override
-                        public void onSelection(int pos) {
-                            adapter.notifyDataSetChanged();
+                    if (resp.getStatus()==200) {
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
+                        binding.tvRidername.setText(resp.getRecordList().getName());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
+                        if(!common.checkNullString(resp.getRecordList().getseat()).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getseat()+" Seater ) ");
                         }
-                    });
-                    binding.recList.setAdapter(adapter);
-//                    }else{
-//                        common.errorToast(resp.getError());
-//                    }
+                       else{
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+                        }
+                        binding.tvRate.setText("Rs. "+resp.getRecordList().getAmount());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+
+
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -214,7 +262,7 @@ public class RideFragment extends Fragment {
             @Override
             public void onResponse(Object data) {
                 try {
-                    CommonResp resp = (CommonResp) data;
+                    CancleRideResp resp = (CancleRideResp) data;
                     Log.e("rideCancle ",data.toString());
                     if (resp.getStatus()==200) {
                         common.successToast(resp.getMessage());
@@ -246,7 +294,6 @@ public class RideFragment extends Fragment {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
-        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         pickupResp = getArguments().getParcelable("pickupResp");
         tripId=pickupResp.getRecordList().getId();
 

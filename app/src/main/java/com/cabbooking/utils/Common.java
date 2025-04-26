@@ -130,6 +130,16 @@ public class Common {
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
     }
+    public String checkNullString(String value) {
+        String str = "";
+        if (value == null || value.isEmpty ( ) || value.equals ("")) {
+            str = "";
+        } else {
+            str = value;
+        }
+        return str;
+    }
+
     public boolean isValidMobileNumber(String mobileNumber) {
         String pattern = "^[6-9][0-9]{9}$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);

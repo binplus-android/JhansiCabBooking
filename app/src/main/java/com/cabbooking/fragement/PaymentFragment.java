@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
@@ -25,7 +26,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.PaymentResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.RideMateAdapter;
@@ -38,6 +42,7 @@ import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.google.firebase.database.core.Repo;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -57,6 +62,7 @@ public class PaymentFragment extends Fragment {
     String trip_type="",outstation_type="",tripId="",driver_Number="999999999";
     SessionManagment sessionManagment;
     Repository repository;
+    String amount_pay="0";
     public static PaymentFragment newInstance(String param1, String param2) {
         PaymentFragment fragment = new PaymentFragment();
         Bundle args = new Bundle();
@@ -82,24 +88,20 @@ public class PaymentFragment extends Fragment {
         binding = FragmentPaymentBinding.inflate(inflater, container, false);
         initView();
         allClick();
-        getList();
+
+        getDetailApi(tripId);
 
 
         return binding.getRoot();
     }
-    public void getList() {
-        list.clear();
-        list.add(new DestinationModel());
-        adapter=new RideMateAdapter("payment",getActivity(), list, new RideMateAdapter.onTouchMethod() {
-            @Override
-            public void onSelection(int pos) {
-                adapter.notifyDataSetChanged();
-            }
-        });
-        binding.recList.setAdapter(adapter);
-    }
 
     private void allClick() {
+        binding.btnCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callCancleRide();
+            }
+        });
         binding.btnPay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,8 +112,14 @@ public class PaymentFragment extends Fragment {
                 } else {
                     RadioButton selectedRadio = binding.getRoot().findViewById(selectedId);
                     String selectedText = selectedRadio.getText().toString();
-
-                    callPayment(selectedText);
+                    String paymentStatus="";
+                    if(selectedText.equalsIgnoreCase("cash")){
+                        paymentStatus="Success";
+                    }
+                    else{
+                        paymentStatus="";
+                    }
+                    callPayment(selectedText,paymentStatus);
                 }
 
 
@@ -119,25 +127,33 @@ public class PaymentFragment extends Fragment {
         });
     }
 
-    public void callPayment(String paymentTypeVal)
+    public void callPayment(String paymentTypeVal,String payment_status)
         {
             JsonObject object=new JsonObject();
             object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
             object.addProperty("tripId",tripId);
-            object.addProperty("paymentType",paymentTypeVal);
+            object.addProperty("paymentMode",paymentTypeVal);
+            object.addProperty("amount", amount_pay);
+            object.addProperty("gst","");
+            object.addProperty("paymentReference","");
+             object.addProperty("paymentStatus",payment_status);
+
+            object.addProperty("signature","");
+            object.addProperty("description","");
             repository.paymentApi(object, new ResponseService() {
                 @Override
                 public void onResponse(Object data) {
                     try {
-                        CommonResp resp = (CommonResp) data;
+                        PaymentResp resp = (PaymentResp) data;
                         Log.e("paymentApi ",data.toString());
-                        if (resp.getStatus()==200) {
-                            common.successToast(resp.getMessage());
-                            infoDialog();
+//                        if (resp.getStatus()==200) {
+//                            common.successToast(resp.getMessage());
+                            infoDialog(resp);
 
-                        }else{
-                            common.errorToast(resp.getError());
-                        }
+
+//                        }else{
+//                            common.errorToast(resp.getError());
+//                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -150,11 +166,54 @@ public class PaymentFragment extends Fragment {
 
         }
 
+    public void getDetailApi(String tripId)    {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        repository.getDetailTrip(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    TripDetailRes resp = (TripDetailRes) data;
+                    Log.e("tripDetail ",data.toString());
+                    if (resp.getStatus()==200) {
+                         amount_pay=resp.getRecordList().getAmount();
+
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
+                        binding.tvRidername.setText(resp.getRecordList().getName());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
+                        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+                        }
+                        else{
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+                        }
+                        binding.tvRate.setText("Rs. "+resp.getRecordList().getAmount());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
 
 
 
-
-    private void infoDialog()   {
+    public void infoDialog(PaymentResp resp)
+    {
         Dialog dialog = new Dialog (getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow();
@@ -162,15 +221,28 @@ public class PaymentFragment extends Fragment {
         dialog.getWindow().setGravity(Gravity.CENTER);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         dialog.setContentView (R.layout.dialog_booking);
+        ImageView iv_loc,iv_car;
+        TextView tv_ridername,tv_vnumb,tv_vname,tv_vdesc,tv_bookdate,tv_returndate,tv_otp;
+        tv_ridername=dialog.findViewById(R.id.tv_ridername);
+        tv_otp=dialog.findViewById(R.id.tv_otp);
+        tv_bookdate=dialog.findViewById(R.id.tv_bookdate);
+        tv_vnumb=dialog.findViewById(R.id.tv_vnumb);
+        tv_vname=dialog.findViewById(R.id.tv_vname);
+        tv_vdesc=dialog.findViewById(R.id.tv_vdesc);
+        iv_loc=dialog.findViewById(R.id.iv_loc);
+        iv_car=dialog.findViewById(R.id.iv_car);
         TextView tv_trip=dialog.findViewById(R.id.tv_trip);
         ImageView img_close = dialog.findViewById(R.id.img_close);
-        TextView tv_call_ride,tv_location,tv_cancle,tv_returndate;
+        TextView tv_call_ride,tv_location,tv_cancle;
         tv_call_ride = dialog.findViewById(R.id.tv_call_ride);
         tv_returndate = dialog.findViewById(R.id.tv_returndate);
         img_close = dialog.findViewById(R.id.img_close);
         tv_location = dialog.findViewById(R.id.tv_location);
         tv_cancle = dialog.findViewById(R.id.tv_cancle);
         img_close.setOnClickListener(v -> dialog.dismiss());
+
+
+
         if(trip_type.equalsIgnoreCase("1")){
             tv_trip.setVisibility(View.VISIBLE);
             if(outstation_type.equalsIgnoreCase("0")){
@@ -186,6 +258,27 @@ public class PaymentFragment extends Fragment {
             tv_returndate.setVisibility(View.GONE);
             tv_trip.setVisibility(View.GONE);
         }
+
+//        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+//                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_loc);
+//        tv_ridername.setText(resp.getRecordList().getName());
+//        tv_vnumb.setText(resp.getRecordList().getContactNo());
+//        tv_otp.setText(getActivity().getString(R.string.otp)+" "+"0");
+//        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+//                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
+//
+//        tv_vname.setText(resp.getRecordList().getVehicleModelName());
+//        tv_bookdate.setText(getActivity().getString(R.string.booking_date)+resp.recordList.getCreated_at());
+//        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
+//            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+//        }
+//        else{
+//            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+//        }
+//
+//        tv_returndate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+
+
         tv_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +317,6 @@ public class PaymentFragment extends Fragment {
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         tripId=getArguments().getString("tripId");
-        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);
@@ -242,6 +334,40 @@ public class PaymentFragment extends Fragment {
             binding.relReturnDate.setVisibility(View.GONE);
         }
 
+
+    }
+
+    public void callCancleRide() {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        repository.cancleRide(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    CancleRideResp resp = (CancleRideResp) data;
+                    Log.e("rideCancle ",data.toString());
+                    if (resp.getStatus()==200) {
+                        common.successToast(resp.getMessage());
+                        Intent intent = new Intent(getActivity(), MapActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        getActivity().finish();
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
 
     }
 }

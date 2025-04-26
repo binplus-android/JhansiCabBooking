@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentAfterPaymentDoneBinding;
 import com.cabbooking.databinding.FragmentPaymentBinding;
@@ -25,6 +27,7 @@ import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.google.firebase.database.core.Repo;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Retrofit;
 
@@ -35,14 +38,16 @@ import retrofit2.Retrofit;
  */
 public class AfterPaymentDoneFragment extends Fragment {
 
-    String trip_type="",outstation_type="",tripId="";
+    String trip_type="",outstation_type="",tripId="",driver_Number="";
     SessionManagment sessionManagment;
     FragmentAfterPaymentDoneBinding binding;
     Repository repository;
     Common common;
-    private Runnable apiRunnable;
     private Handler handler;
-    private static final long API_REFRESH_INTERVAL = 10000;
+    private Runnable apiRunnable;
+    private boolean isFragmentVisible = false;
+
+    private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
 
     public AfterPaymentDoneFragment() {
         // Required empty public constructor
@@ -83,10 +88,29 @@ public class AfterPaymentDoneFragment extends Fragment {
             @Override
             public void onResponse(Object data) {
                 try {
-                    CommonResp resp = (CommonResp) data;
+                    TripDetailRes resp = (TripDetailRes) data;
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
+
+                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+resp.getRecordList().getCreated_at());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
+                        binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+"-");
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
+                        binding.tvRidername.setText(resp.getRecordList().getName());
+                        binding.tvNum.setText(resp.getRecordList().getContactNo());
+                        driver_Number=resp.getRecordList().getContactNo();
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
+                        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+                        }
+                        else{
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+                        }
+                        binding.tvPrice.setText("Rs. "+resp.getRecordList().getAmount());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
 
 
                     }else{
@@ -105,6 +129,13 @@ public class AfterPaymentDoneFragment extends Fragment {
     }
 
     private void allClick() {
+        binding.ivCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.calling(driver_Number);
+            }
+        });
+
     }
 
     private void initView() {
@@ -131,19 +162,49 @@ public class AfterPaymentDoneFragment extends Fragment {
             binding.tvTripType.setVisibility(View.GONE);
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        isFragmentVisible = true;
+        startApiRefresh();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFragmentVisible = false;
+        stopApiRefresh();
+    }
     private void startApiRefresh() {
-        handler = new Handler();
-        apiRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Call the API
-                driverLocation();
-                // Schedule the next run
-                handler.postDelayed(this, API_REFRESH_INTERVAL);
-            }
-        };
+        if (handler == null) {
+            handler = new Handler();
+        }
+        if (apiRunnable == null) {
+            apiRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isFragmentVisible) {
+                        driverLocation();
+                        handler.postDelayed(this, API_REFRESH_INTERVAL);
+                    }
+                }
+            };
+        }
         handler.postDelayed(apiRunnable, API_REFRESH_INTERVAL);
     }
+    private void stopApiRefresh() {
+        if (handler != null && apiRunnable != null) {
+            handler.removeCallbacks(apiRunnable);
+        }
+    }
+
+    // Call this inside your API response
+    private void onStatusReceivedFromApi(int status) {
+//        currentStatus = status;
+//        if (currentStatus == 1) {
+//            stopApiRefresh();
+//        }
+    }
+
     public void driverLocation()
     {
         JsonObject object=new JsonObject();
@@ -157,7 +218,6 @@ public class AfterPaymentDoneFragment extends Fragment {
                     Log.e("driverLocation ",data.toString());
                     if (resp.getStatus()==200) {
                         common.successToast(resp.getMessage());
-
 
                     }else{
                         common.errorToast(resp.getError());

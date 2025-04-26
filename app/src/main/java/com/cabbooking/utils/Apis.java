@@ -1,10 +1,13 @@
 package com.cabbooking.utils;
 
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
+import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.VechicleModel;
@@ -31,14 +34,16 @@ public interface Apis {
     Call<TripRiderResp> tripStatus(@Body  JsonObject jsonObject);
      @POST("driverDetail")
     Call<DriverDetailResp> driverDetail(@Body  JsonObject jsonObject);
-     @POST("cancleRide")
-    Call<CommonResp> cancleRide(@Body  JsonObject jsonObject);
-     @POST("payment")
-    Call<CommonResp> paymentApi(@Body  JsonObject jsonObject);
-     @POST("driverLocation")
-    Call<CommonResp> driverLocation(@Body  JsonObject jsonObject);
+     @POST("cancelTrip")
+    Call<CancleRideResp> cancleRide(@Body  JsonObject jsonObject);
+
      @POST("tripDetail")
-    Call<CommonResp> tripDetail(@Body  JsonObject jsonObject);
+    Call<TripDetailRes> tripDetail(@Body  JsonObject jsonObject);
+
+    @POST("payment")
+    Call<PaymentResp> paymentApi(@Body  JsonObject jsonObject);
+    @POST("driverLiveLocation")
+    Call<CommonResp> driverLocation(@Body  JsonObject jsonObject);
   @POST("appSettings")
   Call<AppSettingModel> appSetting();
 

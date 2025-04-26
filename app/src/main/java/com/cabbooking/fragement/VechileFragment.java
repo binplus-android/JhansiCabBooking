@@ -164,10 +164,10 @@ public class VechileFragment extends Fragment {
         object.addProperty("destination", ((MapActivity) getActivity()).getDestionationAddress());
 
         if(outstation_type.equalsIgnoreCase("1")) {
-            object.addProperty("returndate", binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString());
+            object.addProperty("returnDate", binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString());
         }
         else{
-            object.addProperty("returndate","");
+            object.addProperty("returnDate","");
         }
             repository.getVechicleData(object, new ResponseService() {
                 @Override

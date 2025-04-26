@@ -136,9 +136,9 @@ int vechicle_pos;
          object.addProperty("distance",distance);
          object.addProperty("amount",vec_list.get(vechicle_pos).getFare()*Double.parseDouble(distance));
         if(outstation_type.equalsIgnoreCase("1")) {
-            object.addProperty("returndate",getArguments().getString("returnDate"));  }
+            object.addProperty("returnDate",getArguments().getString("returnDate"));  }
         else{
-            object.addProperty("returndate","");
+            object.addProperty("returnDate","");
         }
 
         repository.addTrip(object, new ResponseService() {

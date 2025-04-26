@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
+import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.VechicleModel;
@@ -274,9 +277,9 @@ public class Repository {
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.cancleRide(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.cancleRide(postData).enqueue(new Callback<CancleRideResp>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<CancleRideResp> call, Response<CancleRideResp> response) {
                 Log.e("repositiry_riderResp", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -287,7 +290,7 @@ public class Repository {
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<CancleRideResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
@@ -299,9 +302,9 @@ public class Repository {
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.paymentApi(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.paymentApi(postData).enqueue(new Callback<PaymentResp>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<PaymentResp> call, Response<PaymentResp> response) {
                 Log.e("repositiry_payment", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -312,7 +315,7 @@ public class Repository {
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<PaymentResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
@@ -349,9 +352,9 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.tripDetail(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.tripDetail(postData).enqueue(new Callback<TripDetailRes>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<TripDetailRes> call, Response<TripDetailRes> response) {
                 Log.e("repositiry_detail", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -362,7 +365,7 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<TripDetailRes> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
