@@ -99,7 +99,7 @@ public class PaymentFragment extends Fragment {
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callCancleRide();
+                callCancleDialog();
             }
         });
         binding.btnPay.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +210,39 @@ public class PaymentFragment extends Fragment {
 
     }
 
+    public void callCancleDialog(){
+        Dialog dialog;
 
+        dialog = new Dialog (getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_cancle_confirm);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
+
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+            }
+        });
+
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                common.callCancleRide(getActivity(),sessionManagment.getUserDetails().get(KEY_ID),tripId);
+            }
+        });
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
+
+
+    }
 
     public void infoDialog(PaymentResp resp)
     {
@@ -337,37 +369,5 @@ public class PaymentFragment extends Fragment {
 
     }
 
-    public void callCancleRide() {
-        JsonObject object=new JsonObject();
-        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("tripId",tripId);
-        repository.cancleRide(object, new ResponseService() {
-            @Override
-            public void onResponse(Object data) {
-                try {
-                    CancleRideResp resp = (CancleRideResp) data;
-                    Log.e("rideCancle ",data.toString());
-                    if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
-                        Intent intent = new Intent(getActivity(), MapActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
-                        getActivity().finish();
 
-                    }else{
-                        common.errorToast(resp.getError());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onServerError(String errorMsg) {
-                Log.e("errorMsg",errorMsg);
-            }
-        }, false);
-
-    }
 }

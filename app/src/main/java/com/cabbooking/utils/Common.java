@@ -41,6 +41,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
@@ -123,6 +124,39 @@ public class Common {
     public void commonTokenExpiredLogout(Activity activity){
         unSubscribeToTopic();
         sessionManagment.logout(activity);
+    }
+    public void callCancleRide(Activity activity,String userId,String tripId) {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",userId);
+        object.addProperty("tripId",tripId);
+        repository.cancleRide(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    CancleRideResp resp = (CancleRideResp) data;
+                    Log.e("rideCancle ",data.toString());
+                    if (resp.getStatus()==200) {
+                        successToast(resp.getMessage());
+                        Intent intent = new Intent(activity ,MapActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        activity.startActivity(intent);
+                        activity.finish();
+
+                    }else{
+                        errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
     }
     public boolean isValidEmailAddress(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";

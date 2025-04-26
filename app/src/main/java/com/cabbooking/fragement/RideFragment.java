@@ -5,13 +5,18 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -244,49 +249,50 @@ public class RideFragment extends Fragment {
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callCancleRide();
+                callCancleDialog();
             }
         }); binding.btnBottomCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callCancleRide();
+               callCancleDialog();
             }
         });
     }
+    public void callCancleDialog(){
+        Dialog dialog;
 
-    public void callCancleRide() {
-        JsonObject object=new JsonObject();
-        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("tripId",tripId);
-        repository.cancleRide(object, new ResponseService() {
-            @Override
-            public void onResponse(Object data) {
-                try {
-                    CancleRideResp resp = (CancleRideResp) data;
-                    Log.e("rideCancle ",data.toString());
-                    if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
-                        Intent intent = new Intent(getActivity(), MapActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
-                        getActivity().finish();
+        dialog = new Dialog (getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_cancle_confirm);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
 
-                    }else{
-                        common.errorToast(resp.getError());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
             @Override
-            public void onServerError(String errorMsg) {
-                Log.e("errorMsg",errorMsg);
+            public void onClick(View v) {
+                dialog.dismiss ();
             }
-        }, false);
+        });
+
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                common.callCancleRide(getActivity(),sessionManagment.getUserDetails().get(KEY_ID),String.valueOf(tripId));
+            }
+        });
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
+
 
     }
+
+
 
 
     public void initView() {
