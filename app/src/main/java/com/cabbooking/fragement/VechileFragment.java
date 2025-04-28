@@ -125,6 +125,12 @@ public class VechileFragment extends Fragment {
     }
 
     private void allClick() {
+        binding.linRetunDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSelectDate();
+            }
+        });
         binding.btnBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -389,12 +395,15 @@ public class VechileFragment extends Fragment {
                 int hour = timee.getHour();
                 int minute = timee.getMinute();
 
-                // Convert to 12hr format (without AM/PM)
-                String formattedHour = String.format("%02d", (hour % 12 == 0) ? 12 : hour % 12);
-                String formattedMinute = String.format("%02d", minute);
-                String time = formattedHour + ":" + formattedMinute + ":00";
+                // Create Calendar to handle AM/PM
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
 
-                tv_time_value=common.timeConversion12hrs(time);
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
+                String formattedTime = sdf.format(calendar.getTime());
+
+                tv_time_value = formattedTime;
                 binding.tvReturntime.setText(tv_time_value);
                 binding.linRetunDate.setVisibility(View.VISIBLE);
                 dialog.dismiss();
@@ -402,6 +411,7 @@ public class VechileFragment extends Fragment {
                 getList();
             }
         });
+
 
         iv_close.setOnClickListener(v -> dialog.dismiss());
         dialog.show();

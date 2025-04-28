@@ -6,6 +6,7 @@ import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -269,7 +271,13 @@ public class PaymentFragment extends Fragment {
         img_close = dialog.findViewById(R.id.img_close);
         tv_location = dialog.findViewById(R.id.tv_location);
         tv_cancle = dialog.findViewById(R.id.tv_cancle);
-        img_close.setOnClickListener(v -> dialog.dismiss());
+        img_close.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             dialog.dismiss();
+                                             commonIntent();
+                                         }
+                                     });
 
 
 
@@ -332,8 +340,22 @@ public class PaymentFragment extends Fragment {
         });
 
 
-        dialog.setCanceledOnTouchOutside (false);
-        dialog.show ();
+        dialog.setCanceledOnTouchOutside(false);
+
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+//                    dialog.dismiss();
+//                    commonIntent();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        dialog.show();
+
     }
 
     public void callDriver() {
