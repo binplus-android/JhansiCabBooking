@@ -211,14 +211,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public Double getDestinationLat() {
+        //remove if condition when map start working
+        if(destinationLat.equals("")){
+            return pickupLat;
+        }
+        else{
         return destinationLat;
-    }
+    }}
 
     public Double getDestinationLng() {
-        return destinationLng;
+        //remove if condition when map start working
+        if(destinationLng.equals("")){
+            return pickupLng;
+        }
+        else {
+            return destinationLng;
+        }
     }
     public String getDestionationAddress() {
-        return destinationAddress;
+        //remove if condition when map start working
+        if(destinationAddress.equals("")){
+            return pickAddres;
+        }
+        else {
+            return destinationAddress;
+        }
     }
 
     private void mapAllClick() {
