@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.DriverLocationResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentAfterPaymentDoneBinding;
@@ -28,6 +30,8 @@ import com.cabbooking.utils.SessionManagment;
 import com.google.firebase.database.core.Repo;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
+
+import java.util.Map;
 
 import retrofit2.Retrofit;
 
@@ -47,7 +51,7 @@ public class AfterPaymentDoneFragment extends Fragment {
     private Runnable apiRunnable;
     private boolean isFragmentVisible = false;
 
-    private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
+    private static final long API_REFRESH_INTERVAL = 8000; //  8 seconds
 
     public AfterPaymentDoneFragment() {
         // Required empty public constructor
@@ -92,7 +96,7 @@ public class AfterPaymentDoneFragment extends Fragment {
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
 
-                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+resp.getRecordList().getCreated_at());
+                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
                         binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
@@ -133,6 +137,12 @@ public class AfterPaymentDoneFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 common.calling(driver_Number);
+            }
+        });
+        binding.btnCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),tripId);
             }
         });
 
@@ -214,10 +224,11 @@ public class AfterPaymentDoneFragment extends Fragment {
             @Override
             public void onResponse(Object data) {
                 try {
-                    CommonResp resp = (CommonResp) data;
+                    DriverLocationResp resp = (DriverLocationResp) data;
                     Log.e("driverLocation ",data.toString());
                     if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
+                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
+                                resp.getRecordList().getLng());
 
                     }else{
                         common.errorToast(resp.getError());

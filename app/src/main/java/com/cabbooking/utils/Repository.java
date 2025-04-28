@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
+import com.cabbooking.Response.DriverLocationResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.Response.PaymentResp;
@@ -327,9 +328,9 @@ public void driverLocation(JsonObject postData, ResponseService responseService,
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.driverLocation(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.driverLocation(postData).enqueue(new Callback<DriverLocationResp>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<DriverLocationResp> call, Response<DriverLocationResp> response) {
                 Log.e("repositiry_drilocation", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -340,7 +341,7 @@ public void driverLocation(JsonObject postData, ResponseService responseService,
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<DriverLocationResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);

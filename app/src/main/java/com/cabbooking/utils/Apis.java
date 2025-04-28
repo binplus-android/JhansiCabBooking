@@ -3,6 +3,7 @@ package com.cabbooking.utils;
 import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
+import com.cabbooking.Response.DriverLocationResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.Response.PaymentResp;
@@ -43,7 +44,7 @@ public interface Apis {
     @POST("payment")
     Call<PaymentResp> paymentApi(@Body  JsonObject jsonObject);
     @POST("driverLiveLocation")
-    Call<CommonResp> driverLocation(@Body  JsonObject jsonObject);
+    Call<DriverLocationResp> driverLocation(@Body  JsonObject jsonObject);
   @POST("appSettings")
   Call<AppSettingModel> appSetting();
 

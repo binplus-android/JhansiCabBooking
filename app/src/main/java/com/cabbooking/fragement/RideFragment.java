@@ -249,48 +249,16 @@ public class RideFragment extends Fragment {
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callCancleDialog();
+                common.callCancleDialog(getActivity(),String.valueOf(tripId));
             }
         }); binding.btnBottomCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               callCancleDialog();
+                common.callCancleDialog(getActivity(),String.valueOf(tripId));
             }
         });
     }
-    public void callCancleDialog(){
-        Dialog dialog;
 
-        dialog = new Dialog (getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setGravity(Gravity.CENTER);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        dialog.setContentView (R.layout.dialog_cancle_confirm);
-        Button btn_no,btn_yes;
-        btn_yes=dialog.findViewById (R.id.btn_yes);
-        btn_no=dialog.findViewById (R.id.btn_no);
-
-        btn_no.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss ();
-            }
-        });
-
-        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                common.callCancleRide(getActivity(),sessionManagment.getUserDetails().get(KEY_ID),String.valueOf(tripId));
-            }
-        });
-        dialog.setCanceledOnTouchOutside (false);
-        dialog.show ();
-
-
-    }
 
 
 

@@ -145,7 +145,7 @@ public class VechileFragment extends Fragment {
     }
 
     public static String getFormattedTime() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.US);
         return timeFormat.format(new Date());
     }
 

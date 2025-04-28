@@ -99,7 +99,7 @@ public class PaymentFragment extends Fragment {
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callCancleDialog();
+              common.callCancleDialog(getActivity(),tripId);
             }
         });
         binding.btnPay.setOnClickListener(new View.OnClickListener() {
@@ -239,39 +239,7 @@ public class PaymentFragment extends Fragment {
 
     }
 
-    public void callCancleDialog(){
-        Dialog dialog;
 
-        dialog = new Dialog (getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setGravity(Gravity.CENTER);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        dialog.setContentView (R.layout.dialog_cancle_confirm);
-        Button btn_no,btn_yes;
-        btn_yes=dialog.findViewById (R.id.btn_yes);
-        btn_no=dialog.findViewById (R.id.btn_no);
-
-        btn_no.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss ();
-            }
-        });
-
-        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                common.callCancleRide(getActivity(),sessionManagment.getUserDetails().get(KEY_ID),tripId);
-            }
-        });
-        dialog.setCanceledOnTouchOutside (false);
-        dialog.show ();
-
-
-    }
 
     public void infoDialog( TripDetailRes resp)
     {
@@ -320,6 +288,12 @@ public class PaymentFragment extends Fragment {
             tv_returndate.setVisibility(View.GONE);
             tv_trip.setVisibility(View.GONE);
         }
+        tv_cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),tripId);
+            }
+        });
 
         driver_Number=resp.getRecordList().getContactNo();
         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
@@ -331,7 +305,7 @@ public class PaymentFragment extends Fragment {
                 placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
 
         tv_vname.setText(resp.getRecordList().getVehicleModelName());
-        tv_bookdate.setText(getActivity().getString(R.string.booking_date)+resp.recordList.getCreated_at());
+        tv_bookdate.setText(getActivity().getString(R.string.booking_date)+common.changeDateFormate(resp.getRecordList().getCreated_at()));
         if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
             tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
         }

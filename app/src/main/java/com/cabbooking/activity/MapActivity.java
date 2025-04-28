@@ -190,6 +190,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    public  void setDriverLocation(String  Lat,String  Lng){
+
+    }
+
     public String getPickupAddress() {
         return pickAddres;
     } public Double getPickupLat() {
