@@ -143,7 +143,7 @@ public class AfterPaymentDoneFragment extends Fragment {
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
         repository=new Repository(getActivity());
-        trip_type=getArguments().getString("tripId");
+        tripId=getArguments().getString("tripId");
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){

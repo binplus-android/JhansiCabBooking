@@ -59,7 +59,7 @@ public class PaymentFragment extends Fragment {
     Common common;
     ArrayList<DestinationModel>list;
     RideMateAdapter adapter;
-    String trip_type="",outstation_type="",tripId="",driver_Number="999999999";
+    String trip_type="",outstation_type="",tripId="",driver_Number="";
     SessionManagment sessionManagment;
     Repository repository;
     String amount_pay="0";
@@ -146,14 +146,15 @@ public class PaymentFragment extends Fragment {
                     try {
                         PaymentResp resp = (PaymentResp) data;
                         Log.e("paymentApi ",data.toString());
-//                        if (resp.getStatus()==200) {
-//                            common.successToast(resp.getMessage());
-                            infoDialog(resp);
+                        if (resp.getStatus()==200) {
+                            common.successToast(resp.getMessage());
+//                            infoDialog(tripId);
+                            callDetail(tripId);
 
 
-//                        }else{
-//                            common.errorToast(resp.getError());
-//                        }
+                        }else{
+                            common.errorToast(resp.getError());
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -165,6 +166,34 @@ public class PaymentFragment extends Fragment {
             }, false);
 
         }
+
+    private void callDetail(String tripId_val) {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId_val);
+        repository.getDetailTrip(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    TripDetailRes resp = (TripDetailRes) data;
+                    Log.e("tripDetail ",data.toString());
+                    if (resp.getStatus()==200) {
+                        infoDialog(resp);
+                        tripId=tripId_val;
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
 
     public void getDetailApi(String tripId)    {
         JsonObject object=new JsonObject();
@@ -244,8 +273,9 @@ public class PaymentFragment extends Fragment {
 
     }
 
-    public void infoDialog(PaymentResp resp)
+    public void infoDialog( TripDetailRes resp)
     {
+
         Dialog dialog = new Dialog (getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow();
@@ -291,24 +321,25 @@ public class PaymentFragment extends Fragment {
             tv_trip.setVisibility(View.GONE);
         }
 
-//        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
-//                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_loc);
-//        tv_ridername.setText(resp.getRecordList().getName());
-//        tv_vnumb.setText(resp.getRecordList().getContactNo());
- //      tv_otp.setText(getActivity().getString(R.string.otp)+" "+"-");
-//        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
-//                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
-//
-//        tv_vname.setText(resp.getRecordList().getVehicleModelName());
-//        tv_bookdate.setText(getActivity().getString(R.string.booking_date)+resp.recordList.getCreated_at());
-//        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
-//            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
-//        }
-//        else{
-//            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
-//        }
-//
-//        tv_returndate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+        driver_Number=resp.getRecordList().getContactNo();
+        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_loc);
+        tv_ridername.setText(resp.getRecordList().getName());
+        tv_vnumb.setText(resp.getRecordList().getContactNo());
+       tv_otp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
+        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
+
+        tv_vname.setText(resp.getRecordList().getVehicleModelName());
+        tv_bookdate.setText(getActivity().getString(R.string.booking_date)+resp.recordList.getCreated_at());
+        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
+            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+        }
+        else{
+            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+        }
+
+        tv_returndate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
 
 
         tv_location.setOnClickListener(new View.OnClickListener() {
