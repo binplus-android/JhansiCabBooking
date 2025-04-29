@@ -4,9 +4,18 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.cabbooking.Response.CancleRideResp;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.DriverDetailResp;
+import com.cabbooking.Response.DriverLocationResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
+import com.cabbooking.Response.PaymentResp;
+import com.cabbooking.Response.PickupResp;
+import com.cabbooking.Response.TripDetailRes;
+import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
+import com.cabbooking.model.VechicleModel;
 import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.BuildConfig;
 
@@ -159,13 +168,212 @@ public class Repository {
             @Override
             public void onFailure(Call<AppSettingModel> call, Throwable t) {
                 showHideProgressBar(false);
-                Log.e("repository_app_settingerror",t.toString());
+                Log.e("repository_eror",t.toString());
                 showErrorMsg(responseService, t);
             }
         });
 
     }
+    public void getVechicleData(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
 
+        apiInterface.getVehicleFare(postData).enqueue(new Callback<VechicleModel>() {
+            @Override
+            public void onResponse(Call<VechicleModel> call, Response<VechicleModel> response) {
+                Log.e("repository_vechicle", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VechicleModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void addTrip(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.addTrip(postData).enqueue(new Callback<PickupResp>() {
+            @Override
+            public void onResponse(Call<PickupResp> call, Response<PickupResp> response) {
+                Log.e("repository_vechicle", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PickupResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void getTripRiderStatus(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.tripStatus(postData).enqueue(new Callback<TripRiderResp>() {
+            @Override
+            public void onResponse(Call<TripRiderResp> call, Response<TripRiderResp> response) {
+                Log.e("repositiry_riderResp", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TripRiderResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void getDriverDetail(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.driverDetail(postData).enqueue(new Callback<DriverDetailResp>() {
+            @Override
+            public void onResponse(Call<DriverDetailResp> call, Response<DriverDetailResp> response) {
+                Log.e("repositiry_riderResp", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DriverDetailResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void cancleRide(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.cancleRide(postData).enqueue(new Callback<CancleRideResp>() {
+            @Override
+            public void onResponse(Call<CancleRideResp> call, Response<CancleRideResp> response) {
+                Log.e("repositiry_riderResp", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CancleRideResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+ public void paymentApi(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.paymentApi(postData).enqueue(new Callback<PaymentResp>() {
+            @Override
+            public void onResponse(Call<PaymentResp> call, Response<PaymentResp> response) {
+                Log.e("repositiry_payment", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PaymentResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+public void driverLocation(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.driverLocation(postData).enqueue(new Callback<DriverLocationResp>() {
+            @Override
+            public void onResponse(Call<DriverLocationResp> call, Response<DriverLocationResp> response) {
+                Log.e("repositiry_drilocation", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DriverLocationResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+public void getDetailTrip(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.tripDetail(postData).enqueue(new Callback<TripDetailRes>() {
+            @Override
+            public void onResponse(Call<TripDetailRes> call, Response<TripDetailRes> response) {
+                Log.e("repositiry_detail", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TripDetailRes> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
 
 
 }

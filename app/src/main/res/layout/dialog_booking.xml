@@ -206,14 +206,16 @@
         android:weightSum="3"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="14pt">
         <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/tv_call_ride"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:layout_weight="1"
+            android:layout_weight=".9"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/call_ride_mate"
             android:textSize="@dimen/space_5" />
         <View
@@ -221,12 +223,15 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"/>
         <TextView
+            android:layout_marginHorizontal="@dimen/space_5"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/tv_location"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/driver_live_location"
             android:textSize="@dimen/space_5" />
         <View
@@ -235,12 +240,14 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"/>
         <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/tv_cancle"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:layout_weight="1"
+            android:layout_weight=".9"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/Cancel_Ride"
             android:textSize="@dimen/space_5" />
     </LinearLayout>

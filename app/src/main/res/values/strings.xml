@@ -53,13 +53,14 @@
     <string name="Credit_Card">Credit Card</string>
     <string name="Debit_Card">Debit Card</string>
     <string name="cash">Cash</string>
-    <string name="booking_date">Booking date : 14-04-2025 | 09:30 PM</string>
+    <string name="booking_date">Booking date : </string>
     <string name="return_date">Return date : </string>
-    <string name="otp">OTP : 1234</string>
+    <string name="otp">OTP :</string>
     <string name="call_ride_mate">Call Ride Mate</string>
     <string name="driver_live_location">Driver Live Location</string>
     <string name="vechicle_recommendation">Vechicle Recommendation</string>
     <string name="confirm_your_pickup">Confirm your pickup</string>
+    <string name="confirmation">Confirmation</string>
     <string name="confirm_loc">Confirm Location</string>
     <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
     <string name="searching">Searching...</string>
@@ -72,6 +73,7 @@
     <string name="leaving_so_soon">Leaving so soon ?</string>
     <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
     <string name="are_you_sure_you_want_to_logout_this_app">Are you sure you want to logout this application?</string>
+    <string name="are_you_sure_you_want_to_cancle_ride">Are you sure you want to cancel ride?</string>
     <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>

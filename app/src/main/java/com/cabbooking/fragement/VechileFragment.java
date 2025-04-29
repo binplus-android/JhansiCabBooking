@@ -1,10 +1,12 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
@@ -12,9 +14,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -30,8 +35,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.LoginResp;
+import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
+import com.cabbooking.activity.OTPActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
@@ -40,10 +48,24 @@ import com.cabbooking.model.VechicleModel;
 import com.cabbooking.model.VechicleModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.RecyclerTouchListener;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.cabbooking.utils.ToastMsg;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.xml.transform.sax.SAXResult;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +76,7 @@ public class VechileFragment extends Fragment {
 
     FragmentVechileBinding binding;
     Common common;
-    ArrayList<VechicleModel> list;
+    ArrayList<VechicleModel.RecordList> list;
     VechicleAdapter adapter;
     SessionManagment sessionManagment;
     String trip_type="",outstation_type="";
@@ -62,6 +84,8 @@ public class VechileFragment extends Fragment {
     String time = "";
     String tv_time_value="",tv_date_value;
     String sel_date="";
+    Repository repository;
+    int sel_pos=0;
 
 
     public VechileFragment() {
@@ -91,6 +115,8 @@ public class VechileFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_vechile, container, false);
         binding = FragmentVechileBinding.inflate(inflater, container, false);
         initView();
+        binding.tvReturndate.setText(getFormattedDate());
+        binding.tvReturntime.setText(getFormattedTime());
         getList();
         allClick();
         manageTripTypeClick();
@@ -99,36 +125,101 @@ public class VechileFragment extends Fragment {
     }
 
     private void allClick() {
+        binding.linRetunDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSelectDate();
+            }
+        });
         binding.btnBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                common.switchFragment(new PickUpFragment());
+                String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
+                Fragment fm=new PickUpFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("myList", list);
+                bundle.putString("pos", String.valueOf(sel_pos));
+                bundle.putString("returnDate",returnDateval);
+                fm.setArguments(bundle);
+                common.switchFragment(fm);
             }
         });
+    }
+    public static String getFormattedDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        return dateFormat.format(new Date());
     }
 
-    private void getList() {
-        list.clear();
-        list.add(new VechicleModel("Mini"));
-        list.add(new VechicleModel("Suv"));
-        list.add(new VechicleModel("Auto"));
-        binding.btnBook.setText("Book "+list.get(0).getName());
-        adapter = new VechicleAdapter(getActivity(), list, new VechicleAdapter.onTouchMethod() {
-            @Override
-            public void onSelection(int pos) {
-                binding.btnBook.setText("Book "+list.get(pos).getName());
-                adapter.notifyDataSetChanged();
-            }
-        });
-        binding.recList.setAdapter(adapter);
+    public static String getFormattedTime() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.US);
+        return timeFormat.format(new Date());
     }
+
+    public void getList() {
+             list.clear();
+            JsonObject object=new JsonObject();
+         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+         object.addProperty("isOutstation",trip_type);
+         object.addProperty("isRound",outstation_type);
+
+        object.addProperty("pickupLat", ((MapActivity) getActivity()).getPickupLat());
+        object.addProperty("pickupLng", ((MapActivity) getActivity()).getPickupLng());
+        object.addProperty("pickup", ((MapActivity) getActivity()).getPickupAddress());
+        object.addProperty("destinationLat", ((MapActivity) getActivity()).getDestinationLat());
+        object.addProperty("destinationLng", ((MapActivity) getActivity()).getDestinationLng());
+        object.addProperty("destination", ((MapActivity) getActivity()).getDestionationAddress());
+
+        if(outstation_type.equalsIgnoreCase("1")) {
+            object.addProperty("returnDate", binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString());
+        }
+        else{
+            object.addProperty("returnDate","");
+        }
+            repository.getVechicleData(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        VechicleModel resp = (VechicleModel) data;
+                        Log.e("getVechicleData ",data.toString());
+                        if (resp.getStatus()==200) {
+                            list.clear();
+                            list = resp.getRecordList();
+
+                            binding.btnBook.setText("Book "+list.get(0).getName());
+                            sel_pos=0;
+                            adapter = new VechicleAdapter(getActivity(), list, new VechicleAdapter.onTouchMethod() {
+                                @Override
+                                public void onSelection(int pos) {
+                                    sel_pos=pos;
+                                    binding.btnBook.setText("Book "+list.get(pos).getName());
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                            binding.recList.setAdapter(adapter);
+                        }else{
+                            common.errorToast(resp.getError());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
+
+        }
+
+
 
     public void initView() {
+        repository=new Repository(getActivity());
         sessionManagment=new SessionManagment(getActivity());
-        sessionManagment=new SessionManagment(getActivity());
+        sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
-        sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
+
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
@@ -153,6 +244,7 @@ public class VechileFragment extends Fragment {
             binding.linRoundTrip.setBackground(null); // No background
             binding.imgRoundTrip.setVisibility(View.GONE);
             sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
+            outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
             binding.linRetunDate.setVisibility(View.GONE);
         });
 
@@ -165,6 +257,7 @@ public class VechileFragment extends Fragment {
             binding.linOneWay.setBackground(null); // No background
             binding.imgOneWay.setVisibility(View.GONE);
             sessionManagment.setValue(KEY_OUTSTATION_TYPE,"1");
+            outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
 
            openSelectDate();
         });
@@ -302,17 +395,23 @@ public class VechileFragment extends Fragment {
                 int hour = timee.getHour();
                 int minute = timee.getMinute();
 
-                // Convert to 12hr format (without AM/PM)
-                String formattedHour = String.format("%02d", (hour % 12 == 0) ? 12 : hour % 12);
-                String formattedMinute = String.format("%02d", minute);
-                String time = formattedHour + ":" + formattedMinute + ":00";
+                // Create Calendar to handle AM/PM
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
 
-                tv_time_value=common.timeConversion12hrs(time);
-                binding.tvBooktime.setText(tv_time_value);
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
+                String formattedTime = sdf.format(calendar.getTime());
+
+                tv_time_value = formattedTime;
+                binding.tvReturntime.setText(tv_time_value);
                 binding.linRetunDate.setVisibility(View.VISIBLE);
                 dialog.dismiss();
+
+                getList();
             }
         });
+
 
         iv_close.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
@@ -378,10 +477,10 @@ public class VechileFragment extends Fragment {
             } else {
                 date = common.convertDateFormat(sel_date);
                 tv_date_value=(date);
-                binding.tvBookdate.setText(getActivity().getString(R.string.return_date)+tv_date_value);
+                binding.tvReturndate.setText(tv_date_value);
                 time = common.getCurrentTime();
                 tv_time_value=common.timeConversion12hrs(time);
-                binding.tvBooktime.setText(tv_time_value);
+                binding.tvReturntime.setText(tv_time_value);
                 binding.linRetunDate.setVisibility(View.VISIBLE);
                 openSelectTime();
                 dialog.dismiss();

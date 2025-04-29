@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
@@ -7,15 +9,31 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.DriverLocationResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentAfterPaymentDoneBinding;
 import com.cabbooking.databinding.FragmentPaymentBinding;
+import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.firebase.database.core.Repo;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
+
+import java.util.Map;
+
+import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,9 +42,17 @@ import com.cabbooking.utils.SessionManagment;
  */
 public class AfterPaymentDoneFragment extends Fragment {
 
-    String trip_type="",outstation_type="";
+    String trip_type="",outstation_type="",tripId="",driver_Number="";
     SessionManagment sessionManagment;
     FragmentAfterPaymentDoneBinding binding;
+    Repository repository;
+    Common common;
+    private Handler handler;
+    private Runnable apiRunnable;
+    private boolean isFragmentVisible = false;
+
+    private static final long API_REFRESH_INTERVAL = 8000; //  8 seconds
+
     public AfterPaymentDoneFragment() {
         // Required empty public constructor
     }
@@ -50,17 +76,84 @@ public class AfterPaymentDoneFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentAfterPaymentDoneBinding.inflate(inflater, container, false);
         initView();
+        driverLocation();
+        startApiRefresh();
+        getDetailApi();
         allClick();
 
         return binding.getRoot();
     }
 
+    public void getDetailApi()    {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        repository.getDetailTrip(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    TripDetailRes resp = (TripDetailRes) data;
+                    Log.e("tripDetail ",data.toString());
+                    if (resp.getStatus()==200) {
+
+                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
+                        binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
+                        binding.tvRidername.setText(resp.getRecordList().getName());
+                        binding.tvNum.setText(resp.getRecordList().getContactNo());
+                        driver_Number=resp.getRecordList().getContactNo();
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
+                        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+                        }
+                        else{
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+                        }
+                        binding.tvPrice.setText("Rs. "+resp.getRecordList().getAmount());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
+
     private void allClick() {
+        binding.ivCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.calling(driver_Number);
+            }
+        });
+        binding.btnCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),tripId);
+            }
+        });
+
     }
 
     private void initView() {
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());
+        common=new Common(getActivity());
+        repository=new Repository(getActivity());
+        tripId=getArguments().getString("tripId");
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){
@@ -78,6 +171,78 @@ public class AfterPaymentDoneFragment extends Fragment {
             binding.tvReturnDate.setVisibility(View.GONE);
             binding.tvTripType.setVisibility(View.GONE);
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        isFragmentVisible = true;
+        startApiRefresh();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFragmentVisible = false;
+        stopApiRefresh();
+    }
+    private void startApiRefresh() {
+        if (handler == null) {
+            handler = new Handler();
+        }
+        if (apiRunnable == null) {
+            apiRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isFragmentVisible) {
+                        driverLocation();
+                        handler.postDelayed(this, API_REFRESH_INTERVAL);
+                    }
+                }
+            };
+        }
+        handler.postDelayed(apiRunnable, API_REFRESH_INTERVAL);
+    }
+    private void stopApiRefresh() {
+        if (handler != null && apiRunnable != null) {
+            handler.removeCallbacks(apiRunnable);
+        }
+    }
+
+    // Call this inside your API response
+    private void onStatusReceivedFromApi(int status) {
+//        currentStatus = status;
+//        if (currentStatus == 1) {
+//            stopApiRefresh();
+//        }
+    }
+
+    public void driverLocation()
+    {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        repository.driverLocation(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    DriverLocationResp resp = (DriverLocationResp) data;
+                    Log.e("driverLocation ",data.toString());
+                    if (resp.getStatus()==200) {
+                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
+                                resp.getRecordList().getLng());
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
     }
 
 }

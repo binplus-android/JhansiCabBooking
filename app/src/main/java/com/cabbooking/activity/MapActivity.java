@@ -34,11 +34,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
+import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.model.AppSettingModel;
+import com.cabbooking.model.MenuModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.CustomInfoWindow;
 import com.cabbooking.utils.Location;
@@ -100,7 +103,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     TextView tvpick,tvDestination;
     String sharelink=BASE_URL;
     Integer ver_code, is_forced=0, version_code;
+     Double pickupLat=0.0,destinationLat=0.0;
+     Double pickupLng=0.0,destinationLng=0.0;
+     String pickAddres="",destinationAddress="";
     private boolean isAddressFetched = false; // Add this field
+    ArrayList<MenuModel>mlist;
+    MenuAdapter menuAdapter;
 
 
     @Override
@@ -109,8 +117,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         initView();
+        getMenuList();
         verifyGoogleAccount();
         mapCode();
+        mapAllClick();
         allClick();
         loadFragment(new HomeFragment());
 
@@ -129,7 +139,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linOnlyBack.setVisibility(View.GONE);
                         toggle.syncState();
                         binding.mytoolbar.setNavigationIcon(R.drawable.menu);
-                        common.setMap(true,true,130,binding.mapContainer,
+                        common.setMap(true,true,140,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                         binding.main.setVisibility(View.VISIBLE);
 
@@ -178,6 +188,89 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
         });
 
+    }
+
+    private void getMenuList() {
+       mlist.clear();
+       mlist.add(new MenuModel("Home",R.drawable.logo));
+       menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
+           @Override
+           public void onSelection(int pos) {
+               Fragment fm=null;
+               String title=mlist.get(pos).getTitle();
+               switch (title.toLowerCase().toString()){
+                   case "home":
+                       fm=new HomeFragment();
+                       break;
+               }
+               if(fm!=null){
+                   binding.drawer.closeDrawer(GravityCompat.START);
+                   common.switchFragment(fm);
+               }
+
+
+           }
+       });
+       binding.recMenu.setAdapter(menuAdapter);
+    }
+
+    public void getPickUpLatLng(Double Lat,Double Lng,String pickAddressValue){
+        pickupLat=Lat;
+        pickupLng=Lng;
+        pickAddres=pickAddressValue;
+
+
+    }
+
+    public  void setDriverLocation(String  Lat,String  Lng){
+
+    }
+
+    public String getPickupAddress() {
+        return pickAddres;
+    } public Double getPickupLat() {
+        return pickupLat;
+    }
+
+    public Double getPickupLng() {
+        return pickupLng;
+    }
+    public void getDestinationLatLng(Double Lat,Double Lng,String destinationAddressValue){
+        destinationLat=Lat;
+        destinationLng=Lng;
+       destinationAddress= destinationAddressValue;
+
+    }
+
+    public Double getDestinationLat() {
+        //remove if condition when map start working
+        if(destinationLat.equals("")){
+            return pickupLat;
+        }
+        else{
+        return destinationLat;
+    }}
+
+    public Double getDestinationLng() {
+        //remove if condition when map start working
+        if(destinationLng.equals("")){
+            return pickupLng;
+        }
+        else {
+            return destinationLng;
+        }
+    }
+    public String getDestionationAddress() {
+        //remove if condition when map start working
+        if(destinationAddress.equals("")){
+            return pickAddres;
+        }
+        else {
+            return destinationAddress;
+        }
+    }
+
+    private void mapAllClick() {
     }
 
     public void callVersionDialog() {
@@ -241,7 +334,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (is_forced == 2) {
             dialog.dismiss();
         }
-        
+
     }
 
     public void mapCode() {
@@ -252,6 +345,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 currentLng=response.getLastLocation().getLongitude();
                 Common.currenLocation=new LatLng(currentLat,currentLng);
                 displayLocation();
+                getPickUpLatLng(currentLat,currentLng,tvpick.getText().toString());
             }
         });
          mapFragment = SupportMapFragment.newInstance();
@@ -302,6 +396,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
             tvpick.setText(address);
+            getPickUpLatLng(currentLat,currentLng,address);
         }
     }
 
@@ -420,10 +515,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initView() {
-
+        mlist=new ArrayList<>();
         sessionManagment=new SessionManagment(MapActivity.this);
         common=new Common(MapActivity.this);
         setSupportActionBar(binding.mytoolbar);
+        binding.recMenu.setLayoutManager(new LinearLayoutManager(MapActivity.this));
         toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.mytoolbar, R.string.drawer_open, R.string.drawer_close);
         binding.drawer.addDrawerListener(toggle);
         tvpick=binding.commonAddress.findViewById(R.id.tv_pick);
@@ -471,33 +567,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        // Set click listener
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(@NonNull LatLng latLng) {
-//                // Remove previous marker
-//                if (riderMarket != null) riderMarket.remove();
-//
-//                // Add new marker
-//                riderMarket = mMap.addMarker(new MarkerOptions()
-//                        .position(latLng)
-//                        .title("Selected Location")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-//
-//                // Move camera
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-//
-//                // Get address and update UI
-//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-//                binding.tvAddress.setText(address);
-//                if (tvpick != null) tvpick.setText(address);
-//            }
-//        });
-//
-//        // Optional: show current location once map is ready
-////        displayLocation();
-//
-//
+        // Set click listener
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                // Remove previous marker
+                if (riderMarket != null) riderMarket.remove();
+
+                // Add new marker
+                riderMarket = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Selected Location")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+                // Move camera
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+
+                // Get address and update UI
+                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                tvDestination.setText(address);
+                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
+                binding.tvAddress.setText(address);
+                if (tvpick != null) tvpick.setText(address);
+            }
+        });
+
+        // Optional: show current location once map is ready
+//        displayLocation();
+
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {

@@ -1,25 +1,47 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CancleRideResp;
+import com.cabbooking.Response.DriverDetailResp;
+import com.cabbooking.Response.PickupResp;
+import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
+import com.cabbooking.activity.OTPActivity;
 import com.cabbooking.adapter.RideMateAdapter;
 import com.cabbooking.databinding.FragmentPickUpBinding;
 import com.cabbooking.databinding.FragmentRideBinding;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -35,7 +57,18 @@ public class RideFragment extends Fragment {
     ArrayList<DestinationModel>list;
     RideMateAdapter adapter;
     String trip_type="",outstation_type="";
+    int tripId;
     SessionManagment sessionManagment;
+    PickupResp pickupResp;
+    Repository repository;
+
+
+    private Handler handler;
+    private Runnable apiRunnable;
+    private boolean isFragmentVisible = false;
+    private int currentStatus = 0; // 0 = keep refreshing, 1 = stop refreshing
+
+    private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
 
     public RideFragment() {
         // Required empty public constructor
@@ -64,38 +97,180 @@ public class RideFragment extends Fragment {
         binding = FragmentRideBinding.inflate(inflater, container, false);
         initView();
         allClick();
-        getList();
+        getRiderStatus();
+        startApiRefresh();
 
         return binding.getRoot();
     }
 
-    public void getList() {
-        list.clear();
-        list.add(new DestinationModel());
-        adapter=new RideMateAdapter("",getActivity(), list, new RideMateAdapter.onTouchMethod() {
-            @Override
-            public void onSelection(int pos) {
-                adapter.notifyDataSetChanged();
-            }
-        });
-        binding.recList.setAdapter(adapter);
+    public void getRiderStatus()
+        {
+            JsonObject object=new JsonObject();
+            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+            object.addProperty("tripId",tripId);
+            repository.getTripRiderStatus(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        TripRiderResp resp = (TripRiderResp) data;
+                        Log.e("TripRiderResp ",data.toString());
+                        if (resp.getStatus()==200) {
+                        int tripStatus=resp.getRecordList().getTripStatus();
+                            onStatusReceivedFromApi(tripStatus);
+                       if(tripStatus==1){
+
+                         binding.linSearch.setVisibility(View.GONE); 
+                         binding.linRide.setVisibility(View.VISIBLE);
+                          callGetRiderDetail(resp.getRecordList().getTripId());
+                           tripId=resp.getRecordList().getTripId();
+                       }
+                       else{
+                           binding.linSearch.setVisibility(View.VISIBLE);
+                           binding.linRide.setVisibility(View.GONE);
+
+                       }
+                       
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, false);
+
+        }
+    @Override
+    public void onResume() {
+        super.onResume();
+        isFragmentVisible = true;
+        startApiRefresh();
     }
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFragmentVisible = false;
+        stopApiRefresh();
+    }
+    private void startApiRefresh() {
+        if (handler == null) {
+            handler = new Handler();
+        }
+        if (apiRunnable == null) {
+            apiRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isFragmentVisible && currentStatus == 0) {
+                        getRiderStatus();
+                        handler.postDelayed(this, API_REFRESH_INTERVAL);
+                    }
+                }
+            };
+        }
+        handler.postDelayed(apiRunnable, API_REFRESH_INTERVAL);
+    }
+    private void stopApiRefresh() {
+        if (handler != null && apiRunnable != null) {
+            handler.removeCallbacks(apiRunnable);
+        }
+    }
+
+    // Call this inside your API response
+    private void onStatusReceivedFromApi(int status) {
+        currentStatus = status;
+        if (currentStatus == 1) {
+            stopApiRefresh();
+        }
+    }
+
+
+    public void callGetRiderDetail(int tripId) {
+        list.clear();
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        repository.getDriverDetail(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    DriverDetailResp resp = (DriverDetailResp) data;
+                    Log.e("RiderResp ",data.toString());
+                    if (resp.getStatus()==200) {
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
+                        binding.tvRidername.setText(resp.getRecordList().getName());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
+                        if(!common.checkNullString(resp.getRecordList().getseat()).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getseat()+" Seater ) ");
+                        }
+                       else{
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
+                        }
+                        binding.tvRate.setText("Rs. "+resp.getRecordList().getAmount());
+                        binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+
+
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
+    }
+
+
+
 
     public void allClick() {
         binding.btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                common.switchFragment(new PaymentFragment());
+                Fragment fragment=new PaymentFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId",String.valueOf(tripId));
+                fragment.setArguments(bundle);
+                common.switchFragment(fragment);
+            }
+        });
+        binding.btnCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),String.valueOf(tripId));
+            }
+        }); binding.btnBottomCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),String.valueOf(tripId));
             }
         });
     }
 
 
+
+
+
     public void initView() {
+        repository=new Repository(getActivity());
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
-        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        pickupResp = getArguments().getParcelable("pickupResp");
+        tripId=pickupResp.getRecordList().getId();
+
         list=new ArrayList<>();
         sessionManagment = new SessionManagment(getActivity());
         trip_type=sessionManagment.getValue(KEY_TYPE);

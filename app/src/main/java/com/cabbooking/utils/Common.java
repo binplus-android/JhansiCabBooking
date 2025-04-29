@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
@@ -40,8 +41,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.cabbooking.model.AppSettingModel;
 import com.google.android.gms.maps.GoogleMap;
@@ -75,6 +78,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import java.util.Locale;
 
 public class Common {
     Context context;
@@ -137,12 +141,111 @@ public class Common {
         unSubscribeToTopic();
         sessionManagment.logout(activity);
     }
+    public void callCancleRide(Activity activity,String userId,String tripId,Dialog dialog) {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",userId);
+        object.addProperty("tripId",tripId);
+        repository.cancleRide(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+
+                    CancleRideResp resp = (CancleRideResp) data;
+                    Log.e("rideCancle ",data.toString());
+                    if (resp.getStatus()==200) {
+                        dialog.dismiss();
+                        successToast(resp.getMessage());
+                        Intent intent = new Intent(activity ,MapActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        activity.startActivity(intent);
+                        activity.finish();
+
+                    }else{
+                        errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
+    public String changeDateFormate(String inputTime) {
+        // First, create input format
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // Then, create output format
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.US);
+
+        try {
+            // Parse input date string
+            Date date = inputFormat.parse(inputTime);
+
+            // Format to desired output and return it
+            return outputFormat.format(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ""; // Return empty string if parsing fails
+        }
+    }
+
+    public void callCancleDialog(Activity activity,String tripId){
+        sessionManagment=new SessionManagment(context);
+        Dialog dialog;
+
+        dialog = new Dialog (activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView (R.layout.dialog_cancle_confirm);
+        Button btn_no,btn_yes;
+        btn_yes=dialog.findViewById (R.id.btn_yes);
+        btn_no=dialog.findViewById (R.id.btn_no);
+
+        btn_no.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss ();
+            }
+        });
+
+        btn_yes.setOnClickListener (new View.OnClickListener ( ) {
+            @Override
+            public void onClick(View v) {
+//                dialog.dismiss();
+                callCancleRide(activity,sessionManagment.getUserDetails().get(KEY_ID),tripId,dialog);
+            }
+        });
+        dialog.setCanceledOnTouchOutside (false);
+        dialog.show ();
+
+
+    }
     public boolean isValidEmailAddress(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
     }
+    public String checkNullString(String value) {
+        String str = "";
+        if (value == null || value.isEmpty ( ) || value.equals ("")) {
+            str = "";
+        } else {
+            str = value;
+        }
+        return str;
+    }
+
     public boolean isValidMobileNumber(String mobileNumber) {
         String pattern = "^[6-9][0-9]{9}$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
@@ -155,6 +258,12 @@ public class Common {
         fragmentTransaction.replace (R.id.main_framelayout, fragment);
         fragmentTransaction.addToBackStack (null);
         fragmentTransaction.commit ( );
+
+    }
+    public void calling(String phoneNumber){
+            Uri dialUri = Uri.parse("tel:" + phoneNumber);
+            Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
+            context.startActivity(dialIntent);
 
     }
     public boolean isValidName(String name){
@@ -293,9 +402,9 @@ public class Common {
     public String timeConversion12hrs(String time){
 //      covert 24 hrs format to 12 hrs
         try {
-            final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
             final Date dateObj = sdf.parse(time);
-            return new SimpleDateFormat("KK:mm aa").format(dateObj);
+            return new SimpleDateFormat("hh:mm a", Locale.US).format(dateObj);
         } catch (final ParseException e) {
             e.printStackTrace();
             return time;
@@ -355,18 +464,40 @@ public class Common {
     }
 
     public void unSubscribeToTopic(){
-        FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "Subscribed";
-                        if (!task.isSuccessful()) {
-                            msg = "Subscribe failed";
-                        }
-                        Log.d(TAG, msg);
+        try {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe failed";
+                            }
+                            Log.d(TAG, msg);
 //                        Toast.makeText(SplashActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public  JsonObject  getCommonAddressPost(){
+        JsonObject object=new JsonObject();
+
+        JsonObject pickupObject = new JsonObject();
+        pickupObject.addProperty("lat", ((MapActivity) context).getPickupLat());
+        pickupObject.addProperty("lng", ((MapActivity)context).getPickupLng());
+        pickupObject.addProperty("address", ((MapActivity) context).getPickupAddress());
+
+        object.add("pickup", pickupObject);
+
+        JsonObject destinationObject = new JsonObject();
+        destinationObject.addProperty("lat", ((MapActivity) context).getDestinationLat());
+        destinationObject.addProperty("lng", ((MapActivity) context).getDestinationLng());
+        destinationObject.addProperty("address", ((MapActivity) context).getDestionationAddress());
+        object.add("destination", destinationObject);
+        return object;
+
 
     }
 

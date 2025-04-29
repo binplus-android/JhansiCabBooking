@@ -21,10 +21,12 @@ import com.cabbooking.R;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.databinding.ActivityOtpactivityBinding;
+import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
+import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.RetrofitClient;
@@ -52,7 +54,8 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     CountDownTimer cTimer ;
     long mTimeLeftInMillis = 60000;
     String number="",otpget="";
-    String msg_status="0",is_login="";
+    int msg_status=0;
+    String is_login="";
     Repository repository;
     String name="",email="";
     public static final String OTP_REGEX = "[0-9]{3,6}";
@@ -65,14 +68,14 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
         binding= DataBindingUtil.setContentView(this, R.layout.activity_otpactivity);
         initView();
         setCounterTimer();
-//        common.getAppSettingData(new OnConfig() {
-//            @Override
-//            public void getAppSettingData(AppSettingModel model) {
-//                Log.d ("msg_Statsus", "getAppSettingData: "+String.valueOf (msg_status));
-//                msg_status=model.getData ().getMsg_status();
+        common.getAppSettingData(new OnConfig() {
+            @Override
+            public void getAppSettingData(AppSettingModel model) {
+
+                msg_status=model.getMsg_status();
                 gerenateOtp();
-//            }
-//        });
+            }
+        });
         allClick();
     }
     public void allClick() {
@@ -156,7 +159,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
         }
     }, true);
 }
-else{
+     else{
     JsonObject object=new JsonObject();
     object.addProperty("contactNo",number);
     repository.callSignUpApi(object, new ResponseService() {
@@ -185,9 +188,6 @@ else{
         }
     }, true);
 }
-
-
-//
     }
 
     public void onValidation() {
@@ -265,7 +265,7 @@ else{
 
 
     public void gerenateOtp(){
-        if(msg_status.equalsIgnoreCase("0")) {
+        if(msg_status==0) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
