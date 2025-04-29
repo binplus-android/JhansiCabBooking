@@ -11,11 +11,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.cabbooking.R;
 
 public class PolicyActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_policy);
-
     }
 }

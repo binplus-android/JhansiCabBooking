@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+   >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragement.WalletHistoryFragment"
+        >
+        <RelativeLayout
+            android:id="@+id/relSection"
+            android:background="@color/grey"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/tv_textdata"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="22pt"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:id="@+id/relReferral"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/gray"
+                        style="@style/TextViewSemBold"
+                        android:id="@+id/tvReferral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/space_1"
+                        android:text="@string/referral"
+                        android:gravity="center"
+                        />
+                    <View
+                        android:id="@+id/vReferral"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="1pt"
+                        android:layout_marginHorizontal="2pt"
+                        android:gravity="center"
+                        android:background="@color/gray"
+                        />
+                </RelativeLayout>
+                <View
+                    android:layout_marginVertical="@dimen/space_4"
+                    android:background="@color/gray"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"/>
+                <RelativeLayout
+                    android:id="@+id/relRefund"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        style="@style/TextViewSemBold"
+                        android:id="@+id/tvWinning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="@string/refund"
+                        android:textColor="@color/gray"
+                         />
+                    <View
+                        android:visibility="gone"
+                        android:id="@+id/vWinning"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="1pt"
+                        android:layout_marginHorizontal="2pt"
+                        android:gravity="center"
+                        android:background="@color/gray"
+                        />
+                </RelativeLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_marginVertical="@dimen/space_5"
+            android:layout_marginHorizontal="@dimen/space_8"
+            android:layout_below="@id/relSection"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="@string/transactions"
+                style="@style/TextViewSemBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginVertical="@dimen/space_5"
+                android:id="@+id/rec_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</layout>
