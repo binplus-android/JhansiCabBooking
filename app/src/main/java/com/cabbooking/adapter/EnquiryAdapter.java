@@ -38,6 +38,17 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.lin_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.lin_des.getVisibility()==View.VISIBLE){
+                 holder.lin_des.setVisibility(View.GONE);
+                }
+                else{
+                    holder.lin_des.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
 
@@ -50,13 +61,17 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        //TextView tv_title;
+        TextView tv_title,tv_desctination,tv_sol;
+        LinearLayout lin_main,lin_des;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-//            lin_main = itemView.findViewById(R.id.lin_main);
-//            tv_title = itemView.findViewById(R.id.tv_title);
+           lin_main = itemView.findViewById(R.id.lin_main);
+          tv_title = itemView.findViewById(R.id.tv_title);
+            tv_sol = itemView.findViewById(R.id.tv_sol);
+          tv_desctination = itemView.findViewById(R.id.tv_desctination);
+            lin_des = itemView.findViewById(R.id.lin_des);
 //            iv_img = itemView.findViewById(R.id.iv_img);
         }
     }

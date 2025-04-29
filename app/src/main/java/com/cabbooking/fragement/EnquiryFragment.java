@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.cabbooking.R;
+import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.EnquiryAdapter;
 import com.cabbooking.databinding.FragmentEnquiryBinding;
 import com.cabbooking.databinding.FragmentHomeBinding;
@@ -55,8 +57,36 @@ public class EnquiryFragment extends Fragment {
         binding = FragmentEnquiryBinding.inflate(inflater, container, false);
         initView();
         getList();
+        allClick();
        return binding.getRoot();
 
+    }
+
+    private void allClick() {
+        String[] items = {"Select Reason","Reason 1", "Reason 2", "Reason 3"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinData.setAdapter(adapter);
+
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String selectedItem = binding.spinData.getSelectedItem().toString();
+                String message=binding.etDes.getText().toString();
+                if (selectedItem.equals("Select Reason")) {
+                    common.errorToast("Please select a valid reason");
+                    }else if (message.equalsIgnoreCase("")) {
+                    common.errorToast("Enquiry message required");
+                    }
+                else {
+                    callSubmitApi(selectedItem,message);
+                }
+            }
+        });
+    }
+
+    private void callSubmitApi(String selectedItem,String message) {
+        common.successToast("Enquiry send succesfully");
     }
 
     private void getList() {
@@ -69,6 +99,7 @@ public class EnquiryFragment extends Fragment {
     }
 
     private void initView() {
+        ((MapActivity)getActivity()).setTitle("Enquiry");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());

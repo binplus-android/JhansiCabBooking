@@ -92,6 +92,7 @@
     <string name="cannot_get_location">Cannot get your location</string>
 
     <string name="channel_arrived">Arrived</string>
+    <string name="MyEnquiry">My Enquiry</string><string name="enter_enquiry_here">Enter enquiry here</string>
     <string name="channel_arrived_descrition">Driver notifications</string>
 
     <string name="could_not_login">Could not login</string>
