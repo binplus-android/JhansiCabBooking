@@ -46,6 +46,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MenuModel model = list.get(position);
         holder.tv_title.setText(model.getTitle());
+        Picasso.get().load(model.getImage()).placeholder(R.drawable.logo).error(R.drawable.logo).into(holder.iv_img);
 
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
