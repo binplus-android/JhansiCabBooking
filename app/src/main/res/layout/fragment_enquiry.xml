@@ -10,11 +10,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
-                android:layout_margin="@dimen/space_8"
+                android:layout_marginHorizontal="@dimen/space_8"
+                android:layout_marginVertical="@dimen/space_5"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <TextView
+                    android:textAlignment="center"
+                    style="@style/MyTextview_semibold"
+                    android:textSize="@dimen/space_8"
+                    android:text="Enquire About Our Services"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textColor="@color/gray"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/space_5"
+                    android:text="Tell us what you're looking for — we'll provide the right solution."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
                 <RelativeLayout
+                    android:layout_marginTop="@dimen/space_8"
                     android:paddingVertical="@dimen/space_5"
                     android:background="@drawable/bg_outline_box_grey"
                     android:layout_width="match_parent"
