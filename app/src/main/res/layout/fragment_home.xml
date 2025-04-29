@@ -31,7 +31,7 @@
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:weightSum="2"
-                            android:layout_height="48pt">
+                            android:layout_height="50pt">
                             <LinearLayout
                                 android:id="@+id/lin_local"
                                 android:background="@drawable/bg_shadow_box"
@@ -84,8 +84,55 @@
 
                             </LinearLayout>
                         </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/lin_ads"
+                            android:layout_marginTop="@dimen/space_5"
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:weightSum="2"
+                            android:layout_height="50pt">
+                            <LinearLayout
+                                android:background="@drawable/bg_shadow_box"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_marginTop="@dimen/space_2"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/logo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"/>
+
+
+                            </LinearLayout>
+                            <LinearLayout
+
+                                android:layout_marginLeft="@dimen/space_5"
+                                android:background="@drawable/bg_shadow_box"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:layout_marginTop="@dimen/space_2"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/logo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"/>
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
 
                         <androidx.cardview.widget.CardView
+                            android:visibility="gone"
+                            android:id="@+id/card_search"
                             android:layout_marginHorizontal="@dimen/space_1"
                             android:layout_marginTop="@dimen/space_5"
                             android:orientation="vertical"
