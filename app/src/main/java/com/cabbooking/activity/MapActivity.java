@@ -43,7 +43,6 @@ import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
 import com.cabbooking.utils.Common;
-import com.cabbooking.utils.CustomInfoWindow;
 import com.cabbooking.utils.Location;
 import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.SessionManagment;
@@ -57,15 +56,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -193,6 +189,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void getMenuList() {
        mlist.clear();
        mlist.add(new MenuModel("Home",R.drawable.logo));
+        mlist.add(new MenuModel("Notifications",R.drawable.logo));
+       mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
+       mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
+       mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
+
+
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
@@ -202,7 +204,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                    case "home":
                        fm=new HomeFragment();
                        break;
+                   case "terms & conditions":
+                      Intent i = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
+                      i.putExtra("type","terms");
+                      startActivity(i);
+                       break;
+                   case "privacy policy":
+                       Intent i2 = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
+                       i2.putExtra("type","policy");
+                       startActivity(i2);
+                       break;
+                   case "notifications":
+                       Intent i3 = new Intent(MapActivity.this, NotificationsActivity.class);
+                       startActivity(i3);
+                       break;
                }
+
                if(fm!=null){
                    binding.drawer.closeDrawer(GravityCompat.START);
                    common.switchFragment(fm);
@@ -567,30 +584,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Set click listener
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                // Remove previous marker
-                if (riderMarket != null) riderMarket.remove();
-
-                // Add new marker
-                riderMarket = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("Selected Location")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
-                // Move camera
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-
-                // Get address and update UI
-                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                tvDestination.setText(address);
-                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
-                binding.tvAddress.setText(address);
-                if (tvpick != null) tvpick.setText(address);
-            }
-        });
+//        // Set click listener
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(@NonNull LatLng latLng) {
+//                // Remove previous marker
+//                if (riderMarket != null) riderMarket.remove();
+//
+//                // Add new marker
+//                riderMarket = mMap.addMarker(new MarkerOptions()
+//                        .position(latLng)
+//                        .title("Selected Location")
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//
+//                // Move camera
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+//
+//                // Get address and update UI
+//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+//                tvDestination.setText(address);
+//                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
+//                binding.tvAddress.setText(address);
+//                if (tvpick != null) tvpick.setText(address);
+//            }
+//        });
 
         // Optional: show current location once map is ready
 //        displayLocation();

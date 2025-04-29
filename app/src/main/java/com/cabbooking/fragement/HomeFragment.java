@@ -7,19 +7,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,44 +23,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageView;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.cabbooking.R;
-import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
-import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.adapter.DestinationHomeAdapter;
-import com.cabbooking.adapter.RideMateAdapter;
-import com.cabbooking.adapter.VechicleAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.model.DestinationModel;
-import com.cabbooking.model.VechicleModel;
 import com.cabbooking.utils.Common;
-import com.cabbooking.utils.RecyclerTouchListener;
 import com.cabbooking.utils.SessionManagment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -274,12 +249,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         } else if (v.getId() == R.id.lin_local) {
             sessionManagment.setValue(KEY_TYPE,"0");
             changeBackground(binding.linLocal, binding.linOutstation);
-            //commonDestination();
+            commonDestination();
             commonVisibleAds();
         } else if (v.getId() == R.id.lin_outstation) {
             sessionManagment.setValue(KEY_TYPE,"1");
             changeBackground(binding.linOutstation, binding.linLocal);
-          //  commonDestination();
+            commonDestination();
             commonVisibleAds();
         }
     }

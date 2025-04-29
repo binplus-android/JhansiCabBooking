@@ -1,5 +1,6 @@
 package com.cabbooking.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -69,18 +70,15 @@ public class SessionManagment {
     public String getValue(String key){
         return prefs.getString(key,"");
     }
-    public  void logout( Context context){
-
+    public  void logout(Activity activity){
         editor.clear();
         editor.commit();
-        Intent logout = new Intent (context, LoginActivity.class);
+        Intent logout = new Intent (activity, LoginActivity.class);
         logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(logout);
-        ((AppCompatActivity)context).finish();
-
-
+        activity.startActivity(logout);
+        activity.finish();
 
     }
 

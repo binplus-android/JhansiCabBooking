@@ -23,7 +23,6 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways">
             <RelativeLayout
-
                     android:id="@+id/lin_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

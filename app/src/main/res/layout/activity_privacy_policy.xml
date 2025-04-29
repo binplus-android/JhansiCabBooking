@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".activity.PrivacyPolicyActivity">
+        <include
+            layout="@layout/layout_toolbar"
+            android:id="@+id/inc_toolbar"/>
+        <ScrollView
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/inc_toolbar">
+            <LinearLayout
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/space_10">
+                <TextView
+                    android:id="@+id/tv_heading"
+                    android:textAlignment="textStart"
+                    android:layout_marginTop="@dimen/space_8"
+                    style="@style/TextViewThin"
+                    android:text="@string/privacy_policy"
+                    android:textSize="@dimen/space_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_marginTop="@dimen/space_15"
+                    android:text="Privacy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy"
+                    android:gravity="left"
+                    android:textSize="@dimen/space_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+</layout>

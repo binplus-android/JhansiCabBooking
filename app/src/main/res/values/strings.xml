@@ -83,7 +83,8 @@
     <string name="round_trip">Round trip</string>
     <string name="get_drop">Get dropped off</string>
     <string name="keep_the_car">Keep the car till return
-    </string>  <string name="permission_denied">Permission denied</string>
+    </string>
+    <string name="permission_denied">Permission denied</string>
     <string name="permission_denied_location">Permission is required to obtain location</string>
 
     <string name="pickup_here">Pickup here</string>
@@ -105,5 +106,7 @@
     <string name="update_Available">Update Available</string>
     <string name="update_Later">Update Later</string>
     <string name="No_Thanks">No Thanks</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms">Terms &amp; Conditions</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
