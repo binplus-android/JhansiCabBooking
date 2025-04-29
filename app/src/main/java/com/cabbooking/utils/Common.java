@@ -44,7 +44,9 @@ import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.cabbooking.model.AppSettingModel;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -53,13 +55,26 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Common {
     Context context;
@@ -391,5 +406,88 @@ public class Common {
         }, false);
 
     }
+
+    public void fetchAndDrawRoute(Activity activity, GoogleMap mMap, String pickupLat, String pickupLng, String destLat, String destLng){
+        String origin = "origin=" + pickupLat + "," + pickupLng;
+        String destination = "destination=" + destLat + "," + destLng;
+        String key = "key="+activity.getString(R.string.google_maps_key);
+
+        String url = "https://maps.googleapis.com/maps/api/directions/json?" + origin + "&" + destination + "&" + key;
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+
+                    try {
+                        Log.e("DirectionsAPI", "Response: " + responseData);
+                        JSONObject json = new JSONObject(responseData);
+                        JSONArray routes = json.getJSONArray("routes");
+                        JSONObject route = routes.getJSONObject(0);
+                        JSONObject overviewPolyline = route.getJSONObject("overview_polyline");
+                        String points = overviewPolyline.getString("points");
+
+                        List<LatLng> decodedPath = decodePolyline(points);
+
+                        activity.runOnUiThread(() -> {
+                            PolylineOptions options = new PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10);
+                            mMap.addPolyline(options);
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    private List<LatLng> decodePolyline(String encoded) {
+        List<LatLng> poly = new ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((lat / 1E5), (lng / 1E5));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
 
 }

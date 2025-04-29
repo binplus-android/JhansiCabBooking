@@ -54,12 +54,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -239,8 +241,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (is_forced == 2) {
             dialog.dismiss();
         }
-
-
+        
     }
 
     public void mapCode() {
@@ -324,7 +325,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
         OptionalPendingResult<GoogleSignInResult> opr=Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+
         if (opr.isDone()){
             GoogleSignInResult result= opr.get();
 
@@ -348,8 +351,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 onBackPressed();
-
-
             }
         });
 
@@ -470,33 +471,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Set click listener
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                // Remove previous marker
-                if (riderMarket != null) riderMarket.remove();
-
-                // Add new marker
-                riderMarket = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("Selected Location")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
-                // Move camera
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-
-                // Get address and update UI
-                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                binding.tvAddress.setText(address);
-                if (tvpick != null) tvpick.setText(address);
-            }
-        });
-
-        // Optional: show current location once map is ready
-//        displayLocation();
-
-
+//        // Set click listener
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(@NonNull LatLng latLng) {
+//                // Remove previous marker
+//                if (riderMarket != null) riderMarket.remove();
+//
+//                // Add new marker
+//                riderMarket = mMap.addMarker(new MarkerOptions()
+//                        .position(latLng)
+//                        .title("Selected Location")
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//
+//                // Move camera
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+//
+//                // Get address and update UI
+//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+//                binding.tvAddress.setText(address);
+//                if (tvpick != null) tvpick.setText(address);
+//            }
+//        });
+//
+//        // Optional: show current location once map is ready
+////        displayLocation();
+//
+//
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -513,9 +514,41 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         .position(center)
                         .title("Selected Location")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+                // Example coordinates for fetchAndDrawRoute
+
+//                LatLng pickupLocation = new LatLng(28.6139, 77.2090);      // Delhi
+//                LatLng destinationLocation = new LatLng(28.7041, 77.1025); // Nearby Delhi
+//
+//                // Add Pickup Marker
+//                mMap.addMarker(new MarkerOptions()
+//                        .position(pickupLocation)
+//                        .title("Pickup Location"));
+//
+//                // Add Destination Marker
+//                mMap.addMarker(new MarkerOptions()
+//                        .position(destinationLocation)
+//                        .title("Destination"));
+//
+//                // Move camera to show both
+//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//                builder.include(pickupLocation);
+//                builder.include(destinationLocation);
+//                LatLngBounds bounds = builder.build();
+//
+//                int padding = 100; // space around markers
+//                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+//                mMap.animateCamera(cu);
+//
+//                // You can now call your directions API using these coordinates
+//                common.fetchAndDrawRoute(MapActivity.this,mMap,"28.6139", "77.2090", "28.7041","77.1025");
+
+
             }
         });
 //                displayLocation();
+
+
 
     }
 
