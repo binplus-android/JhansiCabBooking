@@ -37,7 +37,7 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         WalletHistoryModel model = list.get(position);
-
+        holder.tv_msg.setText(model.getMessage());
 
 
 
@@ -49,15 +49,12 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_title;
-       ImageView iv_img;
-        LinearLayout lin_main;
+        TextView tv_msg;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            lin_main = itemView.findViewById(R.id.lin_main);
-            tv_title = itemView.findViewById(R.id.tv_title);
-            iv_img = itemView.findViewById(R.id.iv_img);
+            tv_msg = itemView.findViewById(R.id.tv_msg);
         }
     }
 }

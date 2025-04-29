@@ -94,9 +94,16 @@ public class WalletHistoryFragment extends Fragment {
 
     private void iniList(String number)  {
         list.clear();
-        list.add(new WalletHistoryModel());
-        list.add(new WalletHistoryModel());
-        list.add(new WalletHistoryModel());
+        if(number.equalsIgnoreCase("0")) {
+            list.add(new WalletHistoryModel("Referral by User"));
+            list.add(new WalletHistoryModel("Referral by User"));
+            list.add(new WalletHistoryModel("Referral by User"));
+        }
+        else{
+            list.add(new WalletHistoryModel("Refund by booking"));
+            list.add(new WalletHistoryModel("Refund by booking"));
+            list.add(new WalletHistoryModel("Refund by booking"));
+        }
         adapter=new WalletHistoryAdapter(getActivity(),list);
         binding.recList.setAdapter(adapter);
 
