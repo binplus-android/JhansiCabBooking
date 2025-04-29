@@ -34,11 +34,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
+import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.model.AppSettingModel;
+import com.cabbooking.model.MenuModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.CustomInfoWindow;
 import com.cabbooking.utils.Location;
@@ -102,6 +105,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      Double pickupLng=0.0,destinationLng=0.0;
      String pickAddres="",destinationAddress="";
     private boolean isAddressFetched = false; // Add this field
+    ArrayList<MenuModel>mlist;
+    MenuAdapter menuAdapter;
 
 
     @Override
@@ -110,6 +115,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         initView();
+        getMenuList();
         verifyGoogleAccount();
         mapCode();
         mapAllClick();
@@ -180,6 +186,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
         });
 
+    }
+
+    private void getMenuList() {
+       mlist.clear();
+       mlist.add(new MenuModel("Home",R.drawable.logo));
+       menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
+           @Override
+           public void onSelection(int pos) {
+               Fragment fm=null;
+               String title=mlist.get(pos).getTitle();
+               switch (title.toLowerCase().toString()){
+                   case "home":
+                       fm=new HomeFragment();
+                       break;
+               }
+               if(fm!=null){
+                   binding.drawer.closeDrawer(GravityCompat.START);
+                   common.switchFragment(fm);
+               }
+
+
+           }
+       });
+       binding.recMenu.setAdapter(menuAdapter);
     }
 
     public void getPickUpLatLng(Double Lat,Double Lng,String pickAddressValue){
@@ -484,10 +514,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initView() {
-
+        mlist=new ArrayList<>();
         sessionManagment=new SessionManagment(MapActivity.this);
         common=new Common(MapActivity.this);
         setSupportActionBar(binding.mytoolbar);
+        binding.recMenu.setLayoutManager(new LinearLayoutManager(MapActivity.this));
         toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.mytoolbar, R.string.drawer_open, R.string.drawer_close);
         binding.drawer.addDrawerListener(toggle);
         tvpick=binding.commonAddress.findViewById(R.id.tv_pick);
