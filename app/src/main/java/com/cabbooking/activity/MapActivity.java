@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.cabbooking.R;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
+import com.cabbooking.fragement.BookingHistoryFragment;
 import com.cabbooking.fragement.EnquiryFragment;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
@@ -145,7 +146,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     } else if(frgmentName.contains("DestinationFragment")||
                             frgmentName.contains("EnquiryFragment")||
-                            frgmentName.equalsIgnoreCase("WalletHistoryFragment")) {
+                            frgmentName.equalsIgnoreCase("WalletHistoryFragment")||
+                    frgmentName.equalsIgnoreCase("BookingHistoryFragment")) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -197,6 +199,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        mlist.add(new MenuModel("Home",R.drawable.ic_home));
        mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
+       mlist.add(new MenuModel("Booking History",R.drawable.ic_wallet));
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
@@ -211,6 +214,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        break;
                        case "wallet history":
                        fm=new WalletHistoryFragment();
+                       case "booking history":
+                       fm=new BookingHistoryFragment();
                        break;
                }
                if(fm!=null){

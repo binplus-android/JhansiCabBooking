@@ -112,5 +112,6 @@
     <string name="update_Available">Update Available</string>
     <string name="update_Later">Update Later</string>
     <string name="No_Thanks">No Thanks</string>
+    <string name="my_booking">My Booking</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
