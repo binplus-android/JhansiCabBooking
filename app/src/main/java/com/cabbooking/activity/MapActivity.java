@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.cabbooking.R;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
+import com.cabbooking.fragement.EnquiryFragment;
 import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
@@ -141,7 +142,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 binding.main.findViewById(R.id.lin_search));
                         binding.main.setVisibility(View.VISIBLE);
 
-                    } else if(frgmentName.contains("DestinationFragment")) {
+                    } else if(frgmentName.contains("DestinationFragment")||
+                            frgmentName.contains("EnquiryFragment") ) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -190,7 +192,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void getMenuList() {
        mlist.clear();
-       mlist.add(new MenuModel("Home",R.drawable.logo));
+       mlist.add(new MenuModel("Home",R.drawable.ic_home));
+       mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
@@ -199,6 +202,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                switch (title.toLowerCase().toString()){
                    case "home":
                        fm=new HomeFragment();
+                       break;
+                       case "enquiry":
+                       fm=new EnquiryFragment();
                        break;
                }
                if(fm!=null){

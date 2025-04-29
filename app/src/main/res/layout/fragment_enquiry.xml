@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragement.EnquiryFragment">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_margin="@dimen/space_8"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <RelativeLayout
+                    android:padding="@dimen/space_5"
+                    android:background="@drawable/bg_outline_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <EditText
+                    android:layout_marginTop="@dimen/space_5"
+                    android:inputType="textMultiLine"
+                    android:gravity="top"
+                    android:paddingTop="@dimen/space_2"
+                    android:hint="Enter enquiry here"
+                    android:layout_width="match_parent"
+                    android:layout_height="30pt"/>
+                <Button
+                    android:layout_marginTop="@dimen/space_5"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/submit"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="@dimen/button_height"/>
+                <TextView
+                    android:textSize="@dimen/space_8"
+                    android:text="Enquiry"
+                    style="@style/TextViewExtraSemBold"
+                    android:layout_marginTop="@dimen/space_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="@dimen/space_2"
+                    android:id="@+id/rec_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+</RelativeLayout>
+
+
+
+</layout>
