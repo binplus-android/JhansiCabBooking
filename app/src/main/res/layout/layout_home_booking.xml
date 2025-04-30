@@ -2,6 +2,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.cardview.widget.CardView
+    android:layout_margin="@dimen/space_4"
+    app:cardCornerRadius="@dimen/space_5"
+    app:cardElevation="@dimen/space_2"
+    app:cardBackgroundColor="@color/gray_edittext"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
         android:orientation="vertical"
@@ -30,7 +38,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <View
-            android:layout_marginVertical="@dimen/space_2"
+
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey"/>
@@ -59,7 +67,7 @@
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:textSize="@dimen/space_5"
-                    android:text="Dtiver Name"
+                    android:text="Driver Name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -101,5 +109,9 @@
                 android:layout_height="@dimen/space_8"/>
         </LinearLayout>
     </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+
+
 
     </RelativeLayout>

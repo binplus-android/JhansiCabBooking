@@ -260,6 +260,12 @@
 
             </LinearLayout>
         </ScrollView>
+        <include
+            android:id="@+id/lay_booking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/layout_home_booking"/>
 
     </RelativeLayout>
 </layout>

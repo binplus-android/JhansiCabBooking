@@ -63,7 +63,7 @@ public class EnquiryFragment extends Fragment {
     }
 
     private void allClick() {
-        String[] items = {"Select Reason","Reason 1", "Reason 2", "Reason 3"};
+        String[] items = {"Select","Enquiry", "Complaint"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinData.setAdapter(adapter);
@@ -73,10 +73,10 @@ public class EnquiryFragment extends Fragment {
             public void onClick(View v) {
                 String selectedItem = binding.spinData.getSelectedItem().toString();
                 String message=binding.etDes.getText().toString();
-                if (selectedItem.equals("Select Reason")) {
-                    common.errorToast("Please select a valid reason");
+                if (selectedItem.equals("Select")) {
+                    common.errorToast("Please select first");
                     }else if (message.equalsIgnoreCase("")) {
-                    common.errorToast("Enquiry message required");
+                    common.errorToast("Message required");
                     }
                 else {
                     callSubmitApi(selectedItem,message);

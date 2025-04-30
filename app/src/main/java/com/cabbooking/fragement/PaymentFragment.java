@@ -364,6 +364,7 @@ public class PaymentFragment extends Fragment {
     }
 
     private void commonIntent() {
+        sessionManagment.setValue("is_home","1");
         Fragment fragment=new AfterPaymentDoneFragment();
         Bundle bundle=new Bundle();
         bundle.putString("tripId",tripId);

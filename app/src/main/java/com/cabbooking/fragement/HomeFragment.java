@@ -55,6 +55,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         initView();
+        //remove this session when api implemented
+        if(sessionManagment.getValue("is_home").equalsIgnoreCase("1")){
+            binding.layBooking.setVisibility(View.VISIBLE);
+        }else{
+            binding.layBooking.setVisibility(View.GONE);
+
+        }
         allClicks();
         getDestinatioList();
         setupLocationPermissionLauncher();
@@ -222,6 +229,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         binding.linDestination.setOnClickListener(this);
         binding.linLocal.setOnClickListener(this);
         binding.linOutstation.setOnClickListener(this);
+        binding.layBooking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment=new AfterPaymentDoneFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId","91");
+                fragment.setArguments(bundle);
+                common.switchFragment(fragment);
+            }
+        });
     }
 
     private void getDestinatioList() {
@@ -245,6 +262,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
+            sessionManagment.setValue("is_home","0");
             common.switchFragment(new DestinationFragment());
         } else if (v.getId() == R.id.lin_local) {
             sessionManagment.setValue(KEY_TYPE,"0");
