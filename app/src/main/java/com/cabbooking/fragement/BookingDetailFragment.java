@@ -67,7 +67,7 @@ public class BookingDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(binding.etFeed.getText().toString().equals("")){
-                    common.errorToast("FeedBack required");
+                    common.errorToast("Feedback required");
                 }
                 else {
                     binding.etAfterfeed.setText(binding.etFeed.getText().toString());
@@ -84,7 +84,7 @@ public class BookingDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(binding.etAfterfeed.getText().equals("")){
-                    common.errorToast("FeedBack required");
+                    common.errorToast("Feedback required");
                 }
                 else {
                     binding.btnEdit.setVisibility(View.GONE);

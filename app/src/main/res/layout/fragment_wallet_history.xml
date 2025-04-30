@@ -10,7 +10,7 @@
         >
         <RelativeLayout
             android:id="@+id/relSection"
-            android:background="@color/grey"
+            android:background="@color/grey_5"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                     <TextView
                         android:layout_centerInParent="true"
                         android:textColor="@color/colorAccent"
-                        style="@style/TextViewSemBold"
+                        style="@style/MyTextview_semibold"
                         android:id="@+id/tvReferral"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        style="@style/TextViewSemBold"
+                        style="@style/MyTextview_semibold"
                         android:id="@+id/tvWinning"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

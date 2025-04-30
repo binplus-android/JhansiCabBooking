@@ -205,7 +205,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
        mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
-       mlist.add(new MenuModel("Booking History",R.drawable.ic_wallet));
+       mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
@@ -544,7 +544,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onBackPressed() {
-    super.onBackPressed();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+
+        if (fragment != null && fragment.getClass() != null) {
+            String frgmentName = fragment.getClass().getSimpleName();
+
+            if (frgmentName.contains("AfterPaymentDoneFragment")) {
+                Intent intent=new Intent(this,MapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                super.onBackPressed();
+            }
+        }else{
+            super.onBackPressed();
+        }
+
+
     }
 
     public void loadFragment(Fragment fragment) {

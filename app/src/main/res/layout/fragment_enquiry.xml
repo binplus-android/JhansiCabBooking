@@ -47,7 +47,7 @@
                     android:inputType="textMultiLine"
                     android:gravity="top"
                     android:paddingTop="@dimen/space_2"
-                    android:hint="@string/enter_enquiry_here"
+                    android:hint="@string/enter_here"
                     android:layout_width="match_parent"
                     android:layout_height="30pt"/>
                 <Button

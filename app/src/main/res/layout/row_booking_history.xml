@@ -6,6 +6,7 @@
     <LinearLayout
         android:id="@+id/lin_main"
         android:layout_marginVertical="@dimen/space_1"
+        android:backgroundTint="@color/grey_5"
         android:background="@drawable/bg_shadow_box"
         android:padding="@dimen/space_4"
         android:weightSum="2"
