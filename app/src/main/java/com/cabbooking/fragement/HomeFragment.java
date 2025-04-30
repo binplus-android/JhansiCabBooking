@@ -249,12 +249,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         } else if (v.getId() == R.id.lin_local) {
             sessionManagment.setValue(KEY_TYPE,"0");
             changeBackground(binding.linLocal, binding.linOutstation);
-            commonDestination();
+            //commonDestination();
             commonVisibleAds();
         } else if (v.getId() == R.id.lin_outstation) {
             sessionManagment.setValue(KEY_TYPE,"1");
             changeBackground(binding.linOutstation, binding.linLocal);
-            commonDestination();
+           // commonDestination();
             commonVisibleAds();
         }
     }

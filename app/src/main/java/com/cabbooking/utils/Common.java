@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -143,10 +144,11 @@ public class Common {
         unSubscribeToTopic();
         sessionManagment.logout(activity);
     }
-    public void callCancleRide(Activity activity,String userId,String tripId,Dialog dialog) {
+    public void callCancleRide(String reason,Activity activity,String userId,String tripId,Dialog dialog) {
         JsonObject object=new JsonObject();
         object.addProperty("userId",userId);
         object.addProperty("tripId",tripId);
+        object.addProperty("cancelReason","My Reason here");
         repository.cancleRide(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
@@ -212,6 +214,8 @@ public class Common {
         Button btn_no,btn_yes;
         btn_yes=dialog.findViewById (R.id.btn_yes);
         btn_no=dialog.findViewById (R.id.btn_no);
+        EditText et_reason=dialog.findViewById(R.id.et_reason);
+
 
         btn_no.setOnClickListener (new View.OnClickListener ( ) {
             @Override
@@ -223,8 +227,13 @@ public class Common {
         btn_yes.setOnClickListener (new View.OnClickListener ( ) {
             @Override
             public void onClick(View v) {
+                String reason=et_reason.getText().toString();
+                if (reason.equalsIgnoreCase("")) {
+                    errorToast("Reason required");
+                } else {
 //                dialog.dismiss();
-                callCancleRide(activity,sessionManagment.getUserDetails().get(KEY_ID),tripId,dialog);
+                    callCancleRide(reason, activity, sessionManagment.getUserDetails().get(KEY_ID), tripId, dialog);
+                }
             }
         });
         dialog.setCanceledOnTouchOutside (false);

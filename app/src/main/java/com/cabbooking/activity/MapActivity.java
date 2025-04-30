@@ -17,11 +17,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -149,7 +151,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
                     frgmentName.equalsIgnoreCase("ContactUsFragment")||
                     frgmentName.equalsIgnoreCase("ProfileFragment")||
-                    frgmentName.equalsIgnoreCase("UpdateProfileFragment")) {
+                    frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
+                            frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
+                            frgmentName.equalsIgnoreCase("BookingDetailFragment")
+                    ) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -199,12 +204,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void getMenuList() {
        mlist.clear();
-//       mlist.add(new MenuModel("Home",R.drawable.logo));
-//       mlist.add(new MenuModel("Notifications",R.drawable.logo));
-
-
-
        mlist.add(new MenuModel("Home",R.drawable.ic_home));
+       mlist.add(new MenuModel("Notifications",R.drawable.logo));
+       mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
+       mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
+       mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
        mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
        mlist.add(new MenuModel("Booking History",R.drawable.ic_wallet));
@@ -484,6 +488,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void setTitle(String title){
          binding.tvTitle.setText(title);
     }
+//    public void setTitleWithSize(String title,int size){
+//         binding.tvTitle.setText(title);
+//
+//        binding.tvTitle.setTextSize(size);
+//    }
 
     private void allClick() {
        

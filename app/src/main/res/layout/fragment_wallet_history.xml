@@ -30,7 +30,7 @@
 
                     <TextView
                         android:layout_centerInParent="true"
-                        android:textColor="@color/gray"
+                        android:textColor="@color/colorAccent"
                         style="@style/TextViewSemBold"
                         android:id="@+id/tvReferral"
                         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                         android:layout_height="1pt"
                         android:layout_marginHorizontal="2pt"
                         android:gravity="center"
-                        android:background="@color/gray"
+                        android:background="@color/colorAccent"
                         />
                 </RelativeLayout>
                 <View

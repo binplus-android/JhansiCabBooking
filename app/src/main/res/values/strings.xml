@@ -45,6 +45,7 @@
     <string name="ride_mate">Ride Mate</string>
     <string name="estiamte_price">Estimate Price</string>
     <string name="booking_confirmed">Booking Confirmed</string>
+    <string name="ride_confirmed">Your ride is confirmed</string>
     <string name="Cancel_Ride">Cancel Ride</string>
     <string name="lets_go">Lets\'s go</string>
     <string name="payment">Payment</string>
@@ -53,6 +54,7 @@
     <string name="Credit_Card">Credit Card</string>
     <string name="Debit_Card">Debit Card</string>
     <string name="cash">Cash</string>
+    <string name="wallet">Wallet</string>
     <string name="booking_date">Booking date : </string>
     <string name="return_date">Return date : </string>
     <string name="otp">OTP :</string>
@@ -74,6 +76,7 @@
     <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
     <string name="are_you_sure_you_want_to_logout_this_app">Are you sure you want to logout this application?</string>
     <string name="are_you_sure_you_want_to_cancle_ride">Are you sure you want to cancel ride?</string>
+   <string name="are_you_sure_you_want_to_delete_feedbck">Are you sure you want to delete feedback?</string>
     <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>
@@ -98,6 +101,7 @@
     <string name="refund">Refund</string>
     <string name="referral">Referral</string>
     <string name="enter_enquiry_here">Enter enquiry here</string>
+    <string name="enter_reason_here">Enter reason here</string>
     <string name="channel_arrived_descrition">Driver notifications</string>
     <string name="could_not_login">Could not login</string>
     <string name="device_not_supported">This device is not supported</string>
@@ -120,5 +124,10 @@
     <string name="name_will_shown_to_driver">This name will be shown to the driver during ride pickup.</string>
 
 
+    <string name="feedback">Feedback</string>
+    <string name="we_value_your_feedback">We Value Your Feedback</string>
+    <string name="help_us_improve_by">Help us improve by sharing your thoughts.</string>
+    <string name="enquiryTitle">Enquire About Our Services</string>
+    <string name="enquiryDEs">Tell us what you\'re looking for — we\'ll provide the right solution.</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

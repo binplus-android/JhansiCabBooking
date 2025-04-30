@@ -225,6 +225,15 @@
                             android:layout_marginLeft="-20pt"                            android:text="@string/cash"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:id="@+id/rd_wallet"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"
+                            android:text="@string/wallet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
                     </RadioGroup>
                     <LinearLayout
                         android:weightSum="2"

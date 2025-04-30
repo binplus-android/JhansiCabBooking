@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,18 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cabbooking.R;
 import com.cabbooking.model.BookingHistoryModel;
 import com.cabbooking.model.EnquiryModel;
+import com.cabbooking.model.VechicleModel;
 
 import java.util.ArrayList;
 
 public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHolder> {
     Context context;
     ArrayList<BookingHistoryModel> list;
+    int pos=0;
+    onTouchMethod listener;
+    public interface onTouchMethod{
+        void onSelection(int pos);
+    }
 
-
-    public BookingAdapter(Context context, ArrayList<BookingHistoryModel> list) {
+    public BookingAdapter(Context context, ArrayList<BookingHistoryModel> list,onTouchMethod listener) {
         this.context = context;
         this.list = list;
-
+        this.listener=listener;
     }
 
     @NonNull
@@ -36,7 +42,14 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.lin_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSelection (position);
+                pos = position;
 
+            }
+        });
 
 
 
@@ -49,11 +62,15 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
+LinearLayout lin_main;
+ImageView iv_detail;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            lin_main=itemView.findViewById(R.id.lin_main);
+            iv_detail=itemView.findViewById(R.id.iv_detail);
+
 
         }
     }
