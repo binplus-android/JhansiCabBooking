@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -40,6 +42,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.io.InputStream;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -178,8 +181,14 @@ public class ProfileFragment extends Fragment {
     }
 
     public void openImagePickerForProfile() {
+        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+        if (!destination.exists()) {
+            destination.mkdirs();
+        }
         ImagePicker.with(getActivity())
-//                .crop() // Enable cropping
+                .compress(1024) // Max 1 MB
+                .maxResultSize(1080, 1080)
+                .saveDir(destination) // Save image to file, avoid large Intent
                 .createIntent(new Function1<Intent, Unit>() {
                     @Override
                     public Unit invoke(Intent intent) {
@@ -245,80 +254,148 @@ public class ProfileFragment extends Fragment {
 
     private void handleCroppedImage(Uri croppedImageUri) {
         try {
-            // Convert the cropped image URI to Base64 string
-            String imageBase64 = common.convertToBase64String(croppedImageUri, getContext());
-            if (imageBase64 != null) {
-                Bitmap bitmap = common.handleImageRotation(croppedImageUri, getContext());
-
-//                if (removeBgType.equals("1")) {
-//                    //paid
-//                    RemoveBackground removeBackground = new RemoveBackground(getActivity());
-//                    removeBackground.uploadImageToRemoveBackground(bitmap, new OnRemoveBackgroundCallBack() {
-//                        @Override
-//                        public void onSuccess(Bitmap processedBitmap) {
-
-                            // Set the final bitmap and convert to Base64
-                            imageString = common.convertBitmapToBase64(bitmap);
-                            if (imageString != null && !imageString.isEmpty()) {
-//                                finalResultBitmap = processedBitmap;
-                                iv_add.setImageBitmap(bitmap);
-                                iv_add.setBackgroundColor(getContext().getResources().getColor(R.color.white));
-                                // Call success callback
-                            }
-
-                            if (imageString != null) {
-                                Log.e("image", "Cropped Image Processed: " + imageString);
-
-                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
-//                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
-//                                    tv_message.setText(getString(R.string.logo_selected));
-//                                } else {
-                                    tv_message.setText(getString(R.string.photo_selected));
-//                                }
-                                tv_message.setTextColor(getResources().getColor(R.color.green_500));
-                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(String error) {
-//                            common.errorToast(error);
-//                            finalResultBitmap = null;
-//                            imageString = "";
-//                        }
-//                    });
-//                }else {
-                    // important
-                    // un-paid
-                    // Process the cropped image
-//                    loadingBar.show();
-//
-//                    processImage(bitmap, new OnSuccessCallBack() {
-//                        @Override
-//                        public void onSuccess() {
-//                            loadingBar.dismiss();
-//                            if (imageString != null) {
-//                                Log.e("image", "Cropped Image Processed: " + imageString);
-//
-//                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
-//                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
-//                                    tv_message.setText(getString(R.string.logo_selected));
-//                                } else {
-//                                    tv_message.setText(getString(R.string.photo_selected));
-//                                }
-//                                tv_message.setTextColor(getResources().getColor(R.color.green));
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure() {
-//                            loadingBar.dismiss();
-//                        }
-//                    });
-//                }
+            if (dialog_profile == null) {
+                OpenProfileImageDialog();
             }
+
+            // NEW: Load compressed Bitmap
+            Bitmap bitmap = decodeSampledBitmapFromUri(croppedImageUri, 1024, 1024);
+
+            if (bitmap != null) {
+                imageString = common.convertBitmapToBase64(bitmap);
+                iv_add.setImageBitmap(bitmap);
+                iv_add.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+
+                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
+                tv_message.setText(getString(R.string.photo_selected));
+                tv_message.setTextColor(getResources().getColor(R.color.green_500));
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    // Helper Method to downsample the image
+    private Bitmap decodeSampledBitmapFromUri(Uri uri, int reqWidth, int reqHeight) throws Exception {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        InputStream imageStream = getContext().getContentResolver().openInputStream(uri);
+        BitmapFactory.decodeStream(imageStream, null, options);
+        if (imageStream != null) imageStream.close();
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        imageStream = getContext().getContentResolver().openInputStream(uri);
+        Bitmap sampledBitmap = BitmapFactory.decodeStream(imageStream, null, options);
+        if (imageStream != null) imageStream.close();
+
+        return sampledBitmap;
+    }
+
+    // Calculate best sample size
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
+
+
+//    private void handleCroppedImage(Uri croppedImageUri) {
+//        try {
+//            if (dialog_profile==null) {
+//                OpenProfileImageDialog();
+//            }
+//
+//            // Convert the cropped image URI to Base64 string
+//            String imageBase64 = common.convertToBase64String(croppedImageUri, getContext());
+//            if (imageBase64 != null) {
+//                Bitmap bitmap = common.handleImageRotation(croppedImageUri, getContext());
+//
+////                if (removeBgType.equals("1")) {
+////                    //paid
+////                    RemoveBackground removeBackground = new RemoveBackground(getActivity());
+////                    removeBackground.uploadImageToRemoveBackground(bitmap, new OnRemoveBackgroundCallBack() {
+////                        @Override
+////                        public void onSuccess(Bitmap processedBitmap) {
+//
+//                            // Set the final bitmap and convert to Base64
+//                            imageString = common.convertBitmapToBase64(bitmap);
+//                            if (imageString != null && !imageString.isEmpty()) {
+////                                finalResultBitmap = processedBitmap;
+//                                iv_add.setImageBitmap(bitmap);
+//                                iv_add.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+//                                // Call success callback
+//                            }
+//
+//                            if (imageString != null) {
+//                                Log.e("image", "Cropped Image Processed: " + imageString);
+//
+//                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
+////                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
+////                                    tv_message.setText(getString(R.string.logo_selected));
+////                                } else {
+//                                    tv_message.setText(getString(R.string.photo_selected));
+////                                }
+//                                tv_message.setTextColor(getResources().getColor(R.color.green_500));
+//                            }
+////                        }
+////
+////                        @Override
+////                        public void onFailure(String error) {
+////                            common.errorToast(error);
+////                            finalResultBitmap = null;
+////                            imageString = "";
+////                        }
+////                    });
+////                }else {
+//                    // important
+//                    // un-paid
+//                    // Process the cropped image
+////                    loadingBar.show();
+////
+////                    processImage(bitmap, new OnSuccessCallBack() {
+////                        @Override
+////                        public void onSuccess() {
+////                            loadingBar.dismiss();
+////                            if (imageString != null) {
+////                                Log.e("image", "Cropped Image Processed: " + imageString);
+////
+////                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
+////                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
+////                                    tv_message.setText(getString(R.string.logo_selected));
+////                                } else {
+////                                    tv_message.setText(getString(R.string.photo_selected));
+////                                }
+////                                tv_message.setTextColor(getResources().getColor(R.color.green));
+////                            }
+////                        }
+////
+////                        @Override
+////                        public void onFailure() {
+////                            loadingBar.dismiss();
+////                        }
+////                    });
+////                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
