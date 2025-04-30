@@ -115,7 +115,8 @@ public class PaymentFragment extends Fragment {
                     RadioButton selectedRadio = binding.getRoot().findViewById(selectedId);
                     String selectedText = selectedRadio.getText().toString();
                     String paymentStatus="";
-                    if(selectedText.equalsIgnoreCase("cash")){
+                    if(selectedText.equalsIgnoreCase("cash")||
+                    selectedText.equalsIgnoreCase("wallet")){
                         paymentStatus="Success";
                     }
                     else{

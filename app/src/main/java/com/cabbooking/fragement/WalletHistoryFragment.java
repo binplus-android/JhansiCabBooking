@@ -111,14 +111,14 @@ public class WalletHistoryFragment extends Fragment {
 
 
     private void callCommonClick(TextView tvblack, TextView tv2) {
-        tvblack.setTextColor (getActivity().getColor(R.color.black));
+        tvblack.setTextColor (getActivity().getColor(R.color.colorAccent));
         tv2.setTextColor (getActivity().getColor(R.color.gray));
 
         // initWalletList(tvblack.getText ().toString ());
     }
 
     private void callViewlineClick(View vblack, View v2) {
-        vblack.setBackgroundColor (getActivity().getColor(R.color.colorPrimary));
+        vblack.setBackgroundColor (getActivity().getColor(R.color.colorAccent));
         vblack.setVisibility (View.VISIBLE);
         v2.setVisibility (View.GONE);
     }

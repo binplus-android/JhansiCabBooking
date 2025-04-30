@@ -17,6 +17,7 @@
                 android:layout_height="match_parent">
                 <TextView
                     android:textAlignment="center"
+
                     style="@style/MyTextview_semibold"
                     android:textSize="@dimen/space_8"
                     android:text="Enquire About Our Services"

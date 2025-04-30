@@ -53,6 +53,7 @@
     <string name="Credit_Card">Credit Card</string>
     <string name="Debit_Card">Debit Card</string>
     <string name="cash">Cash</string>
+    <string name="wallet">Wallet</string>
     <string name="booking_date">Booking date : </string>
     <string name="return_date">Return date : </string>
     <string name="otp">OTP :</string>
