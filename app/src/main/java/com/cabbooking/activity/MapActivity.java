@@ -214,7 +214,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
 
 
-
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
@@ -243,6 +242,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        break;
                    case "wallet history":
                        fm=new WalletHistoryFragment();
+                       break;
                    case "booking history":
                        fm=new BookingHistoryFragment();
                        break;
