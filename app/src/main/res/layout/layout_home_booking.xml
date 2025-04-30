@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:padding="@dimen/space_5"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+            <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/ic_confirm"
+                android:layout_width="7pt"
+                android:layout_height="7pt"/>
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/space_5"
+                android:textSize="@dimen/space_7"
+                style="@style/TextViewSemBold"
+                android:text="@string/ride_confirmed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <View
+            android:layout_marginVertical="@dimen/space_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"/>
+        <LinearLayout
+            android:id="@+id/lin_main"
+            android:padding="@dimen/space_4"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1.2"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginTop="@dimen/space_2"
+                    android:textStyle="bold"
+                    android:text="V number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textSize="@dimen/space_5"
+                    android:text="Vechicle Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textSize="@dimen/space_5"
+                    android:text="Dtiver Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginRight="@dimen/space_5"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight=".8"
+
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginTop="@dimen/space_5"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_local"
+                        android:layout_width="@dimen/space_21"
+                        android:layout_height="@dimen/space_21"/>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_marginLeft="@dimen/space_4"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/logo"
+                        android:layout_width="@dimen/space_21"
+                        android:layout_height="@dimen/space_21"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_detail"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_right_arrow"
+                android:layout_width="@dimen/space_8"
+                android:layout_height="@dimen/space_8"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    </RelativeLayout>
