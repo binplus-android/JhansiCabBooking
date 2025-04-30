@@ -129,5 +129,11 @@
     <string name="help_us_improve_by">Help us improve by sharing your thoughts.</string>
     <string name="enquiryTitle">Enquire About Our Services</string>
     <string name="enquiryDEs">Tell us what you\'re looking for — we\'ll provide the right solution.</string>
+    <string name="image_size_exceeds">Image size exceeds 2 MB. Please select a smaller image.</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="choose_photo_to_upload">Choose photo to upload</string>
+
+
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

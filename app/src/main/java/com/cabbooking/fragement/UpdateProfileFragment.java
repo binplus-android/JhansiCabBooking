@@ -46,6 +46,8 @@ public class UpdateProfileFragment extends Fragment {
             binding.tvPlaceholder.setText(getString(R.string.email_id));
         }
 
+
+
         return binding.getRoot();
     }
 
