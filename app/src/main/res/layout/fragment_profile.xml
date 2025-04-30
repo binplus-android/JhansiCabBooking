@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:id="@+id/main"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragement.ProfileFragment">
+        <LinearLayout
+            android:layout_marginTop="@dimen/space_18"
+            android:layout_marginHorizontal="@dimen/space_8"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/relImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/rel_image"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_centerHorizontal="true"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:cardCornerRadius="1000dp">-->
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgProfile"
+                        android:layout_width="@dimen/space_60"
+                        android:layout_height="@dimen/space_60"
+                        app:civ_border_color="@color/grey_20"
+                        app:civ_border_width=".5dp"
+                        android:src="@drawable/logo"
+                        android:background="@color/white"/>
+<!--                </androidx.cardview.widget.CardView>-->
+
+                <ImageView
+                    android:id="@+id/iv_edit"
+                    android:src="@drawable/ic_edit"
+                    android:layout_marginStart="-10pt"
+                    android:layout_marginTop="-10pt"
+                    android:layout_below="@id/imgProfile"
+                    android:layout_toEndOf="@id/imgProfile"
+                    android:layout_width="@dimen/space_9"
+                    android:layout_height="@dimen/space_9" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Account Details"
+                style="@style/TextViewSemBold"
+                android:layout_marginTop="@dimen/space_15"
+                android:textSize="@dimen/space_10"/>
+
+            <LinearLayout
+                android:id="@+id/lin_name"
+                android:layout_marginTop="@dimen/space_15"
+                android:layout_marginBottom="@dimen/space_1"
+                android:background="@drawable/bg_shadow_box"
+                android:padding="@dimen/space_4"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:text="Test Test"
+                        android:textSize="@dimen/space_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="@string/name"
+                        android:textSize="@dimen/space_6"
+                        android:textColor="@color/grey_90"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_right_arrow"
+                    android:layout_width="@dimen/space_8"
+                    android:layout_height="@dimen/space_8"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginVertical="@dimen/space_1"
+                android:background="@drawable/bg_shadow_box"
+                android:padding="@dimen/space_4"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_mobile"
+                        android:text="9999999999"
+                        android:textSize="@dimen/space_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="@string/mobile_number"
+                        android:textSize="@dimen/space_6"
+                        android:textColor="@color/grey_90"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_right_arrow"
+                    android:layout_width="@dimen/space_8"
+                    android:layout_height="@dimen/space_8"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lin_email"
+                android:layout_marginVertical="@dimen/space_1"
+                android:background="@drawable/bg_shadow_box"
+                android:padding="@dimen/space_4"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:text="Test@gmail.com"
+                        android:textSize="@dimen/space_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="@string/email_id"
+                        android:textSize="@dimen/space_6"
+                        android:textColor="@color/grey_90"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_right_arrow"
+                    android:layout_width="@dimen/space_8"
+                    android:layout_height="@dimen/space_8"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

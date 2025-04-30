@@ -7,14 +7,21 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -63,7 +70,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -629,5 +639,147 @@ public class Common {
         return poly;
     }
 
+    public void mobileIntent(String phoneNumber){
+        Uri dialUri = Uri.parse("tel:" + phoneNumber);
+        Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
+        context.startActivity(dialIntent);
+    }
+
+    public void emailIntent(String emailAddress,String subject){
+        //       Uri emailUri = Uri.parse("mailto:" + emailAddress);
+//        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
+//        context.startActivity(emailIntent);
+
+        String encodedSubject = Uri.encode(subject);
+
+// Create the mailto URI with subject and body
+        Uri emailUri = Uri.parse("mailto:" + emailAddress +
+                "?subject=" + encodedSubject);
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
+        context.startActivity(emailIntent);
+    }
+
+    public void whatsApp(String number, String message){
+        PackageManager packageManager = context.getPackageManager();
+        Intent i = new Intent(Intent.ACTION_VIEW);
+
+        try {
+            String url = "whatsapp://send?phone="+ number +"&text=" + URLEncoder.encode(message, "UTF-8");
+            i.setData(Uri.parse(url));
+            if (i.resolveActivity(packageManager) != null) {
+                context.startActivity(i);
+
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public String convertToBase64String(Uri uri, Context context) {
+        String convertedString = null;
+        try {
+            InputStream in = context.getContentResolver().openInputStream(uri);
+            byte[] bytes = getBytes(in);
+
+            Log.e("fgvbhjnk",uri.toString());
+
+            // Check if image size exceeds 2 MB
+//            if (bytes.length > 2 * 1024 * 1024) { // 2 MB = 2 * 1024 * 1024 bytes
+//                errorToast(context.getString(R.string.image_size_exceeds));
+//                return null; // Stop further processing
+//            } else {
+                Log.e("Image Validation", "Image size is within limit. Compressing...");
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                // Compress image
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream); // 50% quality
+                bytes = outputStream.toByteArray();
+
+                Log.e("base64_data", "Compressed bytes size = " + bytes.length);
+                convertedString = Base64.encodeToString(bytes, Base64.DEFAULT);
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("error", "Error converting image: " + e.toString());
+        }
+        return convertedString;
+    }
+
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    public Bitmap handleImageRotation(Uri imageUri, Context context) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
+            if (inputStream != null) {
+                ExifInterface exifInterface = new ExifInterface(inputStream);
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+                Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        return rotateImage(originalBitmap, 90);
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        return rotateImage(originalBitmap, 180);
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        return rotateImage(originalBitmap, 270);
+                    case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                        return flipImage(originalBitmap, true, false);
+                    case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                        return flipImage(originalBitmap, false, true);
+                    default:
+                        return originalBitmap; // No rotation needed
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if there was an error
+    }
+
+    public Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public Bitmap flipImage(Bitmap source, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public String convertBitmapToBase64(Bitmap bitmap) {
+        try {
+            // Create a ByteArrayOutputStream
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Compress the bitmap to PNG format (you can also use JPEG with compression quality)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+
+            // Get the byte array from the ByteArrayOutputStream
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            // Convert byte array to Base64 string
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

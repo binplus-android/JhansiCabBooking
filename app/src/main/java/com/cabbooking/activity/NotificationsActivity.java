@@ -40,6 +40,12 @@ public class NotificationsActivity extends AppCompatActivity {
         common = new Common(activity);
         list=new ArrayList<>();
         binding.recList.setLayoutManager (new LinearLayoutManager(activity));
+        binding.incToolbar.ivBackarrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 //        list.clear();
 //        list.add(0, NotificationResp.Datum);

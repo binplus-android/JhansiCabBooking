@@ -103,15 +103,13 @@
     <string name="enter_enquiry_here">Enter enquiry here</string>
     <string name="enter_reason_here">Enter reason here</string>
     <string name="channel_arrived_descrition">Driver notifications</string>
-
     <string name="could_not_login">Could not login</string>
-
     <string name="device_not_supported">This device is not supported</string>
     <string name="request_send">Request send</string>
-
     <string name="sent_failed">Sent failed</string>
     <string name="error_toast">Something went wrong ! try later</string>
     <string name="Update_Now">Update Now</string>
+    <string name="Update">Update</string>
     <string name="a_new_version_of_the_app">A new version of the app is now available </string>
     <string name="update_Available">Update Available</string>
     <string name="update_Later">Update Later</string>
@@ -119,10 +117,25 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms">Terms &amp; Conditions</string>
     <string name="my_booking">My Booking</string>
+    <string name="help_support"><![CDATA[Help & Support]]></string>
+    <string name="how_can_we_assist_you">How can we assist you ?</string>
+    <string name="chat_with_us">Chat with us</string>
+    <string name="email_us">Email us</string>
+    <string name="name_will_shown_to_driver">This name will be shown to the driver during ride pickup.</string>
+
+
     <string name="feedback">Feedback</string>
     <string name="we_value_your_feedback">We Value Your Feedback</string>
     <string name="help_us_improve_by">Help us improve by sharing your thoughts.</string>
     <string name="enquiryTitle">Enquire About Our Services</string>
     <string name="enquiryDEs">Tell us what you\'re looking for — we\'ll provide the right solution.</string>
+    <string name="image_size_exceeds">Image size exceeds 2 MB. Please select a smaller image.</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="choose_photo_to_upload">Choose photo to upload</string>
+    <string name="photo_selected">Photo Selected</string>
+    <string name="choose_image_from_your_device_png_jpeg_jpg_etc">*choose image from your device (.png, .jpeg, .jpg etc)</string>
+
+
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

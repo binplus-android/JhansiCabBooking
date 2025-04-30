@@ -1,23 +1,15 @@
 package com.cabbooking.fragement;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.cabbooking.R;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.BookingAdapter;
-import com.cabbooking.adapter.WalletHistoryAdapter;
 import com.cabbooking.databinding.FragmentBookingHistoryBinding;
-import com.cabbooking.databinding.FragmentWalletHistoryBinding;
 import com.cabbooking.model.BookingHistoryModel;
-import com.cabbooking.model.WalletHistoryModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.SessionManagment;
 

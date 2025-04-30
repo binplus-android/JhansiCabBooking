@@ -146,21 +146,9 @@
                                 android:textSize="@dimen/space_7"
                                 android:textStyle="bold"
                                 android:text="@string/app_name">
-
                             </TextView>
-
-
-
-
-
-
-
-
                         </RelativeLayout>
-
-
                     </LinearLayout>
-
                 </androidx.appcompat.widget.Toolbar>
 
                 <RelativeLayout

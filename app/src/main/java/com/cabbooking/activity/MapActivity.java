@@ -42,8 +42,10 @@ import com.cabbooking.R;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
 import com.cabbooking.fragement.BookingHistoryFragment;
+import com.cabbooking.fragement.ContactUsFragment;
 import com.cabbooking.fragement.EnquiryFragment;
 import com.cabbooking.fragement.HomeFragment;
+import com.cabbooking.fragement.ProfileFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
@@ -111,7 +113,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     ArrayList<MenuModel>mlist;
     MenuAdapter menuAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +148,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     } else if(frgmentName.contains("DestinationFragment")||
                             frgmentName.contains("EnquiryFragment")||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment")||
+                    frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
+                    frgmentName.equalsIgnoreCase("ContactUsFragment")||
+                    frgmentName.equalsIgnoreCase("ProfileFragment")||
+                    frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
                             frgmentName.equalsIgnoreCase("BookingDetailFragment")
                     ) {
@@ -175,6 +180,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
+
         common.getAppSettingData(new OnConfig() {
                         @Override
             public void getAppSettingData(AppSettingModel model) {
@@ -205,6 +211,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
        mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
+//       mlist.add(new MenuModel("Booking History",R.drawable.ic_wallet));
+       mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
+       mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
+       mlist.add(new MenuModel("Contact Us",R.drawable.logo));
+
        mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
@@ -229,14 +240,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        Intent i3 = new Intent(MapActivity.this, NotificationsActivity.class);
                        startActivity(i3);
                        break;
-                       case "enquiry":
+                   case "enquiry":
                        fm=new EnquiryFragment();
                        break;
-                       case "wallet history":
+                   case "wallet history":
                        fm=new WalletHistoryFragment();
-                       break;
-                       case "booking history":
+                   case "booking history":
                        fm=new BookingHistoryFragment();
+                       break;
+                   case "contact us":
+                       fm=new ContactUsFragment();
                        break;
                }
 
@@ -244,10 +257,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                    binding.drawer.closeDrawer(GravityCompat.START);
                    common.switchFragment(fm);
                }
-
-
            }
        });
+
        binding.recMenu.setAdapter(menuAdapter);
     }
 
@@ -255,7 +267,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         pickupLat=Lat;
         pickupLng=Lng;
         pickAddres=pickAddressValue;
-
 
     }
 
@@ -265,7 +276,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public String getPickupAddress() {
         return pickAddres;
-    } public Double getPickupLat() {
+    }
+
+    public Double getPickupLat() {
         return pickupLat;
     }
 
@@ -283,31 +296,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //remove if condition when map start working
         if(destinationLat.equals("")){
             return pickupLat;
-        }
-        else{
+        } else{
         return destinationLat;
-    }}
+        }
+    }
 
     public Double getDestinationLng() {
         //remove if condition when map start working
         if(destinationLng.equals("")){
             return pickupLng;
-        }
-        else {
+        } else {
             return destinationLng;
         }
     }
+
     public String getDestionationAddress() {
         //remove if condition when map start working
         if(destinationAddress.equals("")){
             return pickAddres;
-        }
-        else {
+        } else {
             return destinationAddress;
         }
     }
 
     private void mapAllClick() {
+
     }
 
     public void callVersionDialog() {
@@ -513,6 +526,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+        binding.navHeader.linMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.switchFragment(new ProfileFragment());
+                binding.drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
+
     }
 
     private void showLogoutDialog() {
@@ -634,30 +656,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        // Set click listener
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(@NonNull LatLng latLng) {
-//                // Remove previous marker
-//                if (riderMarket != null) riderMarket.remove();
-//
-//                // Add new marker
-//                riderMarket = mMap.addMarker(new MarkerOptions()
-//                        .position(latLng)
-//                        .title("Selected Location")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-//
-//                // Move camera
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-//
-//                // Get address and update UI
-//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-//                tvDestination.setText(address);
-//                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
-//                binding.tvAddress.setText(address);
-//                if (tvpick != null) tvpick.setText(address);
-//            }
-//        });
+        // Set click listener
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                // Remove previous marker
+                if (riderMarket != null) riderMarket.remove();
+
+                // Add new marker
+                riderMarket = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Selected Location")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+                // Move camera
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+
+                // Get address and update UI
+                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                tvDestination.setText(address);
+                getDestinationLatLng(latLng.latitude, latLng.longitude,address);
+                binding.tvAddress.setText(address);
+                if (tvpick != null) tvpick.setText(address);
+            }
+        });
 
         // Optional: show current location once map is ready
 //        displayLocation();
