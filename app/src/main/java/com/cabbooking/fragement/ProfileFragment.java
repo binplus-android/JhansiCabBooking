@@ -258,7 +258,7 @@ public class ProfileFragment extends Fragment {
 //                        public void onSuccess(Bitmap processedBitmap) {
 
                             // Set the final bitmap and convert to Base64
-//                            imageString = convertBitmapToBase64(bitmap);
+                            imageString = common.convertBitmapToBase64(bitmap);
                             if (imageString != null && !imageString.isEmpty()) {
 //                                finalResultBitmap = processedBitmap;
                                 iv_add.setImageBitmap(bitmap);
@@ -273,9 +273,9 @@ public class ProfileFragment extends Fragment {
 //                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
 //                                    tv_message.setText(getString(R.string.logo_selected));
 //                                } else {
-//                                    tv_message.setText(getString(R.string.photo_selected));
+                                    tv_message.setText(getString(R.string.photo_selected));
 //                                }
-//                                tv_message.setTextColor(getResources().getColor(R.color.green));
+                                tv_message.setTextColor(getResources().getColor(R.color.green_500));
                             }
 //                        }
 //

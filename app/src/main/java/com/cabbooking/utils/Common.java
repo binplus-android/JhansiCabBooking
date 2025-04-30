@@ -683,11 +683,13 @@ public class Common {
             InputStream in = context.getContentResolver().openInputStream(uri);
             byte[] bytes = getBytes(in);
 
+            Log.e("fgvbhjnk",uri.toString());
+
             // Check if image size exceeds 2 MB
-            if (bytes.length > 2 * 1024 * 1024) { // 2 MB = 2 * 1024 * 1024 bytes
-                errorToast(context.getString(R.string.image_size_exceeds));
-                return null; // Stop further processing
-            } else {
+//            if (bytes.length > 2 * 1024 * 1024) { // 2 MB = 2 * 1024 * 1024 bytes
+//                errorToast(context.getString(R.string.image_size_exceeds));
+//                return null; // Stop further processing
+//            } else {
                 Log.e("Image Validation", "Image size is within limit. Compressing...");
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -700,7 +702,7 @@ public class Common {
 
                 Log.e("base64_data", "Compressed bytes size = " + bytes.length);
                 convertedString = Base64.encodeToString(bytes, Base64.DEFAULT);
-            }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("error", "Error converting image: " + e.toString());
@@ -759,6 +761,25 @@ public class Common {
         Matrix matrix = new Matrix();
         matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public String convertBitmapToBase64(Bitmap bitmap) {
+        try {
+            // Create a ByteArrayOutputStream
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Compress the bitmap to PNG format (you can also use JPEG with compression quality)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+
+            // Get the byte array from the ByteArrayOutputStream
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            // Convert byte array to Base64 string
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
