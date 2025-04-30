@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragement.UpdateProfileFragment"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/space_18"
+            android:layout_marginHorizontal="@dimen/space_8">
+            <TextView
+                android:id="@+id/tv_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update name"
+                style="@style/TextViewSemBold"
+                android:textSize="@dimen/space_10"/>
+            <TextView
+                android:id="@+id/tv_placeholder"
+                android:layout_marginTop="@dimen/space_12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                />
+            <EditText
+                android:id="@+id/et_name"
+                android:hint="@string/enter_here"
+                android:layout_marginTop="@dimen/space_5"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                />
+
+            <TextView
+                android:id="@+id/tv_error"
+                android:layout_marginTop="@dimen/space_5"
+                android:textColor="@color/grey_60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_will_shown_to_driver"
+                />
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/btn_otp"
+            android:text="@string/Update"
+            android:layout_marginTop="@dimen/space_15"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/space_8"
+            android:layout_height="@dimen/button_height"/>
+    </RelativeLayout>
+</layout>

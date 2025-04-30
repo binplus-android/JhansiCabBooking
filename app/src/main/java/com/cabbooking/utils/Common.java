@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -63,6 +64,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -620,5 +622,42 @@ public class Common {
         return poly;
     }
 
+    public void mobileIntent(String phoneNumber){
+        Uri dialUri = Uri.parse("tel:" + phoneNumber);
+        Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
+        context.startActivity(dialIntent);
+    }
+
+    public void emailIntent(String emailAddress,String subject){
+        //       Uri emailUri = Uri.parse("mailto:" + emailAddress);
+//        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
+//        context.startActivity(emailIntent);
+
+        String encodedSubject = Uri.encode(subject);
+
+// Create the mailto URI with subject and body
+        Uri emailUri = Uri.parse("mailto:" + emailAddress +
+                "?subject=" + encodedSubject);
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, emailUri);
+        context.startActivity(emailIntent);
+    }
+
+    public void whatsApp(String number, String message){
+        PackageManager packageManager = context.getPackageManager();
+        Intent i = new Intent(Intent.ACTION_VIEW);
+
+        try {
+            String url = "whatsapp://send?phone="+ number +"&text=" + URLEncoder.encode(message, "UTF-8");
+            i.setData(Uri.parse(url));
+            if (i.resolveActivity(packageManager) != null) {
+                context.startActivity(i);
+
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
 }

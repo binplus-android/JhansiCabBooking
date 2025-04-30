@@ -99,15 +99,13 @@
     <string name="referral">Referral</string>
     <string name="enter_enquiry_here">Enter enquiry here</string>
     <string name="channel_arrived_descrition">Driver notifications</string>
-
     <string name="could_not_login">Could not login</string>
-
     <string name="device_not_supported">This device is not supported</string>
     <string name="request_send">Request send</string>
-
     <string name="sent_failed">Sent failed</string>
     <string name="error_toast">Something went wrong ! try later</string>
     <string name="Update_Now">Update Now</string>
+    <string name="Update">Update</string>
     <string name="a_new_version_of_the_app">A new version of the app is now available </string>
     <string name="update_Available">Update Available</string>
     <string name="update_Later">Update Later</string>
@@ -115,5 +113,12 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms">Terms &amp; Conditions</string>
     <string name="my_booking">My Booking</string>
+    <string name="help_support"><![CDATA[Help & Support]]></string>
+    <string name="how_can_we_assist_you">How can we assist you ?</string>
+    <string name="chat_with_us">Chat with us</string>
+    <string name="email_us">Email us</string>
+    <string name="name_will_shown_to_driver">This name will be shown to the driver during ride pickup.</string>
+
+
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

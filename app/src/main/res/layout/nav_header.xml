@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <LinearLayout
-        android:id="@+id/lin_main"
+<layout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/space_10">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <ImageView
-            android:id="@+id/civ_logo"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/logo" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
+            android:id="@+id/lin_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/black"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/space_10">
 
-            <TextView
-                android:id="@+id/tv_name"
+            <ImageView
+                android:id="@+id/civ_logo"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:src="@drawable/logo" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="@string/name"
-                android:textColor="@color/white" />
+                android:orientation="vertical">
 
-            <TextView
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="@string/name"
+                    android:textColor="@color/white" />
 
-                android:id="@+id/tv_mob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="9999999999"
-                android:textColor="@color/gray_edittext"
-                />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <TextView
 
-    </LinearLayout>
-    <View
-android:visibility="gone"
+                    android:id="@+id/tv_mob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="9999999999"
+                    android:textColor="@color/gray_edittext"
+                    />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </LinearLayout>
+        <View
+            android:visibility="gone"
             android:layout_below="@id/lin_main"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="1.5dp"/>
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

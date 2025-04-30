@@ -72,12 +72,6 @@
                                     android:layout_height="wrap_content"/>
                             </LinearLayout>
                         </LinearLayout>
-
-
-
-
-
-
                         <ImageView
                             android:layout_alignParentRight="true"
                             android:layout_width="10pt"
@@ -86,7 +80,6 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/space_3"
                             android:layout_marginRight="@dimen/space_5"
-
                             android:src="@drawable/notification"/>
 
 
@@ -126,21 +119,9 @@
                                 android:textSize="@dimen/space_7"
                                 android:textStyle="bold"
                                 android:text="@string/app_name">
-
                             </TextView>
-
-
-
-
-
-
-
-
                         </RelativeLayout>
-
-
                     </LinearLayout>
-
                 </androidx.appcompat.widget.Toolbar>
 
                 <RelativeLayout
