@@ -31,8 +31,8 @@
 <!--                    app:cardCornerRadius="1000dp">-->
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgProfile"
-                        android:layout_width="@dimen/dimen_38"
-                        android:layout_height="@dimen/dimen_38"
+                        android:layout_width="@dimen/space_60"
+                        android:layout_height="@dimen/space_60"
                         app:civ_border_color="@color/grey_20"
                         app:civ_border_width=".5dp"
                         android:src="@drawable/logo"
