@@ -250,7 +250,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        fm=new ContactUsFragment();
                        break;
                }
-
+               binding.drawer.closeDrawer(GravityCompat.START);
                if(fm!=null){
                    binding.drawer.closeDrawer(GravityCompat.START);
                    common.switchFragment(fm);
