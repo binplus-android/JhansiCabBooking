@@ -120,7 +120,7 @@ public class WalletHistoryFragment extends Fragment {
     private void callViewlineClick(View vblack, View v2) {
         vblack.setBackgroundColor (getActivity().getColor(R.color.colorAccent));
         vblack.setVisibility (View.VISIBLE);
-        v2.setVisibility (View.GONE);
+        v2.setVisibility (View.INVISIBLE);
     }
 
     private void initView() {

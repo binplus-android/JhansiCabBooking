@@ -91,7 +91,7 @@
                                 android:layout_marginLeft="@dimen/space_3"
                                 android:src="@drawable/ic_wallet"/>
                             <TextView
-
+                                android:visibility="gone"
                                 android:textSize="@dimen/space_5"
                                 android:layout_marginLeft="@dimen/space_1"
                                 android:layout_gravity="center_vertical"

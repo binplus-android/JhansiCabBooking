@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 <LinearLayout
-    android:layout_marginVertical="@dimen/space_1"
-    android:background="@drawable/bg_shadow_box"
+    android:id="@+id/lin"
+    android:layout_marginTop="@dimen/space_1"
     android:padding="@dimen/space_4"
     android:weightSum="2"
     android:layout_width="match_parent"
@@ -53,4 +53,10 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 </LinearLayout>
+    <View
+        android:layout_below="@id/lin"
+        android:layout_marginVertical="@dimen/space_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"/>
 </RelativeLayout>

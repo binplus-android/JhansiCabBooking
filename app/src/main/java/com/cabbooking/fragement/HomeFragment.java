@@ -239,6 +239,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 common.switchFragment(fragment);
             }
         });
+
+
     }
 
     private void getDestinatioList() {
