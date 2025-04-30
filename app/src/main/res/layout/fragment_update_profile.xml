@@ -46,7 +46,7 @@
 
         </LinearLayout>
         <Button
-            android:id="@+id/btn_otp"
+            android:id="@+id/btn_submit"
             android:text="@string/Update"
             android:layout_marginTop="@dimen/space_15"
             android:layout_width="match_parent"

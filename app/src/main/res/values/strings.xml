@@ -134,6 +134,7 @@
     <string name="upload_photo">Upload photo</string>
     <string name="choose_photo_to_upload">Choose photo to upload</string>
     <string name="photo_selected">Photo Selected</string>
+    <string name="success">Success</string>
     <string name="choose_image_from_your_device_png_jpeg_jpg_etc">*choose image from your device (.png, .jpeg, .jpg etc)</string>
 
 
