@@ -205,18 +205,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void getMenuList() {
        mlist.clear();
        mlist.add(new MenuModel("Home",R.drawable.ic_home));
+        mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
+        mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
+        mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Notifications",R.drawable.logo));
+        mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
        mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
        mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
-       mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
-       mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
-       mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
-//       mlist.add(new MenuModel("Booking History",R.drawable.ic_wallet));
-       mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
-       mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
-       mlist.add(new MenuModel("Contact Us",R.drawable.logo));
 
-       mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
+
+
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
            @Override
            public void onSelection(int pos) {
