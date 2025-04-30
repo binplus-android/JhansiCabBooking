@@ -27,22 +27,12 @@
                 android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/are_you_sure_you_want_to_cancle_ride"
+                android:text="@string/are_you_sure_you_want_to_delete_feedbck"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/space_3"
                 android:textSize="@dimen/space_5"
                 android:layout_gravity="center"
                 android:gravity="center" />
-            <EditText
-                android:id="@+id/et_reason"
-                android:layout_marginTop="@dimen/space_5"
-                android:inputType="textMultiLine"
-                android:gravity="top"
-                android:paddingTop="@dimen/space_2"
-                android:hint="@string/enter_reason_here"
-                android:layout_width="match_parent"
-                android:layout_height="30pt"/>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"

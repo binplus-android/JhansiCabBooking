@@ -125,7 +125,7 @@ public class BookingDetailFragment extends Fragment {
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setGravity(Gravity.CENTER);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        dialog.setContentView (R.layout.dialog_cancle_confirm);
+        dialog.setContentView (R.layout.dialog_delete_confirm);
         Button btn_no,btn_yes;
         TextView tv_message=dialog.findViewById(R.id.tv_message);
         tv_message.setText(getActivity().getString(R.string.are_you_sure_you_want_to_delete_feedbck));
