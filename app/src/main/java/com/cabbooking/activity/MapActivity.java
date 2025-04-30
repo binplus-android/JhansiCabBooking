@@ -209,7 +209,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
         mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
        mlist.add(new MenuModel("Notifications",R.drawable.logo));
-        mlist.add(new MenuModel("Contact Us Page",R.drawable.logo));
+        mlist.add(new MenuModel("Contact Us",R.drawable.logo));
        mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
        mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
 
