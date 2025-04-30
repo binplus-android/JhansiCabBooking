@@ -75,6 +75,7 @@
     <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
     <string name="are_you_sure_you_want_to_logout_this_app">Are you sure you want to logout this application?</string>
     <string name="are_you_sure_you_want_to_cancle_ride">Are you sure you want to cancel ride?</string>
+   <string name="are_you_sure_you_want_to_delete_feedbck">Are you sure you want to delete feedback?</string>
     <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>
@@ -116,5 +117,10 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms">Terms &amp; Conditions</string>
     <string name="my_booking">My Booking</string>
+    <string name="feedback">Feedback</string>
+    <string name="we_value_your_feedback">We Value Your Feedback</string>
+    <string name="help_us_improve_by">Help us improve by sharing your thoughts.</string>
+    <string name="enquiryTitle">Enquire About Our Services</string>
+    <string name="enquiryDEs">Tell us what you\'re looking for — we\'ll provide the right solution.</string>
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>

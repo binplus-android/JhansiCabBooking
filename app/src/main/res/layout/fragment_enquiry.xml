@@ -17,17 +17,16 @@
                 android:layout_height="match_parent">
                 <TextView
                     android:textAlignment="center"
-
                     style="@style/MyTextview_semibold"
                     android:textSize="@dimen/space_8"
-                    android:text="Enquire About Our Services"
+                    android:text="@string/enquiryTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:textColor="@color/gray"
                     android:textAlignment="center"
                     android:textSize="@dimen/space_5"
-                    android:text="Tell us what you're looking for — we'll provide the right solution."
+                    android:text="@string/enquiryDEs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <RelativeLayout

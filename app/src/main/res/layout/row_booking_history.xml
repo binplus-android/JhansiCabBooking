@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
+        android:id="@+id/lin_main"
         android:layout_marginVertical="@dimen/space_1"
         android:background="@drawable/bg_shadow_box"
         android:padding="@dimen/space_4"
@@ -95,6 +96,7 @@
 
         </LinearLayout>
         <ImageView
+            android:id="@+id/iv_detail"
             android:layout_gravity="center"
             android:src="@drawable/ic_right_arrow"
             android:layout_width="@dimen/space_8"

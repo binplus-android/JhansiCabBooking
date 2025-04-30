@@ -17,11 +17,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -145,7 +147,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     } else if(frgmentName.contains("DestinationFragment")||
                             frgmentName.contains("EnquiryFragment")||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment")||
-                    frgmentName.equalsIgnoreCase("BookingHistoryFragment")) {
+                            frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
+                            frgmentName.equalsIgnoreCase("BookingDetailFragment")
+                    ) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -472,6 +476,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void setTitle(String title){
          binding.tvTitle.setText(title);
     }
+//    public void setTitleWithSize(String title,int size){
+//         binding.tvTitle.setText(title);
+//
+//        binding.tvTitle.setTextSize(size);
+//    }
 
     private void allClick() {
        

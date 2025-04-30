@@ -77,7 +77,12 @@ public class BookingHistoryFragment extends Fragment {
         list.add(new BookingHistoryModel());
         list.add(new BookingHistoryModel());
         list.add(new BookingHistoryModel());
-        adapter=new BookingAdapter(getActivity(),list);
+        adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                common.switchFragment(new BookingDetailFragment());
+            }
+        });
         binding.recList.setAdapter(adapter);
 
     }
