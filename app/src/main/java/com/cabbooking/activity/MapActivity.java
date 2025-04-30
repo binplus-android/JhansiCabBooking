@@ -483,7 +483,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //    }
 
     private void allClick() {
-       
+        binding.ivWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               common.switchFragment(new WalletHistoryFragment());
+            }
+        });
         binding.ivBackarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

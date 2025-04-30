@@ -5,9 +5,7 @@
     android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/lin_main"
-        android:layout_marginVertical="@dimen/space_1"
-        android:backgroundTint="@color/grey_5"
-        android:background="@drawable/bg_shadow_box"
+        android:layout_marginTop="@dimen/space_1"
         android:padding="@dimen/space_4"
         android:weightSum="2"
         android:layout_width="match_parent"
@@ -48,6 +46,12 @@
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"/>-->
             <TextView
+                android:textColor="@color/green_500"
+                android:text="+Rs. 00"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
                 android:layout_marginTop="@dimen/space_2"
                 android:background="@drawable/bg_button"
                 android:textColor="@color/black"
@@ -65,18 +69,11 @@
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_weight=".8"
-
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:textColor="@color/green_500"
-                android:textAlignment="textEnd"
-                android:text="+Rs. 00"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+
             <LinearLayout
-                android:layout_marginTop="@dimen/space_5"
                 android:layout_gravity="end"
                 android:gravity="end"
                 android:orientation="horizontal"
@@ -103,4 +100,10 @@
             android:layout_width="@dimen/space_8"
             android:layout_height="@dimen/space_8"/>
     </LinearLayout>
+    <View
+        android:layout_below="@id/lin_main"
+        android:layout_marginVertical="@dimen/space_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"/>
 </RelativeLayout>

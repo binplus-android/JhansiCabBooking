@@ -91,7 +91,7 @@ public class BookingHistoryFragment extends Fragment {
     }
 
     private void initView() {
-        ((MapActivity)getActivity()).setTitle("History");
+        ((MapActivity)getActivity()).setTitle("Booking History");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());
