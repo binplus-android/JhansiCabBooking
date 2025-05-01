@@ -29,25 +29,25 @@ public interface Apis {
     Call<OTPverificatioResp> OtpVerification(@Body  JsonObject jsonObject);
     @POST("getVehicleFare")
     Call<VechicleModel> getVehicleFare(@Body  JsonObject jsonObject);
-     @POST("addTrip")
+    @POST("addTrip")
     Call<PickupResp> addTrip(@Body  JsonObject jsonObject);
-     @POST("tripStatus")
+    @POST("tripStatus")
     Call<TripRiderResp> tripStatus(@Body  JsonObject jsonObject);
-     @POST("driverDetail")
+    @POST("driverDetail")
     Call<DriverDetailResp> driverDetail(@Body  JsonObject jsonObject);
-     @POST("cancelTrip")
+    @POST("cancelTrip")
     Call<CancleRideResp> cancleRide(@Body  JsonObject jsonObject);
 
-     @POST("tripDetail")
+    @POST("tripDetail")
     Call<TripDetailRes> tripDetail(@Body  JsonObject jsonObject);
 
     @POST("payment")
     Call<PaymentResp> paymentApi(@Body  JsonObject jsonObject);
+
     @POST("driverLiveLocation")
     Call<DriverLocationResp> driverLocation(@Body  JsonObject jsonObject);
-  @POST("appSettings")
-  Call<AppSettingModel> appSetting();
 
-
+    @POST("appSettings")
+    Call<AppSettingModel> appSetting();
 
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "910017802719",
+    "project_id": "jhansi-cab-booking",
+    "storage_bucket": "jhansi-cab-booking.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910017802719:android:5eed5b41ba0872c595946a",
+        "android_client_info": {
+          "package_name": "com.cabbooking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqPSDkJhq6EO16_3_7Cfokto1Hbwa_xZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

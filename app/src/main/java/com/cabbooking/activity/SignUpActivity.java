@@ -1,6 +1,7 @@
 package com.cabbooking.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -23,6 +24,7 @@ import com.cabbooking.Response.LoginResp;
 import com.cabbooking.databinding.ActivitySignUpBinding;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
+import com.cabbooking.utils.Constants;
 import com.cabbooking.utils.LoadingBar;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
@@ -42,8 +44,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up);
+        if (Constants.REFERRAL_CODE!=null && !Constants.REFERRAL_CODE.isEmpty()) {
+            Log.e("Signup_REFERRAL_CODE", Constants.REFERRAL_CODE);
+        }
+
+        SharedPreferences prefs = getSharedPreferences("ReferralPrefs", MODE_PRIVATE);
+        String savedCode = prefs.getString("referral_code", null);
+        if (savedCode != null) {
+            Log.e("Signup_savedCode", savedCode);
+        }
+
         initView();
         allClick();
+
     }
 
     public void allClick() {

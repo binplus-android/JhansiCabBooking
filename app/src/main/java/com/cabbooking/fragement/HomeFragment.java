@@ -98,6 +98,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if (isGranted) {
                         if (isLocationEnabled()) {
                             Toast.makeText(getContext(), "Location is enabled", Toast.LENGTH_SHORT).show();
+                            MapActivity.isAddressFetched = false;
+                            ((MapActivity)getActivity()).mapCode();
                             // TODO: Start using location here
                         } else {
                             showEnableLocationDialog();

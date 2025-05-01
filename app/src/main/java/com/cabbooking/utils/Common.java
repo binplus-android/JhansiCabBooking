@@ -54,6 +54,7 @@ import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+import com.cabbooking.interfaces.SuccessCallBack;
 import com.cabbooking.model.AppSettingModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -710,6 +711,14 @@ public class Common {
         return convertedString;
     }
 
+    private void shareReferralLink(String userCode) {
+        String referralLink = "https://jhansicab.anshuwap.com/referal?code=" + userCode;
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "Join and earn a bonus! Use my referral link: " + referralLink);
+        context.startActivity(Intent.createChooser(intent, "Share via"));
+    }
+
     public static byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;
@@ -780,6 +789,41 @@ public class Common {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void generateToken(){
+
+        getFirebaseNotificationToken(new SuccessCallBack() {
+            @Override
+            public void onSuccess(String token) {
+                String UUID = "";
+                UUID = token ;
+//                sessionManagment.addToken(UUID);
+                Log.e("mytokenn",UUID);
+            }
+        });
+    }
+
+    public void getFirebaseNotificationToken(SuccessCallBack successCallBack){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        successCallBack.onSuccess(token);
+
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("TAG", token);
+//                        Toast.makeText(SplashActivity.this, token, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }

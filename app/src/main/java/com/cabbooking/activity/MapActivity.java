@@ -109,7 +109,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      Double pickupLat=0.0,destinationLat=0.0;
      Double pickupLng=0.0,destinationLng=0.0;
      String pickAddres="",destinationAddress="";
-    private boolean isAddressFetched = false; // Add this field
+    public static boolean isAddressFetched = false; // Add this field
     ArrayList<MenuModel>mlist;
     MenuAdapter menuAdapter;
 
