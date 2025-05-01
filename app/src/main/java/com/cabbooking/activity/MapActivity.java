@@ -408,11 +408,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (currentLat != null && currentLng != null) {
             Log.d("Tag", "displayLocation: " + currentLat + "--" + currentLng);
 
-            if (!isAddressFetched) {
+//            if (!isAddressFetched) {
                 loadAllAvailableDriver(new LatLng(currentLat, currentLng));
 //                fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
                 isAddressFetched = true;
-            }
+//            }
         }
     }
 
