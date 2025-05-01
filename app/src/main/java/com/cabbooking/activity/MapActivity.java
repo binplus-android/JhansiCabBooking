@@ -778,6 +778,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
         binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+        binding.mytoolbar.setContentInsetsAbsolute(0, 0);
         binding.mytoolbar.setNavigationOnClickListener(view -> {
             if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
                 binding.drawer.closeDrawer(GravityCompat.START);
