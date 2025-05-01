@@ -111,8 +111,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         ClickableSpan termsSpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                Intent intent = new Intent(SignUpActivity.this, PolicyActivity.class);
-                startActivity(intent);
+                Intent i = new Intent(SignUpActivity.this, PrivacyPolicyActivity.class);
+                i.putExtra("type","policy");
+                startActivity(i);
             }
 
             @Override
@@ -129,8 +130,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         ClickableSpan privacySpan = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                Intent intent = new Intent(SignUpActivity.this, PolicyActivity.class);
-                startActivity(intent);
+                Intent i = new Intent(SignUpActivity.this, PrivacyPolicyActivity.class);
+                i.putExtra("type","terms");
+                startActivity(i);
             }
 
             @Override

@@ -47,8 +47,6 @@ public class NotificationsActivity extends AppCompatActivity {
             }
         });
 
-//        list.clear();
-//        list.add(0, NotificationResp.Datum);
 
 
         setNotificationList();

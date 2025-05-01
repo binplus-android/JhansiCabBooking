@@ -13,6 +13,7 @@ public class AppSettingModel {
     public String refer_message;
     public String share_message;
     public String support_mobile;
+    public String support_whatsapp;
     public String support_email;
     public String support_message;
     public String terms_conditions;
@@ -22,6 +23,19 @@ public class AppSettingModel {
     public int msg_status;
     public String term_conditions_link;
     public int showServerError;
+
+    public String getSupport_whatsapp() {
+        return support_whatsapp;
+    }
+
+    public void setSupport_whatsapp(String support_whatsapp) {
+        this.support_whatsapp = support_whatsapp;
+    }
+
+
+
+
+
 
     public int getId() {
         return id;
