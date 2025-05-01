@@ -38,6 +38,7 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +62,7 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_title,tv_desctination,tv_sol;
+        TextView tv_title,tv_desctination,tv_sol,tv_dateTime;
         LinearLayout lin_main,lin_des;
 
 
@@ -72,7 +73,7 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
             tv_sol = itemView.findViewById(R.id.tv_sol);
           tv_desctination = itemView.findViewById(R.id.tv_desctination);
             lin_des = itemView.findViewById(R.id.lin_des);
-//            iv_img = itemView.findViewById(R.id.iv_img);
+           tv_dateTime = itemView.findViewById(R.id.tv_dateTime);
         }
     }
 }

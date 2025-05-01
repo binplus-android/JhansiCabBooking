@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
 import com.android.installreferrer.api.InstallReferrerClient;
 import com.android.installreferrer.api.InstallReferrerStateListener;
 import com.android.installreferrer.api.ReferrerDetails;
@@ -26,6 +27,7 @@ public class SplashActivity extends AppCompatActivity {
     final int SPLASH_DISPLAY_LENGTH = 2000;
     SessionManagment sessionManagment;
     Common common;
+    private InstallReferrerClient referrerClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,11 @@ public class SplashActivity extends AppCompatActivity {
         sessionManagment=new SessionManagment(this);
         common=new Common(this);
         common.generateToken();
-
+        common.getDeviceId();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                common.getDeviceId();
-                common.getFcmToken();
+
                 gotonext();
             }
         }, SPLASH_DISPLAY_LENGTH);
@@ -73,7 +74,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private InstallReferrerClient referrerClient;
+
 
     private void getInstallReferrer() {
         referrerClient = InstallReferrerClient.newBuilder(this).build();

@@ -49,12 +49,14 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_msg;
+        TextView tv_msg,tv_id,tv_date;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_msg = itemView.findViewById(R.id.tv_msg);
+            tv_id = itemView.findViewById(R.id.tv_id);
+            tv_date = itemView.findViewById(R.id.tv_date);
         }
     }
 }

@@ -2,6 +2,8 @@ package com.cabbooking.fragement;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,11 +36,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.BookingDetailResp;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentContactUsBinding;
 import com.cabbooking.databinding.FragmentProfileBinding;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
+import com.cabbooking.utils.SessionManagment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -51,12 +62,14 @@ public class ProfileFragment extends Fragment {
 
     FragmentProfileBinding binding;
     Common common;
+    SessionManagment sessionManagment;
+    Repository repository;
     Dialog dialog_profile;
     RelativeLayout rel_show_image,relImage;
     ImageView iv_image;
     LinearLayout lin_add_image;
     ImageView iv_add, iv_edit;
-    String imageString="";
+    String imageString="",name="",emailID="";
 
 
 
@@ -72,16 +85,50 @@ public class ProfileFragment extends Fragment {
 
         initView();
         manageClicks();
+        getProfile();
         return binding.getRoot();
     }
 
-    private void initView(){
+    public void getProfile() {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        
+        repository.getProfile(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    ProfileDetailResp resp = (ProfileDetailResp) data;
+                    Log.e("getProfile ",data.toString());
+                    if (resp.getStatus()==200) {
+                        name="";
+                        emailID="";
+
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
+
+    public void initView(){
+        repository=new Repository(getActivity());
+        sessionManagment=new SessionManagment(getActivity());
         ((MapActivity)getActivity()).setTitle("Profile");
         common = new Common(getActivity());
 
     }
 
-    private void manageClicks(){
+    public void manageClicks(){
         binding.linName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +136,7 @@ public class ProfileFragment extends Fragment {
                 fragment = new UpdateProfileFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("type","name");
+                bundle.putString("name",name);
                 fragment.setArguments(bundle);
 
                 common.switchFragment(fragment);
@@ -103,6 +151,7 @@ public class ProfileFragment extends Fragment {
                 fragment = new UpdateProfileFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("type","email");
+                bundle.putString("email",emailID);
                 fragment.setArguments(bundle);
 
                 common.switchFragment(fragment);
@@ -113,7 +162,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void OpenProfileImageDialog() {
+    public void OpenProfileImageDialog() {
         dialog_profile = new Dialog(getActivity(), R.style.AlertDialog);
         dialog_profile.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog_profile.getWindow();
@@ -174,10 +223,38 @@ public class ProfileFragment extends Fragment {
                 if (TextUtils.isEmpty(imageString)) {
                     common.errorToast(getString(R.string.choose_photo_to_upload));
                 }else {
-//                    callUpdateCategoryWiseProfileApi(dialog_profile);
+                    callUploadImage(dialog_profile);
                 }
             }
         });
+    }
+
+    public void callUploadImage(Dialog dialogProfile)  {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("image",imageString);
+        repository.postProfileImage(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    CommonResp resp = (CommonResp) data;
+                    Log.e("CommonResp ",data.toString());
+                    if (resp.getStatus()==200) {
+                        dialogProfile.dismiss();
+                        common.successToast(resp.getMessage ());
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
+
     }
 
     public void openImagePickerForProfile() {
@@ -201,7 +278,7 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
-    private final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
+    public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -216,7 +293,7 @@ public class ProfileFragment extends Fragment {
             }
     );
 
-    private void startCropActivity(Uri sourceUri) {
+    public void startCropActivity(Uri sourceUri) {
         Uri destinationUri = Uri.fromFile(new File(getContext().getCacheDir(), "croppedImage.jpg"));
 
         UCrop.Options options = new UCrop.Options();
@@ -231,7 +308,7 @@ public class ProfileFragment extends Fragment {
         cropImageLauncher.launch(cropIntent);
     }
 
-    private final ActivityResultLauncher<Intent> cropImageLauncher = registerForActivityResult(
+    public final ActivityResultLauncher<Intent> cropImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -252,7 +329,7 @@ public class ProfileFragment extends Fragment {
             }
     );
 
-    private void handleCroppedImage(Uri croppedImageUri) {
+    public void handleCroppedImage(Uri croppedImageUri) {
         try {
             if (dialog_profile == null) {
                 OpenProfileImageDialog();
@@ -277,7 +354,7 @@ public class ProfileFragment extends Fragment {
     }
 
     // Helper Method to downsample the image
-    private Bitmap decodeSampledBitmapFromUri(Uri uri, int reqWidth, int reqHeight) throws Exception {
+    public Bitmap decodeSampledBitmapFromUri(Uri uri, int reqWidth, int reqHeight) throws Exception {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
@@ -298,7 +375,7 @@ public class ProfileFragment extends Fragment {
     }
 
     // Calculate best sample size
-    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int height = options.outHeight;
         int width = options.outWidth;
         int inSampleSize = 1;
@@ -316,7 +393,7 @@ public class ProfileFragment extends Fragment {
 
 
 
-//    private void handleCroppedImage(Uri croppedImageUri) {
+//    public void handleCroppedImage(Uri croppedImageUri) {
 //        try {
 //            if (dialog_profile==null) {
 //                OpenProfileImageDialog();

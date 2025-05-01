@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
 import android.app.Dialog;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +20,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.BookingDetailResp;
+import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentBookingDetailBinding;
 import com.cabbooking.databinding.FragmentBookingHistoryBinding;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -35,6 +43,8 @@ public class BookingDetailFragment extends Fragment {
     FragmentBookingDetailBinding binding;
     Common common;
     SessionManagment sessionManagment;
+    String book_id="";
+    Repository repository;
 
     public BookingDetailFragment() {
         // Required empty public constructor
@@ -58,8 +68,39 @@ public class BookingDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentBookingDetailBinding.inflate(inflater, container, false);
         initView();
+        getAllData();
         allClick();
         return binding.getRoot();
+    }
+
+    private void getAllData()
+    {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("bookId",book_id);
+        repository.getBookingDetail(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    BookingDetailResp resp = (BookingDetailResp) data;
+                    Log.e("BookingDetail ",data.toString());
+                    if (resp.getStatus()==200) {
+
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
     }
 
     private void allClick() {
@@ -156,6 +197,7 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void initView() {
+        repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("#ID 12345\n20-09-2024 | 09:30 PM");
         //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
         sessionManagment=new SessionManagment(getActivity());

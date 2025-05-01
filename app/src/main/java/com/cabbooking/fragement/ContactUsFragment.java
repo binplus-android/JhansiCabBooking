@@ -33,7 +33,7 @@ String email="",email_subject="Support",whatsapp_num="",whataspp_msg="Hello",mob
                 mobile_num=model.getSupport_mobile();
                 binding.tvMobile.setText(mobile_num);
                 whatsapp_num=model.getSupport_whatsapp();
-                email_subject=model.getSupport_message();
+                email_subject=common.checkNullString(model.getSupport_message());
             }
         });
         manageClicks();

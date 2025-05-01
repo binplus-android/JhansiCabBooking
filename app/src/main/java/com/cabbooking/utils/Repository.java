@@ -4,18 +4,24 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.cabbooking.Response.BookingDetailResp;
 import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.DriverLocationResp;
 import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.NotificationResp;
 import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
+import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
+import com.cabbooking.model.BookingHistoryModel;
+import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.VechicleModel;
+import com.cabbooking.model.WalletHistoryModel;
 import com.google.gson.JsonObject;
 import com.makeramen.roundedimageview.BuildConfig;
 
@@ -70,6 +76,7 @@ public class Repository {
     public void getOtpApi(JsonObject postData, ResponseService responseService, boolean showProgress) {
         showHideProgressBar(showProgress);
         common=new Common(context);
+        sessionMangement=new SessionManagment(context);
         JsonObject userDeviceDetails = new JsonObject();
         userDeviceDetails.addProperty("appId", "1");
         userDeviceDetails.addProperty("appVersion", "1");
@@ -77,7 +84,7 @@ public class Repository {
         userDeviceDetails.addProperty("deviceLocation", deviceLocation);
         userDeviceDetails.addProperty("deviceManufacturer", deviceManufacturer);
         userDeviceDetails.addProperty("deviceModel", deviceModelname);
-        userDeviceDetails.addProperty("fcmToken", common.getFcmToken());
+        userDeviceDetails.addProperty("fcmToken", sessionMangement.getToken());
         postData.add("userDeviceDetails", userDeviceDetails);
         apiInterface.OtpVerification(postData).enqueue(new Callback<OTPverificatioResp>() {
             @Override
@@ -193,6 +200,31 @@ public class Repository {
 
             @Override
             public void onFailure(Call<VechicleModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void getNotification(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getNotification(postData).enqueue(new Callback<NotificationResp>() {
+            @Override
+            public void onResponse(Call<NotificationResp> call, Response<NotificationResp> response) {
+                Log.e("repository_Notification", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
@@ -375,6 +407,212 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
         });
 
     }
+
+    public void postEnquiry(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.postEnquiry(postData).enqueue(new Callback<CommonResp>() {
+            @Override
+            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+                Log.e("repository_enquiry", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommonResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+
+    public void getEnquiryList(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getEnquiry(postData).enqueue(new Callback<EnquiryModel>() {
+            @Override
+            public void onResponse(Call<EnquiryModel> call, Response<EnquiryModel> response) {
+                Log.e("repository_Notification", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EnquiryModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+    public void getWalletHistory(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getWalletHistory(postData).enqueue(new Callback<WalletHistoryModel>() {
+            @Override
+            public void onResponse(Call<WalletHistoryModel> call, Response<WalletHistoryModel> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WalletHistoryModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+      public void getBookingHistory(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getBookingHistory(postData).enqueue(new Callback<BookingHistoryModel>() {
+            @Override
+            public void onResponse(Call<BookingHistoryModel> call, Response<BookingHistoryModel> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingHistoryModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+ public void getBookingDetail(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getBookingDetail(postData).enqueue(new Callback<BookingDetailResp>() {
+            @Override
+            public void onResponse(Call<BookingDetailResp> call, Response<BookingDetailResp> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingDetailResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+ public void getProfile(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getProfileData(postData).enqueue(new Callback<ProfileDetailResp>() {
+            @Override
+            public void onResponse(Call<ProfileDetailResp> call, Response<ProfileDetailResp> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileDetailResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+
+public void postProfile(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.postProfileData(postData).enqueue(new Callback<CommonResp>() {
+            @Override
+            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommonResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+
+public void postProfileImage(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.postProfileImage(postData).enqueue(new Callback<CommonResp>() {
+            @Override
+            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+                Log.e("WalletHistoryModel", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommonResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+
+
 
 
 }

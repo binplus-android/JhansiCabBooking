@@ -1,23 +1,36 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.NotificationResp;
+import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
+import com.cabbooking.activity.OTPActivity;
 import com.cabbooking.adapter.EnquiryAdapter;
 import com.cabbooking.databinding.FragmentEnquiryBinding;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.cabbooking.utils.ToastMsg;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -32,6 +45,7 @@ public class EnquiryFragment extends Fragment {
     SessionManagment sessionManagment;
     ArrayList<EnquiryModel>list;
     EnquiryAdapter adapter;
+    Repository repository;
     public EnquiryFragment() {
         // Required empty public constructor
     }
@@ -85,20 +99,77 @@ public class EnquiryFragment extends Fragment {
         });
     }
 
-    private void callSubmitApi(String selectedItem,String message) {
-        common.successToast("Enquiry send succesfully");
-    }
+    private void callSubmitApi(String selectedItem,String message)
+       {
+           common.successToast("Enquiry send succesfully");
+
+            JsonObject object=new JsonObject();
+            object.addProperty("type",selectedItem);
+            object.addProperty("message",message);
+           object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+
+           repository.postEnquiry(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        CommonResp resp = (CommonResp) data;
+                        Log.e("callenquiry ",data.toString());
+                        if (resp.getStatus()==200) {
+                            common.successToast(resp.getMessage ());
+                            getList();
+
+                        }else{
+                            common.errorToast(resp.getError());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
+
+        }
+
+
 
     private void getList() {
         list.clear();
-        list.add(new EnquiryModel());
-        list.add(new EnquiryModel());
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        repository.getEnquiryList(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    EnquiryModel resp = (EnquiryModel) data;
+                    Log.e("getEnquiryresp ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        list.clear();
+//                        list = resp.getRecordList();
+                    if(list.size()>0) {
+                        adapter = new EnquiryAdapter(getActivity(), list);
+                        binding.recList.setAdapter(adapter);
+                    }
+//                    }
+//                    else{
+//                        common.errorToast(resp.getError());
+//                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
 
-        adapter=new EnquiryAdapter(getActivity(),list);
-        binding.recList.setAdapter(adapter);
     }
 
     private void initView() {
+        repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Enquiry");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();

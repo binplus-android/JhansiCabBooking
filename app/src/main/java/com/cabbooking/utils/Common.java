@@ -124,30 +124,30 @@ public class Common {
         }
         return deviceId;
     }
-    public String getFcmToken(){
-        try {
-            FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-                            if (task!=null) {
-                                if (task.getResult()!=null)
-                                    fcmToken = task.getResult();
-                                }
-
-
-                        }
-                    });
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return fcmToken;
-    }
+//    public String getFcmToken(){
+//        try {
+//            FirebaseMessaging.getInstance().getToken()
+//                    .addOnCompleteListener(new OnCompleteListener<String>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<String> task) {
+//                            if (!task.isSuccessful()) {
+//                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+//                                return;
+//                            }
+//                            if (task!=null) {
+//                                if (task.getResult()!=null)
+//                                    fcmToken = task.getResult();
+//                                }
+//
+//
+//                        }
+//                    });
+//
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        return fcmToken;
+//    }
 
     public void commonTokenExpiredLogout(Activity activity){
         unSubscribeToTopic();
@@ -792,13 +792,12 @@ public class Common {
     }
 
     public void generateToken(){
-
         getFirebaseNotificationToken(new SuccessCallBack() {
             @Override
             public void onSuccess(String token) {
                 String UUID = "";
                 UUID = token ;
-//                sessionManagment.addToken(UUID);
+               sessionManagment.addToken(UUID);
                 Log.e("mytokenn",UUID);
             }
         });
