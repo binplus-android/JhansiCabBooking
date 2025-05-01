@@ -485,7 +485,7 @@ public class Common {
 
     public void unSubscribeToTopic(){
         try {
-            FirebaseMessaging.getInstance().unsubscribeFromTopic("user")
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(context.getString(R.string.app_name))
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -523,7 +523,7 @@ public class Common {
 
 
     public void subscribeToTopic(){
-        FirebaseMessaging.getInstance().subscribeToTopic("user")
+        FirebaseMessaging.getInstance().subscribeToTopic(context.getString(R.string.app_name))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
