@@ -12,12 +12,13 @@
         <RelativeLayout 
             android:id="@+id/rel_amt"
             android:layout_width="match_parent"
-            android:layout_height="50pt">
+            android:layout_height="55pt">
             <ImageView
+                android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:src="@drawable/background_car"
                 android:layout_width="match_parent"
-                android:layout_height="50pt"/>
+                android:layout_height="55pt"/>
             <LinearLayout
                 android:layout_marginBottom="@dimen/space_14"
                 android:layout_marginLeft="@dimen/space_8"

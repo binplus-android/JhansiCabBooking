@@ -208,10 +208,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
         mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
         mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
-       mlist.add(new MenuModel("Notifications",R.drawable.logo));
-        mlist.add(new MenuModel("Contact Us",R.drawable.logo));
-       mlist.add(new MenuModel("Terms & Conditions",R.drawable.logo));
-       mlist.add(new MenuModel("Privacy Policy",R.drawable.logo));
+       mlist.add(new MenuModel("Notifications",R.drawable.ic_bell));
+        mlist.add(new MenuModel("Contact Us",R.drawable.support));
+       mlist.add(new MenuModel("Terms & Conditions",R.drawable.policy));
+       mlist.add(new MenuModel("Privacy Policy",R.drawable.policy));
 
 
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
@@ -498,6 +498,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                common.switchFragment(new WalletHistoryFragment());
+            }
+        });
+        binding.ivNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i3 = new Intent(MapActivity.this, NotificationsActivity.class);
+                startActivity(i3);
             }
         });
         binding.ivBackarrow.setOnClickListener(new View.OnClickListener() {
