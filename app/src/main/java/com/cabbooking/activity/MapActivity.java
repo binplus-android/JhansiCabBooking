@@ -2,20 +2,26 @@ package com.cabbooking.activity;
 
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,12 +31,16 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -112,6 +122,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static boolean isAddressFetched = false; // Add this field
     ArrayList<MenuModel>mlist;
     MenuAdapter menuAdapter;
+    private ActivityResultLauncher<String> locationPermissionLauncher;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +133,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         initView();
         getMenuList();
         verifyGoogleAccount();
+        setupLocationPermissionLauncher();
+        checkLocationPermission();
         mapCode();
         mapAllClick();
         allClick();
@@ -200,6 +214,144 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         }
         });
 
+    }
+
+    private void setupLocationPermissionLauncher() {
+        locationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        if (isLocationEnabled()) {
+                            Toast.makeText(activity, "Location is enabled", Toast.LENGTH_SHORT).show();
+                            MapActivity.isAddressFetched = false;
+//                            ((MapActivity)getActivity()).verifyGoogleAccount();
+                            mapCode();
+                            // TODO: Start using location here
+                        } else {
+                            showEnableLocationDialog();
+                        }
+                    } else {
+                        if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            openAppSettings();
+                        } else {
+                            Toast.makeText(activity, "Permission denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    private void showCustomLocationDialog() {
+        Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_permission);
+        dialog.setCanceledOnTouchOutside(false);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setGravity(Gravity.CENTER);
+        }
+
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView tv_des = dialog.findViewById(R.id.tv_message);
+
+        tv_des.setText("Allow \"Google Maps\" to access \nyour location while you use the app?");
+        btn_yes.setText(getString(R.string.allow));
+        btn_no.setText(getString(R.string.do_not_allow));
+
+        btn_no.setOnClickListener(v -> dialog.dismiss());
+        btn_yes.setOnClickListener(v -> {
+            dialog.dismiss();
+            requestLocationPermission();
+        });
+
+        dialog.show();
+
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.space_5) * 2;
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int finalWidth = screenWidth - horizontalMargin;
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(finalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            showCustomLocationDialog();
+        } else {
+            if (isLocationEnabled()) {
+                // Location services are on
+                // Toast.makeText(getContext(), "Location permission and GPS both are enabled", Toast.LENGTH_SHORT).show();
+                // TODO: Start using location here
+            } else {
+                showEnableLocationDialog();
+            }
+        }
+    }
+
+
+    private void showEnableLocationDialog() {
+        Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_permission);
+        dialog.setCanceledOnTouchOutside(false);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setGravity(Gravity.CENTER);
+        }
+
+        Button btn_no = dialog.findViewById(R.id.btn_no);
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        TextView tv_des = dialog.findViewById(R.id.tv_message);
+
+        tv_des.setText("Please enable your device location (GPS) to continue.");
+        btn_yes.setText("Turn On");
+        btn_no.setText(getString(R.string.do_not_allow));
+
+        btn_no.setOnClickListener(v -> dialog.dismiss());
+        btn_yes.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        });
+
+        dialog.show();
+
+        int horizontalMargin = getResources().getDimensionPixelSize(R.dimen.space_5) * 2;
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int finalWidth = screenWidth - horizontalMargin;
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(finalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null &&
+                (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+    }
+
+    private void requestLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        } else {
+            Toast.makeText(activity, "Permission granted (legacy device)", Toast.LENGTH_SHORT).show();
+            if (!isLocationEnabled()) {
+                showEnableLocationDialog();
+            }
+        }
     }
 
     private void getMenuList() {
@@ -382,20 +534,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (is_forced == 2) {
             dialog.dismiss();
         }
-
     }
 
     public void mapCode() {
+        Log.e("dfcvghnjk","vgbhjnmkl");
         location=new Location(this, new locationListener() {
             @Override
             public void locationResponse(LocationResult response) {
                 currentLat=response.getLastLocation().getLatitude();
                 currentLng=response.getLastLocation().getLongitude();
                 Common.currenLocation=new LatLng(currentLat,currentLng);
+                Log.e("sxdcfgvbhjnk", String.valueOf(currentLat));
                 displayLocation();
                 getPickUpLatLng(currentLat,currentLng,tvpick.getText().toString());
             }
         });
+
+        location.inicializeLocation();
          mapFragment = SupportMapFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.map_container, mapFragment)
@@ -405,14 +560,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void displayLocation() {
+        Log.e("gvbhnjkl", String.valueOf(currentLat));
         if (currentLat != null && currentLng != null) {
             Log.d("Tag", "displayLocation: " + currentLat + "--" + currentLng);
 
-//            if (!isAddressFetched) {
+            if (!isAddressFetched) {
                 loadAllAvailableDriver(new LatLng(currentLat, currentLng));
 //                fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
                 isAddressFetched = true;
-//            }
+            }
         }
     }
 
@@ -462,7 +618,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return "Address not found";
     }
 
-    private void verifyGoogleAccount() {
+    public void verifyGoogleAccount() {
         GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleApiClient=new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -609,6 +765,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void initView() {
+        activity = MapActivity.this;
         mlist=new ArrayList<>();
         sessionManagment=new SessionManagment(MapActivity.this);
         common=new Common(MapActivity.this);
@@ -797,7 +954,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         //displayLocation();
-        location.inicializeLocation();
+        if (location!=null) {
+            location.inicializeLocation();
+        }
+
     }
 
     private void fetchNearbyLocations(double latitude, double longitude) {

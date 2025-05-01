@@ -55,7 +55,7 @@ public class Location {
         return fineLocationAvailable && coarseLocationAvailable;
     }
     private void permissionRequest(){
-        ActivityCompat.requestPermissions(activity, new String[]{permissionFineLocation, permissionCoarseLocation}, REQUEST_CODE_LOCATION);
+//        ActivityCompat.requestPermissions(activity, new String[]{ permissionCoarseLocation}, REQUEST_CODE_LOCATION);
     }
     private void requestPermissions(){
         Boolean contextProvider=ActivityCompat.shouldShowRequestPermissionRationale(activity, permissionFineLocation);
