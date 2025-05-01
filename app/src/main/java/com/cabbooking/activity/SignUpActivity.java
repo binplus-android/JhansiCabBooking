@@ -112,7 +112,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(@NonNull View widget) {
                 Intent i = new Intent(SignUpActivity.this, PrivacyPolicyActivity.class);
-                i.putExtra("type","policy");
+                i.putExtra("type","terms");
                 startActivity(i);
             }
 
@@ -131,7 +131,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(@NonNull View widget) {
                 Intent i = new Intent(SignUpActivity.this, PrivacyPolicyActivity.class);
-                i.putExtra("type","terms");
+                i.putExtra("type","policy");
                 startActivity(i);
             }
 
