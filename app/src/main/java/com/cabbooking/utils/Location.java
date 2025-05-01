@@ -32,7 +32,6 @@ public class Location {
 //        fusedLocationClient=new FusedLocationProviderClient(activity.getApplicationContext());//imp old
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity.getApplicationContext());
 
-
         inicializeLocationRequest();
         locationCallback=new LocationCallback(){
             @Override
@@ -42,21 +41,25 @@ public class Location {
             }
         };
     }
+
     private void inicializeLocationRequest(){
         locationRequest=new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(3000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
     private Boolean validatePermissionsLocation(){
         final Boolean fineLocationAvailable= ActivityCompat.checkSelfPermission(activity.getApplicationContext(), permissionFineLocation)== PackageManager.PERMISSION_GRANTED;
         final Boolean coarseLocationAvailable= ActivityCompat.checkSelfPermission(activity.getApplicationContext(), permissionCoarseLocation)== PackageManager.PERMISSION_GRANTED;
 
         return fineLocationAvailable && coarseLocationAvailable;
     }
+
     private void permissionRequest(){
 //        ActivityCompat.requestPermissions(activity, new String[]{ permissionCoarseLocation}, REQUEST_CODE_LOCATION);
     }
+
     private void requestPermissions(){
         Boolean contextProvider=ActivityCompat.shouldShowRequestPermissionRationale(activity, permissionFineLocation);
 
@@ -64,6 +67,7 @@ public class Location {
             ShowMessage.message(activity.getApplicationContext(), Messages.RATIONALE);
         permissionRequest();
     }
+
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         switch (requestCode){
             case REQUEST_CODE_LOCATION:
