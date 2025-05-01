@@ -1,17 +1,27 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.BookingAdapter;
+import com.cabbooking.adapter.WalletHistoryAdapter;
 import com.cabbooking.databinding.FragmentBookingHistoryBinding;
 import com.cabbooking.model.BookingHistoryModel;
+import com.cabbooking.model.WalletHistoryModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.firebase.database.core.Repo;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -27,6 +37,7 @@ public class BookingHistoryFragment extends Fragment {
     SessionManagment sessionManagment;
     BookingAdapter adapter;
     ArrayList<BookingHistoryModel> list;
+    Repository repository;
 
     public BookingHistoryFragment() {
         // Required empty public constructor
@@ -64,25 +75,55 @@ public class BookingHistoryFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void getList() {
-        list.clear();
-        list.add(new BookingHistoryModel());
-        list.add(new BookingHistoryModel());
-        list.add(new BookingHistoryModel());
-        adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
-            @Override
-            public void onSelection(int pos) {
-                common.switchFragment(new BookingDetailFragment());
-            }
-        });
-        binding.recList.setAdapter(adapter);
+    private void getList()
+    {
+            list.clear();
+            JsonObject object=new JsonObject();
+            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+             repository.getBookingHistory(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        BookingHistoryModel resp = (BookingHistoryModel) data;
+                        Log.e("BookingHistoryModel ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        list.clear();
+//                        list = resp.getRecordList();
+                        if(list.size()>0) {
+                            adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
+                                @Override
+                                public void onSelection(int pos) {
+                                    Fragment fm=new BookingDetailFragment();
+                                    Bundle bundle=new Bundle();
+                                   // bundle.putString("book_id",list.get(pos).get);
+                                    bundle.putString("book_id","0");
+                                    fm.setArguments(bundle);
+                                    common.switchFragment(fm);
+                                }
+                            });
+                            binding.recList.setAdapter(adapter);
+                        }
+//                    }
+//                    else{
+//                        common.errorToast(resp.getError());
+//                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
 
-    }
+        }
 
     private void allClick() {
     }
 
     private void initView() {
+        repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Booking History");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();

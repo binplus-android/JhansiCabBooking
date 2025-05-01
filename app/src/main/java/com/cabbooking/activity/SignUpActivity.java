@@ -55,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         initView();
+        common.generateToken();
         allClick();
 
     }

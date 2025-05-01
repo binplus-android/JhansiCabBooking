@@ -24,6 +24,7 @@ public class SessionManagment {
     public static String KEY_TYPE="type";
     public static String KEY_OUTSTATION_TYPE="outstation_type";
     String LOGIN = "login";
+    private static final String DEVICE_TOKEN = "device_token";
     public static final String IS_LOGIN_SUCCESS="is_login_success";
     public static final String KEY_TOKEN="token";
     public static final String KEY_REFERCODE="refercode";
@@ -80,6 +81,15 @@ public class SessionManagment {
         activity.startActivity(logout);
         activity.finish();
 
+    }
+
+    public void addToken(String token) {
+        editor.putString(DEVICE_TOKEN,token);
+        editor.commit();
+    }
+
+    public String getToken() {
+        return prefs.getString(DEVICE_TOKEN,"");
     }
 
 }

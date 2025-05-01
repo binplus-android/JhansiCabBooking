@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,13 +17,19 @@ import android.widget.TextView;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MapActivity;
+import com.cabbooking.adapter.EnquiryAdapter;
 import com.cabbooking.adapter.WalletHistoryAdapter;
 import com.cabbooking.databinding.FragmentEnquiryBinding;
 import com.cabbooking.databinding.FragmentWalletHistoryBinding;
+import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.WalletHistoryModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.firebase.database.core.Repo;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -42,6 +50,7 @@ public class WalletHistoryFragment extends Fragment {
     SessionManagment sessionManagment;
     WalletHistoryAdapter adapter;
     ArrayList<WalletHistoryModel>list;
+    Repository repository;
 
     public WalletHistoryFragment() {
         // Required empty public constructor
@@ -92,22 +101,54 @@ public class WalletHistoryFragment extends Fragment {
         });
     }
 
-    private void iniList(String number)  {
-        list.clear();
-        if(number.equalsIgnoreCase("0")) {
-            list.add(new WalletHistoryModel("Referral by User"));
-            list.add(new WalletHistoryModel("Referral by User"));
-            list.add(new WalletHistoryModel("Referral by User"));
-        }
-        else{
-            list.add(new WalletHistoryModel("Refund by booking"));
-            list.add(new WalletHistoryModel("Refund by booking"));
-            list.add(new WalletHistoryModel("Refund by booking"));
-        }
-        adapter=new WalletHistoryAdapter(getActivity(),list);
-        binding.recList.setAdapter(adapter);
+    private void iniList(String number)
+    {
+            list.clear();
+            JsonObject object=new JsonObject();
+            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+            object.addProperty("type",number);
+            repository.getWalletHistory(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        WalletHistoryModel resp = (WalletHistoryModel) data;
+                        Log.e("WalletHistoryModel ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        list.clear();
+//                        list = resp.getRecordList();
+                        if(list.size()>0) {
+                            if(number.equalsIgnoreCase("0")) {
+                                list.add(new WalletHistoryModel("Referral by User"));
+                                list.add(new WalletHistoryModel("Referral by User"));
+                                list.add(new WalletHistoryModel("Referral by User"));
+                            }
+                            else{
+                                list.add(new WalletHistoryModel("Refund by booking"));
+                                list.add(new WalletHistoryModel("Refund by booking"));
+                                list.add(new WalletHistoryModel("Refund by booking"));
+                            }
+                            adapter=new WalletHistoryAdapter(getActivity(),list);
+                            binding.recList.setAdapter(adapter);
+                        }
+//                    }
+//                    else{
+//                        common.errorToast(resp.getError());
+//                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
 
-    }
+        }
+
+
+
+
 
 
     private void callCommonClick(TextView tvblack, TextView tv2) {
@@ -124,6 +165,7 @@ public class WalletHistoryFragment extends Fragment {
     }
 
     private void initView() {
+        repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Wallet History");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         list=new ArrayList<>();
