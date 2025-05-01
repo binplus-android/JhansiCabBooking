@@ -39,7 +39,7 @@
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name"
+                    android:text=""
                    />
 
             </LinearLayout>
@@ -47,7 +47,7 @@
                 android:layout_marginTop="@dimen/space_1"
                 android:id="@+id/tv_desc"
                 android:textSize="@dimen/space_5"
-                android:text=" Let's start with your poster"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <RelativeLayout
@@ -61,7 +61,7 @@
                     android:textColor="@color/dark_grey"
                     android:textSize="@dimen/space_5"
                     android:layout_alignParentRight="true"
-                    android:text=" 21-11-2024 | 17:22 PM"
+                    android:text=""
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

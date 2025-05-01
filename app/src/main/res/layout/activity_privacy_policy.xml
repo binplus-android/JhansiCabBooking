@@ -26,7 +26,7 @@
                     android:textAlignment="textStart"
                     android:layout_marginTop="@dimen/space_8"
                     style="@style/TextViewThin"
-                    android:text="@string/privacy_policy"
+                    android:text=""
                     android:textSize="@dimen/space_20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -34,7 +34,7 @@
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_marginTop="@dimen/space_15"
-                    android:text="Privacy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy Policy Privacy Policy"
+                    android:text=""
                     android:gravity="left"
                     android:textSize="@dimen/space_7"
                     android:layout_width="match_parent"
