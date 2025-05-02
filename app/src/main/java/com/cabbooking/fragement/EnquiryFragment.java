@@ -43,7 +43,7 @@ public class EnquiryFragment extends Fragment {
     FragmentEnquiryBinding binding;
     Common common;
     SessionManagment sessionManagment;
-    ArrayList<EnquiryModel>list;
+    ArrayList<EnquiryModel.RecordList>list;
     EnquiryAdapter adapter;
     Repository repository;
     public EnquiryFragment() {
@@ -143,17 +143,17 @@ public class EnquiryFragment extends Fragment {
                 try {
                     EnquiryModel resp = (EnquiryModel) data;
                     Log.e("getEnquiryresp ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        list.clear();
-//                        list = resp.getRecordList();
-//                    if(list.size()>0) {
-//                        adapter = new EnquiryAdapter(getActivity(), list);
-//                        binding.recList.setAdapter(adapter);
-//                    }
-//                    }
-//                    else{
-//                        common.errorToast(resp.getError());
-//                    }
+                    if (resp.getStatus()==200) {
+                        list.clear();
+                        list = resp.getRecordList();
+                      if(list.size()>0) {
+                        adapter = new EnquiryAdapter(getActivity(), list);
+                        binding.recList.setAdapter(adapter);
+                    }
+                    }
+                    else{
+                        common.errorToast(resp.getError());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
