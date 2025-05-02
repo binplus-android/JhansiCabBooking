@@ -20,10 +20,10 @@ import java.util.ArrayList;
 
 public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHolder> {
     Context context;
-    ArrayList<EnquiryModel> list;
+    ArrayList<EnquiryModel.RecordList> list;
 
 
-    public EnquiryAdapter(Context context, ArrayList<EnquiryModel> list) {
+    public EnquiryAdapter(Context context, ArrayList<EnquiryModel.RecordList> list) {
         this.context = context;
         this.list = list;
 
@@ -38,6 +38,7 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        EnquiryModel.RecordList data=list.get(position);
 
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +51,9 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
                 }
             }
         });
+        holder.tv_dateTime.setText(data.getCreatedAt());
+        holder.tv_title.setText(data.getType());
+        holder.tv_desctination.setText(data.getDescription());
 
 
 

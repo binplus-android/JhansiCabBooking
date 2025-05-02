@@ -236,8 +236,8 @@ public class ProfileFragment extends Fragment {
     public void callUploadImage(Dialog dialogProfile)  {
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("type","profileImage");
-        object.addProperty("profileImage",imageString);
+        object.addProperty("type","profile");
+        object.addProperty("profile",imageString);
         repository.postProfileImage(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
