@@ -409,7 +409,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        fm=new ContactUsFragment();
                        break;
                        case "share app":
-                           common.shareLink(share_msg+"\n"+Html.fromHtml (sharelink));
+                           common.shareLink(share_msg+"\n"+Html.fromHtml (BASE_URL));
                            break;
                }
                binding.drawer.closeDrawer(GravityCompat.START);

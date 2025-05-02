@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     Context context;
-    ArrayList<NotificationResp.Datum> list;
+    ArrayList<NotificationResp> list;
     Common common;
 
-    public NotificationAdapter(Context context, ArrayList<NotificationResp.Datum> list) {
+    public NotificationAdapter(Context context, ArrayList<NotificationResp> list) {
         this.context = context;
         this.list = list;
         common=new Common (context);
@@ -36,22 +36,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        NotificationResp.Datum model=list.get (position);
-        if(!common.checkNullString(model.getTitle()).isEmpty()){
-            holder.tv_title.setText(model.getTitle());
-            holder.tv_title.setVisibility(View.VISIBLE);
-        }
-
-        if(!common.checkNullString(model.getMessage()).isEmpty()){
-            holder.tv_desc.setText(model.getMessage());
-            holder.tv_desc.setVisibility(View.VISIBLE);
-        }
-
-        if(!common.checkNullString(model.getCreate_at()).isEmpty()){
-            String[] date=model.getCreate_at().split(" ");
-            holder.tv_date.setText(date[0]+" | "+date[1]+" "+date[2]);
-            holder.tv_date.setVisibility(View.VISIBLE);
-        }
+//        NotificationResp.Datum model=list.get (position);
+//        if(!common.checkNullString(model.getTitle()).isEmpty()){
+//            holder.tv_title.setText(model.getTitle());
+//            holder.tv_title.setVisibility(View.VISIBLE);
+//        }
+//
+//        if(!common.checkNullString(model.getMessage()).isEmpty()){
+//            holder.tv_desc.setText(model.getMessage());
+//            holder.tv_desc.setVisibility(View.VISIBLE);
+//        }
+//
+//        if(!common.checkNullString(model.getCreate_at()).isEmpty()){
+//            String[] date=model.getCreate_at().split(" ");
+//            holder.tv_date.setText(date[0]+" | "+date[1]+" "+date[2]);
+//            holder.tv_date.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override

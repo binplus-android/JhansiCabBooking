@@ -5,6 +5,7 @@ import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.DriverLocationResp;
+import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.NotificationResp;
 import com.cabbooking.Response.OTPverificatioResp;
@@ -57,6 +58,8 @@ public interface Apis {
   //dummy
     @POST("getVehicleFare")
     Call<NotificationResp> getNotification(@Body  JsonObject jsonObject);
+    @POST("getCurrentTrips")
+    Call<HomeBookingResp> getCurrentBooking(@Body  JsonObject jsonObject);
     @POST("getVehicleFare")
     Call<EnquiryModel> getEnquiry(@Body  JsonObject jsonObject);
     @POST("getVehicleFare")

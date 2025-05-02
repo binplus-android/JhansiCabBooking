@@ -1,4 +1,6 @@
 package com.cabbooking.fragement;
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
 import android.Manifest;
@@ -16,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,14 +36,25 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.cabbooking.R;
+import com.cabbooking.Response.BookingDetailResp;
+import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.Repository;
+import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -48,20 +63,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     DestinationHomeAdapter adapter;
     Common common;
     SessionManagment sessionManagment;
+    Repository repository;
     private ActivityResultLauncher<String> locationPermissionLauncher;
+    String homrTripId="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
         initView();
-        //remove this session when api implemented
-        if(sessionManagment.getValue("is_home").equalsIgnoreCase("1")){
-            binding.layBooking.setVisibility(View.VISIBLE);
-        }else{
-            binding.layBooking.setVisibility(View.GONE);
-
-        }
+        callCurrentBooking();
         allClicks();
         getDestinatioList();
         // Set back key listener
@@ -83,6 +94,53 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return binding.getRoot();
     }
 
+    private void callCurrentBooking() {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        repository.getCurrentBooking(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    HomeBookingResp resp = (HomeBookingResp) data;
+                    Log.e("homebook ",data.toString());
+                    if (resp.getStatus()==200) {
+                        homrTripId=String.valueOf(resp.getRecordList().get(0).getTripId());
+                            binding.layBooking.setVisibility(View.VISIBLE);
+                        TextView tv_vnum,tv_vname,tv_dname;
+                        ImageView iv_vimg;
+                        CircleImageView iv_dimg;
+                        tv_vnum=binding.layBooking.findViewById(R.id.tv_vnum);
+                        tv_vname=binding.layBooking.findViewById(R.id.tv_vname);
+                        tv_dname=binding.layBooking.findViewById(R.id.tv_dname);
+                        iv_vimg=binding.layBooking.findViewById(R.id.iv_vimg);
+                        iv_dimg=binding.layBooking.findViewById(R.id.iv_dimg);
+
+                        tv_vnum.setText(resp.getRecordList().get(0).getVehicleNumber());
+                        tv_vname.setText(resp.getRecordList().get(0).getVehicleModelName());
+                        tv_dname.setText(resp.getRecordList().get(0).getName());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getVehicleImage()).
+                                placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_vimg);
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getProfileImage()).placeholder(R.drawable.logo).
+                                error(R.drawable.logo).into(iv_dimg);
+
+
+                    }else{
+                       // common.errorToast(resp.getError());
+                        binding.layBooking.setVisibility(View.GONE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -97,11 +155,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         binding.layBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment=new AfterPaymentDoneFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("tripId","91");
-                fragment.setArguments(bundle);
-                common.switchFragment(fragment);
+                if(!homrTripId.equalsIgnoreCase("")) {
+                    Fragment fragment = new AfterPaymentDoneFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("tripId", homrTripId);
+                    fragment.setArguments(bundle);
+                    common.switchFragment(fragment);
+                }
             }
         });
 
@@ -118,6 +178,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initView() {
+        repository=new Repository(getActivity());
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         sessionManagment=new SessionManagment(getActivity());
         sessionManagment.setValue(KEY_TYPE,"0");
@@ -129,7 +190,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
-            sessionManagment.setValue("is_home","0");
             common.switchFragment(new DestinationFragment());
         } else if (v.getId() == R.id.lin_local) {
             sessionManagment.setValue(KEY_TYPE,"0");

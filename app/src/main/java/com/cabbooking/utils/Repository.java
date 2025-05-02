@@ -9,6 +9,7 @@ import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverDetailResp;
 import com.cabbooking.Response.DriverLocationResp;
+import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.NotificationResp;
 import com.cabbooking.Response.OTPverificatioResp;
@@ -436,7 +437,7 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
 
     public void getEnquiryList(JsonObject postData, ResponseService responseService, boolean showProgress) {
         showHideProgressBar(showProgress);
-        common=new Common(context);
+        common = new Common(context);
 
         apiInterface.getEnquiry(postData).enqueue(new Callback<EnquiryModel>() {
             @Override
@@ -452,6 +453,30 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
 
             @Override
             public void onFailure(Call<EnquiryModel> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+    }
+        public void getCurrentBooking(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.getCurrentBooking(postData).enqueue(new Callback<HomeBookingResp>() {
+            @Override
+            public void onResponse(Call<HomeBookingResp> call, Response<HomeBookingResp> response) {
+                Log.e("curentBook", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HomeBookingResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
