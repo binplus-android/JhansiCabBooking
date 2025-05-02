@@ -127,6 +127,7 @@
                     style="@style/TextViewRegular"
                     android:textAlignment="center"
                     android:text="@string/return_date"
+                    android:textColor="@color/colorAccent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
@@ -135,6 +136,7 @@
                     style="@style/TextViewRegular"
                     android:textAlignment="center"
                     android:text="09:30 PM"
+                    android:textColor="@color/colorAccent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
