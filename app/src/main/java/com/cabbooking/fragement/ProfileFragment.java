@@ -158,8 +158,11 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        binding.ivEdit.setOnClickListener(view -> OpenProfileImageDialog());//imp
+        binding.ivEdit.setOnClickListener(v -> {
+            imageString = "";
+            OpenProfileImageDialog();;//imp
 
+        });
     }
 
     public void OpenProfileImageDialog() {
@@ -335,6 +338,17 @@ public class ProfileFragment extends Fragment {
                 OpenProfileImageDialog();
             }
 
+            InputStream in = getContext().getContentResolver().openInputStream(croppedImageUri);
+            byte[] bytes = common.getBytes(in);
+
+            Log.e("fgvbhjnk", croppedImageUri.toString());
+
+            // Check if image size exceeds 2 MB
+            if (bytes.length > 2 * 1024 * 1024) { // 2 MB = 2 * 1024 * 1024 bytes
+                common.errorToast(getString(R.string.image_size_exceeds));
+                return; // Stop further processing
+            } else {
+
             // NEW: Load compressed Bitmap
             Bitmap bitmap = decodeSampledBitmapFromUri(croppedImageUri, 1024, 1024);
 
@@ -347,6 +361,7 @@ public class ProfileFragment extends Fragment {
                 tv_message.setText(getString(R.string.photo_selected));
                 tv_message.setTextColor(getResources().getColor(R.color.green_500));
             }
+        }
 
         } catch (Exception e) {
             e.printStackTrace();

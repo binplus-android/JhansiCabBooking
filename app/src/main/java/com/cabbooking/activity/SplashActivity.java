@@ -88,13 +88,15 @@ public class SplashActivity extends AppCompatActivity {
                         Uri referrerUri = getIntent().getData();
 //                        Uri referrerUri = Uri.parse("https://jhansicab.anshuwap.com/referal?" + referrerUrl);
 
-                        String referralCode = referrerUri.getQueryParameter("code");
+                        if (referrerUri!=null) {
+                            String referralCode = referrerUri.getQueryParameter("code");
 
-                        if (referralCode != null) {
-                            Log.e("referralCodesxdcfgbhjn",referralCode);
+                            if (referralCode != null) {
+                                Log.e("referralCodesxdcfgbhjn", referralCode);
 //                            referralInput.setText(referralCode);
-                            SharedPreferences prefs = getSharedPreferences("ReferralPrefs", MODE_PRIVATE);
-                            prefs.edit().putString("referral_code", referralCode).apply();
+                                SharedPreferences prefs = getSharedPreferences("ReferralPrefs", MODE_PRIVATE);
+                                prefs.edit().putString("referral_code", referralCode).apply();
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
