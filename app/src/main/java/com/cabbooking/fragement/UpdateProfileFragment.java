@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.ProfileUpdateResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.activity.OTPActivity;
@@ -70,10 +71,15 @@ public class UpdateProfileFragment extends Fragment {
             binding.tvPlaceholder.setText(getString(R.string.email_id));
         }
 
-
+       if(binding.etName.getText().toString().equalsIgnoreCase("")){
         binding.btnSubmit.setEnabled(false);
         binding.btnSubmit.setBackgroundTintList(getResources().getColorStateList(R.color.grey_20));
-        binding.btnSubmit.setAlpha(.4f);
+        binding.btnSubmit.setAlpha(.4f);}
+       else {
+           binding.btnSubmit.setEnabled(true);
+           binding.btnSubmit.setBackgroundTintList(getResources().getColorStateList(R.color.yellow));
+           binding.btnSubmit.setAlpha(1f);
+       }
 
         binding.etName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -125,15 +131,17 @@ public class UpdateProfileFragment extends Fragment {
     private void callPostApi(String key,String value) {
             JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+            object.addProperty("type",key);
             object.addProperty(key,value);
             repository.postProfile(object, new ResponseService() {
                 @Override
                 public void onResponse(Object data) {
                     try {
-                        CommonResp resp = (CommonResp) data;
-                        Log.e("CommonResp ",data.toString());
+                        ProfileUpdateResp resp = (ProfileUpdateResp) data;
+                        Log.e("ProfileUpdateResp ",data.toString());
                         if (resp.getStatus()==200) {
                             common.successToast(resp.getMessage ());
+                            common.popFragment();
 
                         }else{
                             common.errorToast(resp.getError());

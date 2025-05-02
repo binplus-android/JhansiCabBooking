@@ -16,6 +16,7 @@ import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
 import com.cabbooking.Response.ProfileDetailResp;
+import com.cabbooking.Response.ProfileUpdateResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
@@ -566,7 +567,7 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
         apiInterface.getProfileData(postData).enqueue(new Callback<ProfileDetailResp>() {
             @Override
             public void onResponse(Call<ProfileDetailResp> call, Response<ProfileDetailResp> response) {
-                Log.e("WalletHistoryModel", response.toString());
+                Log.e("profileDetails", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
                     responseService.onResponse(response.body());
@@ -589,9 +590,9 @@ public void postProfile(JsonObject postData, ResponseService responseService, bo
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.postProfileData(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.postProfileData(postData).enqueue(new Callback<ProfileUpdateResp>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<ProfileUpdateResp> call, Response<ProfileUpdateResp> response) {
                 Log.e("WalletHistoryModel", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -602,7 +603,7 @@ public void postProfile(JsonObject postData, ResponseService responseService, bo
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<ProfileUpdateResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);
@@ -615,9 +616,9 @@ public void postProfileImage(JsonObject postData, ResponseService responseServic
         showHideProgressBar(showProgress);
         common=new Common(context);
 
-        apiInterface.postProfileImage(postData).enqueue(new Callback<CommonResp>() {
+        apiInterface.postProfileImage(postData).enqueue(new Callback<ProfileUpdateResp>() {
             @Override
-            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+            public void onResponse(Call<ProfileUpdateResp> call, Response<ProfileUpdateResp> response) {
                 Log.e("WalletHistoryModel", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
@@ -628,7 +629,7 @@ public void postProfileImage(JsonObject postData, ResponseService responseServic
             }
 
             @Override
-            public void onFailure(Call<CommonResp> call, Throwable t) {
+            public void onFailure(Call<ProfileUpdateResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);

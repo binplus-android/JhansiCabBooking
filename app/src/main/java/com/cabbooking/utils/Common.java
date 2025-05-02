@@ -297,6 +297,10 @@ public class Common {
         fragmentTransaction.commit ( );
 
     }
+    public void popFragment() {
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+        fragmentManager.popBackStack();
+    }
     public void calling(String phoneNumber){
             Uri dialUri = Uri.parse("tel:" + phoneNumber);
             Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);

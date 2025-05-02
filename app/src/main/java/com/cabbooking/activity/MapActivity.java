@@ -1,7 +1,10 @@
 package com.cabbooking.activity;
 
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
+import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -84,6 +87,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -135,6 +139,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         initView();
+        setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
         verifyGoogleAccount();
         setupLocationPermissionLauncher();
@@ -421,6 +426,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        });
 
        binding.recMenu.setAdapter(menuAdapter);
+    }
+    public void setImage(String val){
+        Picasso.get().load(IMAGE_BASE_URL+val).placeholder(R.drawable.logo).
+                error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
 
     public void getPickUpLatLng(Double Lat,Double Lng,String pickAddressValue){

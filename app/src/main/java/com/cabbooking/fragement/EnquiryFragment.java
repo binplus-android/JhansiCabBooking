@@ -101,11 +101,9 @@ public class EnquiryFragment extends Fragment {
 
     private void callSubmitApi(String selectedItem,String message)
        {
-           common.successToast("Enquiry send succesfully");
-
             JsonObject object=new JsonObject();
             object.addProperty("type",selectedItem);
-            object.addProperty("message",message);
+            object.addProperty("description",message);
            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
 
            repository.postEnquiry(object, new ResponseService() {
@@ -137,35 +135,34 @@ public class EnquiryFragment extends Fragment {
 
     private void getList() {
         list.clear();
-        list.add(new EnquiryModel());
-//        JsonObject object=new JsonObject();
-//        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-//        repository.getEnquiryList(object, new ResponseService() {
-//            @Override
-//            public void onResponse(Object data) {
-//                try {
-//                    EnquiryModel resp = (EnquiryModel) data;
-//                    Log.e("getEnquiryresp ",data.toString());
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        repository.getEnquiryList(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    EnquiryModel resp = (EnquiryModel) data;
+                    Log.e("getEnquiryresp ",data.toString());
 //                    if (resp.getStatus()==200) {
 //                        list.clear();
 //                        list = resp.getRecordList();
-                    if(list.size()>0) {
-                        adapter = new EnquiryAdapter(getActivity(), list);
-                        binding.recList.setAdapter(adapter);
-                    }
+//                    if(list.size()>0) {
+//                        adapter = new EnquiryAdapter(getActivity(), list);
+//                        binding.recList.setAdapter(adapter);
+//                    }
 //                    }
 //                    else{
 //                        common.errorToast(resp.getError());
 //                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            @Override
-//            public void onServerError(String errorMsg) {
-//                Log.e("errorMsg",errorMsg);
-//            }
-//        }, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
 
     }
 

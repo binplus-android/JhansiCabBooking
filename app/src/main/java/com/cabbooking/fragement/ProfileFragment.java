@@ -2,7 +2,9 @@ package com.cabbooking.fragement;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
+import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -40,6 +42,7 @@ import com.cabbooking.Response.BookingDetailResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.Response.ProfileDetailResp;
+import com.cabbooking.Response.ProfileUpdateResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentContactUsBinding;
 import com.cabbooking.databinding.FragmentProfileBinding;
@@ -69,7 +72,7 @@ public class ProfileFragment extends Fragment {
     ImageView iv_image;
     LinearLayout lin_add_image;
     ImageView iv_add, iv_edit;
-    String imageString="",name="",emailID="";
+    String imageString="";
 
 
 
@@ -100,10 +103,11 @@ public class ProfileFragment extends Fragment {
                     ProfileDetailResp resp = (ProfileDetailResp) data;
                     Log.e("getProfile ",data.toString());
                     if (resp.getStatus()==200) {
-                        name="";
-                        emailID="";
-
-
+                        binding.tvMobile.setText(resp.getRecordList().getContactNo());
+                        binding.tvName.setText(resp.getRecordList().getName());
+                        binding.tvEmail.setText(resp.getRecordList().getEmail());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
+                                error(R.drawable.logo).into(binding.imgProfile);
 
                     }else{
                         common.errorToast(resp.getError());
@@ -136,7 +140,7 @@ public class ProfileFragment extends Fragment {
                 fragment = new UpdateProfileFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("type","name");
-                bundle.putString("name",name);
+                bundle.putString("name",binding.tvName.getText().toString());
                 fragment.setArguments(bundle);
 
                 common.switchFragment(fragment);
@@ -151,7 +155,7 @@ public class ProfileFragment extends Fragment {
                 fragment = new UpdateProfileFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("type","email");
-                bundle.putString("email",emailID);
+                bundle.putString("email",binding.tvEmail.getText().toString());
                 fragment.setArguments(bundle);
 
                 common.switchFragment(fragment);
@@ -232,16 +236,22 @@ public class ProfileFragment extends Fragment {
     public void callUploadImage(Dialog dialogProfile)  {
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("image",imageString);
+        object.addProperty("type","profileImage");
+        object.addProperty("profileImage",imageString);
         repository.postProfileImage(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
                 try {
-                    CommonResp resp = (CommonResp) data;
-                    Log.e("CommonResp ",data.toString());
+                    ProfileUpdateResp resp = (ProfileUpdateResp) data;
+                    Log.e("ProfileUpdateResp ",data.toString());
                     if (resp.getStatus()==200) {
                         dialogProfile.dismiss();
                         common.successToast(resp.getMessage ());
+                        sessionManagment.setValue(KEY_USER_IMAGE,resp.getRecordList().getProfileImage());
+                        ((MapActivity)getActivity()).setImage(resp.getRecordList().getProfileImage());
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
+                                error(R.drawable.logo).into(binding.imgProfile);
+
                     }else{
                         common.errorToast(resp.getError());
                     }
