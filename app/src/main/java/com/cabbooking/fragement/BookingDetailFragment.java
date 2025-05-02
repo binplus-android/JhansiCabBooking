@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.BookingDetailResp;
+import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentBookingDetailBinding;
@@ -46,8 +47,9 @@ public class BookingDetailFragment extends Fragment {
     FragmentBookingDetailBinding binding;
     Common common;
     SessionManagment sessionManagment;
-    String book_id="";
+    String book_id="",book_date="",tripId="";
     Repository repository;
+    JsonObject feedobject=new JsonObject();
 
     public BookingDetailFragment() {
         // Required empty public constructor
@@ -77,10 +79,10 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void getAllData()
-    {
+    {   disbaleEditText();
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("bookId",book_id);
+        object.addProperty("tripId",book_id);
         repository.getBookingDetail(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
@@ -88,8 +90,37 @@ public class BookingDetailFragment extends Fragment {
                     BookingDetailResp resp = (BookingDetailResp) data;
                     Log.e("BookingDetail ",data.toString());
                     if (resp.getStatus()==200) {
+                        tripId= String.valueOf(resp.getRecordList().getId());
 
+                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleImage()).placeholder(R.drawable.logo).
+                                error(R.drawable.logo).into(binding.vImg);
+                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
+                                error(R.drawable.logo).into(binding.dImg);
 
+                        binding.tvVnum.setText(resp.getRecordList().getVehicleNumber());
+                        binding.tvDname.setText(resp.getRecordList().getName());
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName()+"("+
+                                resp.getRecordList().getVehicleColor()+")");
+                        binding.tvStatus.setText(resp.getRecordList().getTripStatus());
+
+                        binding.tvAmt.setText("-Rs."+resp.getRecordList().getAmount());
+                        binding.tvDist.setText("Distance: "+resp.getRecordList().getDistance()+"KM");
+                        binding.tvPayment.setText("Payment by "+resp.getRecordList().getPaymentMode());
+
+                        binding.tvPick.setText(resp.getRecordList().getPickup());
+                        binding.tvDesctination.setText(resp.getRecordList().getDestination());
+
+                        if(common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")){
+                            binding.linFill.setVisibility(View.VISIBLE);
+                            binding.etFeed.setText("");
+                            binding.etAfterfeed.setText("");
+                            binding.linData.setVisibility(View.GONE);
+                        } else {
+                            binding.etFeed.setText(resp.getRecordList().getUserFeedback());
+                            binding.etAfterfeed.setText(resp.getRecordList().getUserFeedback());
+                            binding.linFill.setVisibility(View.GONE);
+                            binding.linData.setVisibility(View.VISIBLE);
+                        }
 
                     }else{
                         common.errorToast(resp.getError());
@@ -127,11 +158,8 @@ public class BookingDetailFragment extends Fragment {
                     common.errorToast("Feedback required");
                 }
                 else {
-                    binding.etAfterfeed.setText(binding.etFeed.getText().toString());
-                    common.successToast("Feedback submitted successfully.");
-                    binding.etFeed.setText("");
-                    binding.linFill.setVisibility(View.GONE);
-                    binding.linData.setVisibility(View.VISIBLE);
+                    feedobject.addProperty("feedback",binding.etFeed.getText().toString());
+                    feedBack(feedobject);
                 }
 
 
@@ -145,9 +173,8 @@ public class BookingDetailFragment extends Fragment {
                 }
                 else {
                     binding.btnEdit.setVisibility(View.GONE);
-                    common.successToast("Feedback edit successfully.");
-                    binding.linFill.setVisibility(View.GONE);
-                    binding.linData.setVisibility(View.VISIBLE);
+                    feedobject.addProperty("feedback",binding.etAfterfeed.getText().toString());
+                    feedBack(feedobject);
                 }
 
 
@@ -158,12 +185,7 @@ public class BookingDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 binding.btnEdit.setVisibility(View.VISIBLE);
-                binding.etAfterfeed.setEnabled(true);
-                binding.etAfterfeed.setFocusable(true);
-                binding.etAfterfeed.setFocusableInTouchMode(true);
-                binding.etAfterfeed.setClickable(true);
-                binding.etAfterfeed.setCursorVisible(true);
-                binding.etAfterfeed.requestFocus();
+               enableEditText();
             }
         });  binding.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +193,23 @@ public class BookingDetailFragment extends Fragment {
               callConfirmationDialog();
             }
         });
+    }
+
+    private void enableEditText() {
+        binding.etAfterfeed.setEnabled(true);
+        binding.etAfterfeed.setFocusable(true);
+        binding.etAfterfeed.setFocusableInTouchMode(true);
+        binding.etAfterfeed.setClickable(true);
+        binding.etAfterfeed.setCursorVisible(true);
+        binding.etAfterfeed.requestFocus();
+    }
+    private void disbaleEditText() {
+        binding.etAfterfeed.setEnabled(false);
+        binding.etAfterfeed.setFocusable(false);
+        binding.etAfterfeed.setFocusableInTouchMode(false);
+        binding.etAfterfeed.setClickable(false);
+        binding.etAfterfeed.setCursorVisible(false);
+        binding.etAfterfeed.requestFocus();
     }
 
     private void callConfirmationDialog(){
@@ -200,10 +239,8 @@ public class BookingDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                common.successToast("Feedback deleted successfully.");
-                binding.linFill.setVisibility(View.VISIBLE);
-                binding.linData.setVisibility(View.GONE);
-
+                feedobject.addProperty("feedback","");
+                feedBack(feedobject);
             }
         });
         dialog.setCanceledOnTouchOutside (false);
@@ -213,10 +250,43 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void initView() {
+        book_id=getArguments().getString("book_id");
+        book_date=getArguments().getString("book_date");
         repository=new Repository(getActivity());
-        ((MapActivity)getActivity()).setTitle("#ID 12345\n20-09-2024 | 09:30 PM");
+        ((MapActivity)getActivity()).setTitle("#ID "+book_id+"\n"+book_date);
         //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
+    }
+
+    private void feedBack(JsonObject feedobject)
+    {
+
+        feedobject.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
+        feedobject.addProperty("tripId", tripId);
+        repository.feedBack(feedobject, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    CommonResp resp = (CommonResp) data;
+                    Log.e("feedback ", data.toString());
+                    if (resp.getStatus() == 200) {
+                        common.successToast(resp.getMessage());
+                        getAllData();
+
+                    }
+                    else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
+
     }
 }

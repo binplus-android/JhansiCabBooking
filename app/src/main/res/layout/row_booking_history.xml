@@ -16,19 +16,22 @@
             android:layout_weight="1.2"
             android:layout_height="wrap_content">
             <TextView
-                android:text="ID:#123"
+                android:id="@+id/tv_id"
+                android:text="ID:#"
                 android:textSize="@dimen/space_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <TextView
+                android:id="@+id/tv_date"
                 android:layout_marginTop="@dimen/space_2"
                 android:textStyle="bold"
                 android:textSize="@dimen/space_5"
-                android:text="20-04-2024 | 09:20 PM"
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:text="Vechicle Name"
+                android:id="@+id/tv_vname"
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 <!--            <TextView-->
@@ -46,17 +49,19 @@
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"/>-->
             <TextView
-                android:textColor="@color/green_500"
-                android:text="+Rs. 00"
+                android:textColor="@color/red_600"
+                android:text="-Rs. 00"
+                android:id="@+id/tv_amt"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
+                android:id="@+id/tv_status"
                 android:layout_marginTop="@dimen/space_2"
                 android:background="@drawable/bg_button"
                 android:textColor="@color/black"
                 android:textSize="@dimen/space_5"
-                android:text="Status"
+                android:text=""
                 android:backgroundTint="@color/grey_20"
                 android:paddingHorizontal="@dimen/space_5"
                 android:paddingVertical="@dimen/space_1"
@@ -80,11 +85,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
+                    android:id="@+id/iv_vimg"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_local"
                     android:layout_width="@dimen/space_21"
                     android:layout_height="@dimen/space_21"/>
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_dimg"
                     android:layout_marginLeft="@dimen/space_4"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/logo"

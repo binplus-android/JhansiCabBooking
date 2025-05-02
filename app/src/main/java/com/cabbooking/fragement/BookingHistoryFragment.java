@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.cabbooking.Response.CommonResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.BookingAdapter;
 import com.cabbooking.adapter.WalletHistoryAdapter;
@@ -36,8 +38,9 @@ public class BookingHistoryFragment extends Fragment {
     Common common;
     SessionManagment sessionManagment;
     BookingAdapter adapter;
-    ArrayList<BookingHistoryModel> list;
+    ArrayList<BookingHistoryModel.RecordList> list;
     Repository repository;
+
 
     public BookingHistoryFragment() {
         // Required empty public constructor
@@ -78,47 +81,48 @@ public class BookingHistoryFragment extends Fragment {
     private void getList()
     {
             list.clear();
-            list.add(new BookingHistoryModel());
-//            JsonObject object=new JsonObject();
-//            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-//             repository.getBookingHistory(object, new ResponseService() {
-//                @Override
-//                public void onResponse(Object data) {
-//                    try {
-//                        BookingHistoryModel resp = (BookingHistoryModel) data;
-//                        Log.e("BookingHistoryModel ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        list.clear();
-//                        list = resp.getRecordList();
+            JsonObject object = new JsonObject();
+        object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
+        repository.getBookingHistory(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    BookingHistoryModel resp = (BookingHistoryModel) data;
+                    Log.e("BookingHistoryModel ", data.toString());
+                    if (resp.getStatus() == 200) {
+                        list.clear();
+                        list = resp.getRecordList();
                         if(list.size()>0) {
                             adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
                                 @Override
                                 public void onSelection(int pos) {
                                     Fragment fm=new BookingDetailFragment();
                                     Bundle bundle=new Bundle();
-                                   // bundle.putString("book_id",list.get(pos).get);
-                                    bundle.putString("book_id","0");
+                                    bundle.putString("book_id",String.valueOf(list.get(pos).getTripId()));
+                                    bundle.putString("book_date",String.valueOf(list.get(pos).getCreatedAt()));
+
                                     fm.setArguments(bundle);
                                     common.switchFragment(fm);
                                 }
                             });
                             binding.recList.setAdapter(adapter);
                         }
-//                    }
-//                    else{
-//                        common.errorToast(resp.getError());
-//                    }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                @Override
-//                public void onServerError(String errorMsg) {
-//                    Log.e("errorMsg",errorMsg);
-//                }
-//            }, true);
+                    }
+                    else{
+                        common.errorToast(resp.getError());
+                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
 
         }
+
 
     private void allClick() {
     }
