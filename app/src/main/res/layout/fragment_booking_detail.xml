@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".fragement.BookingDetailFragment">
     <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -17,8 +18,9 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/map_dummy"
                 android:layout_width="match_parent"
-                android:layout_height="80pt"/>
+                android:layout_height="100pt"/>
             <LinearLayout
+                android:layout_marginTop="@dimen/space_5"
                 android:orientation="vertical"
                 android:layout_marginHorizontal="@dimen/space_8"
                 android:layout_width="match_parent"
@@ -29,13 +31,50 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:id="@+id/v_img"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:layout_alignParentStart="true"
                         android:src="@drawable/ic_local"
                         android:layout_width="@dimen/space_21"
                         android:layout_height="@dimen/space_21"/>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_toRightOf="@id/v_img"
+                        android:layout_marginLeft="@dimen/space_2"
+                        android:id="@+id/d_img"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/logo"
+                        android:layout_width="@dimen/space_21"
+                        android:layout_height="@dimen/space_21"/>
+                    <LinearLayout
+                        android:layout_toLeftOf="@id/tv_status"
+                        android:layout_marginLeft="@dimen/space_8"
+                        android:layout_toRightOf="@id/d_img"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_marginTop="@dimen/space_2"
+                            android:textStyle="bold"
+                            android:text="Vechicle number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:textSize="@dimen/space_5"
+                            android:text="Driver Name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:textSize="@dimen/space_5"
+                            android:text="Vechicle Name (color)\nSeater"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+
+                    </LinearLayout>
                     <TextView
+                        android:id="@+id/tv_status"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:layout_alignParentEnd="true"
@@ -71,27 +110,59 @@
                             android:src="@drawable/ic_meter"
                             android:layout_width="@dimen/space_21"
                             android:layout_height="@dimen/space_21"/>
-                        <TextView
-                            android:layout_marginLeft="@dimen/space_10"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="@color/green_500"
-                            android:textAlignment="textEnd"
-                            android:text="+Rs. 00"
-                            android:textStyle="bold"
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_marginLeft="@dimen/space_10"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/green_500"
+                                android:textAlignment="textEnd"
+                                android:text="+Rs. 00"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:layout_marginTop="@dimen/space_2"
+                                android:layout_marginLeft="@dimen/space_10"
+                                android:layout_gravity="center_vertical"
+                                android:textAlignment="textEnd"
+                                android:text="Distance :1 KM"
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
 
                     </LinearLayout>
-                    <TextView
-                        android:layout_centerVertical="true"
+                    <LinearLayout
+                        android:gravity="end"
+                        android:orientation="vertical"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginLeft="@dimen/space_10"
-                        android:layout_gravity="center_vertical"
-                        android:textAlignment="textEnd"
-                        android:text="Payment by cash"
-                       android:textSize="@dimen/space_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textAlignment="textEnd"
+                            android:text="Payment by cash"
+                            android:textSize="@dimen/space_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/t_download"
+                            android:layout_marginTop="@dimen/space_2"
+                            android:background="@drawable/bg_button"
+                            android:paddingVertical="@dimen/space_2"
+                            android:paddingHorizontal="@dimen/space_5"
+                         android:layout_gravity="end"
+                            android:gravity="end"
+
+                        android:text="Receipt"
+                        android:textSize="@dimen/space_6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
                 </RelativeLayout>
 
                 <View

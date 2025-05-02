@@ -1,9 +1,33 @@
 package com.cabbooking.Response;
 
-public class ProfileDetailResp {
+public class ProfileUpdateResp {
     public int status;
+    public String message,error;
     public RecordList recordList;
-    String error;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public RecordList getRecordList() {
         return recordList;
@@ -18,16 +42,7 @@ public class ProfileDetailResp {
         public String email;
         public String contactNo;
         public String profileImage;
-        public int walletAmount;
-        public String referralLink;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
+        public String  updated_at;
 
         public String getName() {
             return name;
@@ -35,6 +50,14 @@ public class ProfileDetailResp {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getContactNo() {
@@ -53,39 +76,12 @@ public class ProfileDetailResp {
             this.profileImage = profileImage;
         }
 
-        public int getWalletAmount() {
-            return walletAmount;
+        public String getUpdated_at() {
+            return updated_at;
         }
 
-        public void setWalletAmount(int walletAmount) {
-            this.walletAmount = walletAmount;
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
         }
-
-        public String getReferralLink() {
-            return referralLink;
-        }
-
-        public void setReferralLink(String referralLink) {
-            this.referralLink = referralLink;
-        }
-    }
-    public ProfileDetailResp() {
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 }

@@ -78,14 +78,15 @@ public class BookingHistoryFragment extends Fragment {
     private void getList()
     {
             list.clear();
-            JsonObject object=new JsonObject();
-            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-             repository.getBookingHistory(object, new ResponseService() {
-                @Override
-                public void onResponse(Object data) {
-                    try {
-                        BookingHistoryModel resp = (BookingHistoryModel) data;
-                        Log.e("BookingHistoryModel ",data.toString());
+            list.add(new BookingHistoryModel());
+//            JsonObject object=new JsonObject();
+//            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+//             repository.getBookingHistory(object, new ResponseService() {
+//                @Override
+//                public void onResponse(Object data) {
+//                    try {
+//                        BookingHistoryModel resp = (BookingHistoryModel) data;
+//                        Log.e("BookingHistoryModel ",data.toString());
 //                    if (resp.getStatus()==200) {
 //                        list.clear();
 //                        list = resp.getRecordList();
@@ -107,15 +108,15 @@ public class BookingHistoryFragment extends Fragment {
 //                    else{
 //                        common.errorToast(resp.getError());
 //                    }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, true);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                @Override
+//                public void onServerError(String errorMsg) {
+//                    Log.e("errorMsg",errorMsg);
+//                }
+//            }, true);
 
         }
 

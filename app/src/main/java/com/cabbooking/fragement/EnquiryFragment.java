@@ -101,11 +101,9 @@ public class EnquiryFragment extends Fragment {
 
     private void callSubmitApi(String selectedItem,String message)
        {
-           common.successToast("Enquiry send succesfully");
-
             JsonObject object=new JsonObject();
             object.addProperty("type",selectedItem);
-            object.addProperty("message",message);
+            object.addProperty("description",message);
            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
 
            repository.postEnquiry(object, new ResponseService() {
@@ -148,10 +146,10 @@ public class EnquiryFragment extends Fragment {
 //                    if (resp.getStatus()==200) {
 //                        list.clear();
 //                        list = resp.getRecordList();
-                    if(list.size()>0) {
-                        adapter = new EnquiryAdapter(getActivity(), list);
-                        binding.recList.setAdapter(adapter);
-                    }
+//                    if(list.size()>0) {
+//                        adapter = new EnquiryAdapter(getActivity(), list);
+//                        binding.recList.setAdapter(adapter);
+//                    }
 //                    }
 //                    else{
 //                        common.errorToast(resp.getError());

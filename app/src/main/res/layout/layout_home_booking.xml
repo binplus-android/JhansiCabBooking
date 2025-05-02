@@ -55,17 +55,20 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/tv_vnum"
                     android:layout_marginTop="@dimen/space_2"
                     android:textStyle="bold"
                     android:text="V number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <TextView
+                    android:id="@+id/tv_vname"
                     android:textSize="@dimen/space_5"
                     android:text="Vechicle Name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <TextView
+                    android:id="@+id/tv_dname"
                     android:textSize="@dimen/space_5"
                     android:text="Driver Name"
                     android:layout_width="match_parent"
@@ -88,12 +91,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView
+                        android:id="@+id/iv_vimg"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_local"
                         android:layout_width="@dimen/space_21"
                         android:layout_height="@dimen/space_21"/>
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:layout_marginLeft="@dimen/space_4"
+                        android:id="@+id/iv_dimg"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/logo"
                         android:layout_width="@dimen/space_21"

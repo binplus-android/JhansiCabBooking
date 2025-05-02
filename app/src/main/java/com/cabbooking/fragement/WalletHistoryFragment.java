@@ -104,29 +104,29 @@ public class WalletHistoryFragment extends Fragment {
     private void iniList(String number)
     {
             list.clear();
-            JsonObject object=new JsonObject();
-            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-            object.addProperty("type",number);
-            repository.getWalletHistory(object, new ResponseService() {
-                @Override
-                public void onResponse(Object data) {
-                    try {
-                        WalletHistoryModel resp = (WalletHistoryModel) data;
-                        Log.e("WalletHistoryModel ",data.toString());
+        if(number.equalsIgnoreCase("0")) {
+            list.add(new WalletHistoryModel("Referral by User"));
+            list.add(new WalletHistoryModel("Referral by User"));
+            list.add(new WalletHistoryModel("Referral by User"));
+        }
+        else{
+            list.add(new WalletHistoryModel("Refund by booking"));
+            list.add(new WalletHistoryModel("Refund by booking"));
+            list.add(new WalletHistoryModel("Refund by booking"));
+        }
+//            JsonObject object=new JsonObject();
+//            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+//            object.addProperty("type",number);
+//            repository.getWalletHistory(object, new ResponseService() {
+//                @Override
+//                public void onResponse(Object data) {
+//                    try {
+//                        WalletHistoryModel resp = (WalletHistoryModel) data;
+//                        Log.e("WalletHistoryModel ",data.toString());
 //                    if (resp.getStatus()==200) {
 //                        list.clear();
 //                        list = resp.getRecordList();
                         if(list.size()>0) {
-                            if(number.equalsIgnoreCase("0")) {
-                                list.add(new WalletHistoryModel("Referral by User"));
-                                list.add(new WalletHistoryModel("Referral by User"));
-                                list.add(new WalletHistoryModel("Referral by User"));
-                            }
-                            else{
-                                list.add(new WalletHistoryModel("Refund by booking"));
-                                list.add(new WalletHistoryModel("Refund by booking"));
-                                list.add(new WalletHistoryModel("Refund by booking"));
-                            }
                             adapter=new WalletHistoryAdapter(getActivity(),list);
                             binding.recList.setAdapter(adapter);
                         }
@@ -134,15 +134,15 @@ public class WalletHistoryFragment extends Fragment {
 //                    else{
 //                        common.errorToast(resp.getError());
 //                    }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, true);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                @Override
+//                public void onServerError(String errorMsg) {
+//                    Log.e("errorMsg",errorMsg);
+//                }
+//            }, true);
 
         }
 

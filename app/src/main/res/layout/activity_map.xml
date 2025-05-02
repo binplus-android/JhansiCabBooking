@@ -29,19 +29,21 @@
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_scrollFlags="scroll|enterAlways">
                     <RelativeLayout
-
+                        app:contentInsetStart="0dp"
+                        app:contentInsetLeft="0dp"
+                        app:contentInsetStartWithNavigation="0dp"
                         android:id="@+id/lin_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
                         <LinearLayout
-                            android:layout_centerHorizontal="true"
+                         android:layout_marginLeft="45pt"
                             android:layout_centerVertical="true"
                             android:orientation="horizontal"
+                           android:gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
                             <ImageView
-
                                 android:layout_gravity="center"
                                 android:layout_centerInParent="true"
                                 android:id="@+id/logo"
@@ -257,7 +259,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
         <RelativeLayout
-            android:layout_width="285dp"
+            android:layout_width="140pt"
             android:layout_height="match_parent"
             android:gravity="start"
             android:layout_gravity="start"

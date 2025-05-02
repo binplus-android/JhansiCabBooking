@@ -1,6 +1,10 @@
 package com.cabbooking.activity;
 
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_ID;
+import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
+import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,6 +26,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -82,6 +87,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseReference;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,7 +120,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
-    String sharelink=BASE_URL;
+    String sharelink=BASE_URL,share_msg="";
+    String appLink=BASE_URL;
     Integer ver_code, is_forced=0, version_code;
      Double pickupLat=0.0,destinationLat=0.0;
      Double pickupLng=0.0,destinationLng=0.0;
@@ -125,12 +132,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         initView();
+        setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
         verifyGoogleAccount();
         setupLocationPermissionLauncher();
@@ -202,6 +211,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 ver_code = (model.getVersion ( ));
                                 is_forced = (model.getIs_forced ( ));
                                 sharelink = model.getShare_link ();
+                                share_msg=model.getShare_message();
+                                appLink=model.getShare_link();
                                 PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
                                 version_code = pInfo.versionCode;
                                 if (version_code < ver_code) {
@@ -364,6 +375,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Contact Us",R.drawable.support));
        mlist.add(new MenuModel("Terms & Conditions",R.drawable.policy));
        mlist.add(new MenuModel("Privacy Policy",R.drawable.policy));
+       mlist.add(new MenuModel("Share App",R.drawable.ic_share));
 
 
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
@@ -401,6 +413,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                    case "contact us":
                        fm=new ContactUsFragment();
                        break;
+                       case "share app":
+                           common.shareLink(share_msg+"\n"+Html.fromHtml (BASE_URL));
+                           break;
                }
                binding.drawer.closeDrawer(GravityCompat.START);
                if(fm!=null){
@@ -411,6 +426,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        });
 
        binding.recMenu.setAdapter(menuAdapter);
+    }
+    public void setImage(String val){
+        Picasso.get().load(IMAGE_BASE_URL+val).placeholder(R.drawable.logo).
+                error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
 
     public void getPickUpLatLng(Double Lat,Double Lng,String pickAddressValue){
@@ -520,7 +539,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 try{
                     Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse (sharelink));
+                    intent.setData (Uri.parse (appLink));
                     startActivity (intent);
                 }catch (Exception e){
                     e.printStackTrace ();
@@ -778,6 +797,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         toggle.syncState();
         toggle.setDrawerIndicatorEnabled(false);
         binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+        binding.mytoolbar.setContentInsetsAbsolute(0, 0);
         binding.mytoolbar.setNavigationOnClickListener(view -> {
             if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
                 binding.drawer.closeDrawer(GravityCompat.START);

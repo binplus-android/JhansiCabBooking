@@ -9,114 +9,123 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.SignUpActivity">
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
+            android:fillViewport="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include layout="@layout/common_background"></include>
+            android:layout_height="match_parent">
             <LinearLayout
-                android:layout_marginTop="@dimen/space_18"
-                android:layout_marginHorizontal="@dimen/space_8"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Signup"
-                    style="@style/TextViewExtraBold"/>
-                <TextView
-                    android:layout_marginTop="@dimen/space_12"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/name_s"
-                    />
-                <EditText
-                    android:id="@+id/et_name"
-                    android:hint="@string/enter_here"
-                    android:layout_marginTop="@dimen/space_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edittext_height"
-
-                    />
-                <TextView
-                    android:layout_marginTop="@dimen/space_10"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mobile_number_s"
-                    />
-                <EditText
-                    android:id="@+id/et_mob"
-                    android:hint="@string/enter_here"
-                    android:layout_marginTop="@dimen/space_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edittext_height"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    />
-                <TextView
-                    android:layout_marginTop="@dimen/space_10"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/email_id"
-                    />
-                <EditText
-                    android:id="@+id/et_email"
-                    android:hint="@string/enter_here"
-                    android:layout_marginTop="@dimen/space_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/edittext_height"
-                    android:inputType="textEmailAddress"
-                    />
+                <include layout="@layout/common_background"></include>
                 <LinearLayout
-                    android:layout_marginTop="@dimen/space_2"
+                    android:layout_marginTop="@dimen/space_18"
+                    android:layout_marginHorizontal="@dimen/space_8"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <CheckBox
-                        android:scaleX="0.7"
-                        android:scaleY="0.7"
-                        android:buttonTint="@color/grey_40"
-                        android:id="@+id/ch_box"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/Signup"
+                        style="@style/TextViewExtraBold"/>
+                    <TextView
+                        android:layout_marginTop="@dimen/space_12"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/name_s"
+                        />
+                    <EditText
+                        android:id="@+id/et_name"
+                        android:hint="@string/enter_here"
+                        android:layout_marginTop="@dimen/space_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/edittext_height"
 
                         />
                     <TextView
-                        android:id="@+id/tv_check"
-                        android:textSize="5pt"
-                        android:text="@string/i_agree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
+                        android:layout_marginTop="@dimen/space_10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mobile_number_s"
+                        />
+                    <EditText
+                        android:id="@+id/et_mob"
+                        android:hint="@string/enter_here"
+                        android:layout_marginTop="@dimen/space_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/edittext_height"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        />
+                    <TextView
+                        android:layout_marginTop="@dimen/space_10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email_id"
+                        />
+                    <EditText
+                        android:id="@+id/et_email"
+                        android:hint="@string/enter_here"
+                        android:layout_marginTop="@dimen/space_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/edittext_height"
+                        android:inputType="textEmailAddress"
+                        />
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/space_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:scaleX="0.7"
+                            android:scaleY="0.7"
+                            android:buttonTint="@color/grey_40"
+                            android:id="@+id/ch_box"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
 
-                <Button
-                    android:id="@+id/btn_otp"
-                    android:text="@string/get_otp"
-                    android:layout_marginTop="@dimen/space_15"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/button_height"/>
+                            />
+                        <TextView
+                            android:id="@+id/tv_check"
+                            android:textSize="5pt"
+                            android:text="@string/i_agree"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_otp"
+                        android:text="@string/get_otp"
+                        android:layout_marginTop="@dimen/space_15"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/space_30"
+                    android:id="@+id/lin_login"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/space_15"
+                    android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/welcome_back"
+                        />
+                    <TextView
+                        android:textColor="@color/colorAccent"
+                        android:layout_marginLeft="@dimen/space_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_here"
+                        />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/lin_login"
-            android:layout_alignParentBottom="true"
-            android:layout_marginVertical="@dimen/space_15"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_back"
-                />
-            <TextView
-                android:textColor="@color/colorAccent"
-                android:layout_marginLeft="@dimen/space_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login_here"
-                />
-        </LinearLayout>
+        </ScrollView>
+
+
     </RelativeLayout>
 </layout>
