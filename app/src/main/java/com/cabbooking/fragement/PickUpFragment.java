@@ -125,13 +125,7 @@ int vechicle_pos;
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
         object.addProperty("isOutstation",trip_type);
         object.addProperty("isRound",outstation_type);
-
-        object.addProperty("pickupLat", ((MapActivity) getActivity()).getPickupLat());
-        object.addProperty("pickupLng", ((MapActivity) getActivity()).getPickupLng());
-        object.addProperty("pickup", ((MapActivity) getActivity()).getPickupAddress());
-        object.addProperty("destinationLat", ((MapActivity) getActivity()).getDestinationLat());
-        object.addProperty("destinationLng", ((MapActivity) getActivity()).getDestinationLng());
-        object.addProperty("destination", ((MapActivity) getActivity()).getDestionationAddress());
+        common.addLocationData(object);
          object.addProperty("vehicleType",vec_list.get(vechicle_pos).getId());
          object.addProperty("distance",distance);
          object.addProperty("amount",vec_list.get(vechicle_pos).getFare()*Double.parseDouble(distance));

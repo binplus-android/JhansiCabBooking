@@ -91,6 +91,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.util.Locale;
+import java.util.Map;
 
 public class Common {
     Context context;
@@ -106,6 +107,15 @@ public class Common {
         toastMsg = new ToastMsg(context);
         sessionManagment=new SessionManagment(context);
         repository = new Repository(context);
+    }
+
+    public void addLocationData(JsonObject object) {
+        object.addProperty("pickupLat", ((MapActivity)context).getPickupLat());
+        object.addProperty("pickupLng", ((MapActivity) context).getPickupLng());
+        object.addProperty("pickup", ((MapActivity) context).getPickupAddress());
+        object.addProperty("destinationLat", ((MapActivity) context).getDestinationLat());
+        object.addProperty("destinationLng", ((MapActivity) context).getDestinationLng());
+        object.addProperty("destination", ((MapActivity) context).getDestionationAddress());;
     }
     public void repositoryResponseCode(int code){
         switch (code) {

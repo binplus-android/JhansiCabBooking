@@ -161,13 +161,7 @@ public class VechileFragment extends Fragment {
          object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
          object.addProperty("isOutstation",trip_type);
          object.addProperty("isRound",outstation_type);
-
-        object.addProperty("pickupLat", ((MapActivity) getActivity()).getPickupLat());
-        object.addProperty("pickupLng", ((MapActivity) getActivity()).getPickupLng());
-        object.addProperty("pickup", ((MapActivity) getActivity()).getPickupAddress());
-        object.addProperty("destinationLat", ((MapActivity) getActivity()).getDestinationLat());
-        object.addProperty("destinationLng", ((MapActivity) getActivity()).getDestinationLng());
-        object.addProperty("destination", ((MapActivity) getActivity()).getDestionationAddress());
+         common.addLocationData(object);
 
         if(outstation_type.equalsIgnoreCase("1")) {
             object.addProperty("returnDate", binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString());
