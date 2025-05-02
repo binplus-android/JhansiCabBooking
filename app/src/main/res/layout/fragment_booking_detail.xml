@@ -136,16 +136,33 @@
 
 
                     </LinearLayout>
-                    <TextView
-                        android:layout_centerVertical="true"
+                    <LinearLayout
+                        android:gravity="end"
+                        android:orientation="vertical"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginLeft="@dimen/space_10"
-                        android:layout_gravity="center_vertical"
-                        android:textAlignment="textEnd"
-                        android:text="Payment by cash"
-                       android:textSize="@dimen/space_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textAlignment="textEnd"
+                            android:text="Payment by cash"
+                            android:textSize="@dimen/space_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/t_download"
+                            android:layout_marginTop="@dimen/space_2"
+                            android:background="@drawable/bg_button"
+                            android:paddingVertical="@dimen/space_2"
+                            android:paddingHorizontal="@dimen/space_5"
+                         android:layout_gravity="end"
+                            android:gravity="end"
+
+                        android:text="Receipt"
+                        android:textSize="@dimen/space_6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
                 </RelativeLayout>
 
                 <View

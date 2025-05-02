@@ -1,10 +1,13 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -104,6 +107,19 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void allClick() {
+        binding.tDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                  //  String pdfUrl = BASE_URL+model.getReceipt_url() ;
+                    String pdfUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" ;
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl));
+                    getActivity().startActivity(browserIntent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

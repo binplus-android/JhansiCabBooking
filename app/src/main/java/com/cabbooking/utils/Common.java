@@ -117,6 +117,13 @@ public class Common {
         object.addProperty("destinationLng", ((MapActivity) context).getDestinationLng());
         object.addProperty("destination", ((MapActivity) context).getDestionationAddress());;
     }
+    public void shareLink(String link) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, link);
+        sendIntent.setType("text/plain");
+        context.startActivity(sendIntent);
+    }
     public void repositoryResponseCode(int code){
         switch (code) {
             case 401:

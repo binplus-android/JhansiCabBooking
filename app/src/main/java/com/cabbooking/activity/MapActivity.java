@@ -1,6 +1,7 @@
 package com.cabbooking.activity;
 
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -114,7 +116,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
-    String sharelink=BASE_URL;
+    String sharelink=BASE_URL,share_msg="";
+    String appLink=BASE_URL;
     Integer ver_code, is_forced=0, version_code;
      Double pickupLat=0.0,destinationLat=0.0;
      Double pickupLng=0.0,destinationLng=0.0;
@@ -124,6 +127,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     MenuAdapter menuAdapter;
     private ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,6 +206,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 ver_code = (model.getVersion ( ));
                                 is_forced = (model.getIs_forced ( ));
                                 sharelink = model.getShare_link ();
+                                share_msg=model.getShare_message();
+                                appLink=model.getShare_link();
                                 PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
                                 version_code = pInfo.versionCode;
                                 if (version_code < ver_code) {
@@ -364,6 +370,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Contact Us",R.drawable.support));
        mlist.add(new MenuModel("Terms & Conditions",R.drawable.policy));
        mlist.add(new MenuModel("Privacy Policy",R.drawable.policy));
+       mlist.add(new MenuModel("Share App",R.drawable.ic_share));
 
 
        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
@@ -401,6 +408,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                    case "contact us":
                        fm=new ContactUsFragment();
                        break;
+                       case "share app":
+                           common.shareLink(share_msg+"\n"+Html.fromHtml (sharelink));
+                           break;
                }
                binding.drawer.closeDrawer(GravityCompat.START);
                if(fm!=null){
@@ -520,7 +530,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 try{
                     Intent intent = new Intent (Intent.ACTION_VIEW);
-                    intent.setData (Uri.parse (sharelink));
+                    intent.setData (Uri.parse (appLink));
                     startActivity (intent);
                 }catch (Exception e){
                     e.printStackTrace ();
