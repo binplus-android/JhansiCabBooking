@@ -49,7 +49,7 @@ public class WalletHistoryFragment extends Fragment {
     Common common;
     SessionManagment sessionManagment;
     WalletHistoryAdapter adapter;
-    ArrayList<WalletHistoryModel>list;
+    ArrayList<WalletHistoryModel.RecordList>list;
     Repository repository;
 
     public WalletHistoryFragment() {
@@ -78,7 +78,7 @@ public class WalletHistoryFragment extends Fragment {
         allClick();
         callViewlineClick ( binding.vReferral,binding.vWinning);
         callCommonClick (binding.tvReferral,binding.tvWinning);
-        iniList ("0");
+        iniList ("referral");
         return binding.getRoot();
     }
 
@@ -88,7 +88,7 @@ public class WalletHistoryFragment extends Fragment {
             public void onClick(View v) {
                 callViewlineClick ( binding.vReferral,binding.vWinning);
                 callCommonClick (binding.tvReferral,binding.tvWinning);
-                iniList ("0");
+                iniList ("referral");
             }
         });
         binding.relRefund.setOnClickListener(new View.OnClickListener() {
@@ -96,53 +96,45 @@ public class WalletHistoryFragment extends Fragment {
             public void onClick(View v) {
                 callViewlineClick ( binding.vWinning,binding.vReferral);
                 callCommonClick (binding.tvWinning,binding.tvReferral);
-                iniList ("1");
+                iniList ("refund");
             }
         });
     }
 
-    private void iniList(String number)
+    private void iniList(String type_val)
     {
             list.clear();
-        if(number.equalsIgnoreCase("0")) {
-            list.add(new WalletHistoryModel("Referral by User"));
-            list.add(new WalletHistoryModel("Referral by User"));
-            list.add(new WalletHistoryModel("Referral by User"));
-        }
-        else{
-            list.add(new WalletHistoryModel("Refund by booking"));
-            list.add(new WalletHistoryModel("Refund by booking"));
-            list.add(new WalletHistoryModel("Refund by booking"));
-        }
-//            JsonObject object=new JsonObject();
-//            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-//            object.addProperty("type",number);
-//            repository.getWalletHistory(object, new ResponseService() {
-//                @Override
-//                public void onResponse(Object data) {
-//                    try {
-//                        WalletHistoryModel resp = (WalletHistoryModel) data;
-//                        Log.e("WalletHistoryModel ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        list.clear();
-//                        list = resp.getRecordList();
+
+            JsonObject object=new JsonObject();
+            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+            object.addProperty("type",type_val);
+            repository.getWalletHistory(object, new ResponseService() {
+                @Override
+                public void onResponse(Object data) {
+                    try {
+                        WalletHistoryModel resp = (WalletHistoryModel) data;
+                        Log.e("WalletHistoryModel ",data.toString());
+                    if (resp.getStatus()==200) {
+                        binding.tvAmt.setText("Rs."+resp.getWalletAmount());
+                        list.clear();
+                        list = resp.getRecordList();
                         if(list.size()>0) {
                             adapter=new WalletHistoryAdapter(getActivity(),list);
                             binding.recList.setAdapter(adapter);
                         }
-//                    }
-//                    else{
-//                        common.errorToast(resp.getError());
-//                    }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                @Override
-//                public void onServerError(String errorMsg) {
-//                    Log.e("errorMsg",errorMsg);
-//                }
-//            }, true);
+                    }
+                    else{
+                        common.errorToast(resp.getError());
+                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onServerError(String errorMsg) {
+                    Log.e("errorMsg",errorMsg);
+                }
+            }, true);
 
         }
 

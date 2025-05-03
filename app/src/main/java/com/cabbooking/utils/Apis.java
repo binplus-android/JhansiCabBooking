@@ -56,18 +56,18 @@ public interface Apis {
     Call<DriverLocationResp> driverLocation(@Body  JsonObject jsonObject);
   @POST("appSettings")
   Call<AppSettingModel> appSetting();
-  //dummy
-    @POST("getVehicleFare")
+
+    @POST("getNotifications")
     Call<NotificationResp> getNotification(@Body  JsonObject jsonObject);
     @POST("getCurrentTrips")
     Call<HomeBookingResp> getCurrentBooking(@Body  JsonObject jsonObject);
     @POST("getEnquiry")
     Call<EnquiryModel> getEnquiry(@Body  JsonObject jsonObject);
-    @POST("getVehicleFare")
+    @POST("getWalletHistory")
     Call<WalletHistoryModel> getWalletHistory(@Body  JsonObject jsonObject);
-    @POST("getVehicleFare")
+    @POST("getBookingHistory")
     Call<BookingHistoryModel> getBookingHistory(@Body  JsonObject jsonObject);
-    @POST("getVehicleFare")
+    @POST("bookingHistoryDetail")
     Call<BookingDetailResp> getBookingDetail(@Body  JsonObject jsonObject);
     @POST("getProfile")
     Call<ProfileDetailResp> getProfileData(@Body  JsonObject jsonObject);
@@ -77,6 +77,8 @@ public interface Apis {
     Call<ProfileUpdateResp> postProfileImage(@Body  JsonObject jsonObject);
     @POST("addEnquiry")
     Call<CommonResp> postEnquiry(@Body  JsonObject jsonObject);
+    @POST("updateFeedback")
+    Call<CommonResp> feedBack(@Body  JsonObject jsonObject);
 
 
 

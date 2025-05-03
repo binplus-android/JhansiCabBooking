@@ -314,7 +314,8 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
                         }else {
                             sessionManagment.setLoginValue();
                             sessionManagment.createLoginSession(String.valueOf(resp.getRecordList().getId()),
-                                    resp.getToken(), resp.getToken_type(), resp.getRecordList().getOwn_refer_code(),resp.getRecordList().getProfileImage());
+                                    resp.getToken(), resp.getToken_type(), resp.getRecordList().getOwn_refer_code(),
+                                    resp.getRecordList().getProfileImage(),resp.getRecordList().getReferralLink());
                             sessionManagment.setValue(KEY_MOBILE, mobile);
                             Intent intent = new Intent(OTPActivity.this, MapActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -61,10 +61,18 @@ public class OTPverificatioResp {
 
     public class RecordList{
         public int id;
-        public String own_refer_code,profileImage;
+        public String own_refer_code,profileImage,referralLink;
         public int isActive;
 
         public RecordList() {
+        }
+
+        public String getReferralLink() {
+            return referralLink;
+        }
+
+        public void setReferralLink(String referralLink) {
+            this.referralLink = referralLink;
         }
 
         public String getProfileImage() {

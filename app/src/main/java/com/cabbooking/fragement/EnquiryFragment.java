@@ -114,6 +114,7 @@ public class EnquiryFragment extends Fragment {
                         Log.e("callenquiry ",data.toString());
                         if (resp.getStatus()==200) {
                             common.successToast(resp.getMessage ());
+                            binding.etDes.setText("");
                             getList();
 
                         }else{

@@ -28,6 +28,7 @@ public class SessionManagment {
     public static final String IS_LOGIN_SUCCESS="is_login_success";
     public static final String KEY_TOKEN="token";
     public static final String KEY_REFERCODE="refercode";
+    public static final String KEY_SHARE_LINK="shareLink";
     public static final String KEY_TOKEN_TYPE="tokenType";
     public static final String KEY_USER_IMAGE="IMAGE";
 
@@ -38,13 +39,14 @@ public class SessionManagment {
 
     }
 
-    public void createLoginSession(String id, String token, String token_type,String refer_code,String image) {
+    public void createLoginSession(String id, String token, String token_type,String refer_code,String image,String shareLink) {
         editor.putBoolean(LOGIN, true);
         editor.putString(KEY_ID, id);
         editor.putString(KEY_TOKEN, token);
         editor.putString (KEY_REFERCODE, refer_code);
         editor.putString(KEY_TOKEN_TYPE, token_type);
         editor.putString(KEY_USER_IMAGE, image);
+        editor.putString(KEY_SHARE_LINK, shareLink);
         editor.commit();
     }
 
@@ -56,6 +58,7 @@ public class SessionManagment {
         user.put(KEY_TOKEN_TYPE, prefs.getString(KEY_TOKEN_TYPE, ""));
         user.put(KEY_REFERCODE, prefs.getString(KEY_REFERCODE, ""));
         user.put(KEY_USER_IMAGE, prefs.getString(KEY_USER_IMAGE, ""));
+        user.put(KEY_SHARE_LINK, prefs.getString(KEY_SHARE_LINK, ""));
         return user;
     }
 

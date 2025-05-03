@@ -435,6 +435,31 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
         });
 
     }
+     public void feedBack(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.feedBack(postData).enqueue(new Callback<CommonResp>() {
+            @Override
+            public void onResponse(Call<CommonResp> call, Response<CommonResp> response) {
+                Log.e("feedback", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommonResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
 
     public void getEnquiryList(JsonObject postData, ResponseService responseService, boolean showProgress) {
         showHideProgressBar(showProgress);
@@ -517,7 +542,7 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
         apiInterface.getBookingHistory(postData).enqueue(new Callback<BookingHistoryModel>() {
             @Override
             public void onResponse(Call<BookingHistoryModel> call, Response<BookingHistoryModel> response) {
-                Log.e("WalletHistoryModel", response.toString());
+                Log.e("getBookingHistory", response.toString());
                 if (response.isSuccessful()) {
                     showHideProgressBar(false);
                     responseService.onResponse(response.body());

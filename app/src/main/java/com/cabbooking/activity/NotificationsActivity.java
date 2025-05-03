@@ -33,7 +33,7 @@ public class NotificationsActivity extends AppCompatActivity {
     Common common;
     Activity activity;
     ActivityNotificationsBinding binding;
-    ArrayList<NotificationResp> list;
+    ArrayList<NotificationResp.RecordList> list;
     NotificationAdapter adapter;
     Repository repository;
     SessionManagment sessionManagment;
@@ -70,16 +70,8 @@ public class NotificationsActivity extends AppCompatActivity {
 
     public void setNotificationList() {
         list.clear();
-        list.add(new NotificationResp());
-        if (list.size()>0) {
-                            binding.recList.setVisibility (View.VISIBLE);
-                            binding.linNodata.setVisibility (View.GONE);
-                            adapter = new NotificationAdapter(activity, list);
-                            binding.recList.setAdapter(adapter);
-                        } else{
-                            binding.recList.setVisibility (View.GONE);
-                            binding.linNodata.setVisibility (View.VISIBLE);
-                        }
+
+
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
         repository.getNotification(object, new ResponseService() {
@@ -88,26 +80,26 @@ public class NotificationsActivity extends AppCompatActivity {
                 try {
                     NotificationResp resp = (NotificationResp) data;
                     Log.e("getNotificationResp ",data.toString());
-//                    if (resp.getStatus()==200) {
-//                        list.clear();
-//                        list = resp.getRecordList();
-//                        if (list.size()>0) {
-//                            binding.recList.setVisibility (View.VISIBLE);
-//                            binding.linNodata.setVisibility (View.GONE);
-//                            adapter = new NotificationAdapter(activity, list);
-//                            binding.recList.setAdapter(adapter);
-//                        } else{
-//                            binding.recList.setVisibility (View.GONE);
-//                            binding.linNodata.setVisibility (View.VISIBLE);
-//                        }
-//
-//                        if (adapter!=null){
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    }
-//                    else{
-//                        common.errorToast(resp.getError());
-//                    }
+                    if (resp.getStatus()==200) {
+                        list.clear();
+                        list = resp.getRecordList();
+                        if (list.size()>0) {
+                            binding.recList.setVisibility (View.VISIBLE);
+                            binding.linNodata.setVisibility (View.GONE);
+                            adapter = new NotificationAdapter(activity, list);
+                            binding.recList.setAdapter(adapter);
+                        } else{
+                            binding.recList.setVisibility (View.GONE);
+                            binding.linNodata.setVisibility (View.VISIBLE);
+                        }
+
+                        if (adapter!=null){
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                    else{
+                        common.errorToast(resp.getError());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

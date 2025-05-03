@@ -55,19 +55,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <TextView
+                            android:id="@+id/tv_vnum"
                             android:layout_marginTop="@dimen/space_2"
                             android:textStyle="bold"
-                            android:text="Vechicle number"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                         <TextView
+                            android:id="@+id/tv_dname"
                             android:textSize="@dimen/space_5"
-                            android:text="Driver Name"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                         <TextView
+                            android:id="@+id/tv_vname"
                             android:textSize="@dimen/space_5"
-                            android:text="Vechicle Name (color)\nSeater"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
@@ -82,7 +85,7 @@
                         android:background="@drawable/bg_button"
                         android:textColor="@color/black"
                         android:textSize="@dimen/space_5"
-                        android:text="Status"
+                        android:text=""
                         android:backgroundTint="@color/grey_20"
                         android:paddingHorizontal="@dimen/space_5"
                         android:paddingVertical="@dimen/space_1"
@@ -115,20 +118,22 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:id="@+id/tv_amt"
                                 android:layout_marginLeft="@dimen/space_10"
                                 android:layout_gravity="center_vertical"
-                                android:textColor="@color/green_500"
+                                android:textColor="@color/red_600"
                                 android:textAlignment="textEnd"
                                 android:text="+Rs. 00"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <TextView
+                                android:id="@+id/tv_dist"
                                 android:layout_marginTop="@dimen/space_2"
                                 android:layout_marginLeft="@dimen/space_10"
                                 android:layout_gravity="center_vertical"
                                 android:textAlignment="textEnd"
-                                android:text="Distance :1 KM"
+                                android:text="Distance :"
 
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
@@ -143,8 +148,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <TextView
+                            android:id="@+id/tv_payment"
                             android:textAlignment="textEnd"
-                            android:text="Payment by cash"
+                            android:text=""
                             android:textSize="@dimen/space_5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -224,7 +230,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="@dimen/space_5"
                                 android:gravity="center_vertical"
-                                android:text="PickUp"
+                                android:text=""
                                 />
 
                         </RelativeLayout>
@@ -246,7 +252,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginLeft="@dimen/space_5"
                                 android:gravity="center_vertical"
-                                android:text="Destination" />
+                                android:text="" />
 
 
                         </RelativeLayout>
@@ -259,6 +265,7 @@
                     android:layout_height="1dp"
                     android:background="@color/grey"/>
 <LinearLayout
+    android:visibility="gone"
     android:id="@+id/lin_fill"
     android:orientation="vertical"
     android:layout_width="match_parent"
