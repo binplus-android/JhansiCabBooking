@@ -7,6 +7,7 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
 import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,10 +22,13 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -48,6 +52,7 @@ import com.cabbooking.Response.ProfileUpdateResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentContactUsBinding;
 import com.cabbooking.databinding.FragmentProfileBinding;
+import com.cabbooking.utils.BuildConfig;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
@@ -58,7 +63,11 @@ import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -75,6 +84,9 @@ public class ProfileFragment extends Fragment {
     LinearLayout lin_add_image;
     ImageView iv_add, iv_edit;
     String imageString="";
+
+    private String currentPhotoPath; // <- yeh global banani padegi
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -318,38 +330,17 @@ public class ProfileFragment extends Fragment {
     }
 
 
-//    private void openCamera() {
-//
-//        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
-//        if (!destination.exists()) {
-//            destination.mkdirs();
-//        }
-//
-//        ImagePicker.with(this)
-//                .cameraOnly()
-//                .compress(1024)
-//                .maxResultSize(1080, 1080)
-//                .saveDir(destination) // Your destination folder
-//                .createIntent(intent -> {
-//                    if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
-//                        profileImgLauncher.launch(intent);
-//                    }
-//                    return null;
-//                });
-//    }
-
     private void openCamera() {
-//        File destination = new File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
-//        if (!destination.exists()) {
-//            destination.mkdirs();
-//        }
+        File destination = new File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+        if (!destination.exists()) {
+            destination.mkdirs();
+        }
 
         ImagePicker.with(this)
                 .cameraOnly()
-                .compress(500) // compress to around 500 KB (half MB)
-                .crop(1f, 1f) // optional: square crop at click time itself (useful for profile pic)
-                .maxResultSize(720, 720) // directly limit image size to safe dimension (memory safe)
-//                .saveDir(destination)
+                .compress(1024) // Compress to ~1 MB
+                .maxResultSize(1080, 1080) // Resize for safe memory usage
+                .saveDir(destination)
                 .createIntent(intent -> {
                     if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
                         profileImgLauncher.launch(intent);
@@ -358,19 +349,18 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
-
     private void openGallery() {
 
-//        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
-//        if (!destination.exists()) {
-//            destination.mkdirs();
-//        }
+        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+        if (!destination.exists()) {
+            destination.mkdirs();
+        }
 
         ImagePicker.with(this)
                 .galleryOnly()
 //                .compress(1024)
 //                .maxResultSize(1080, 1080)
-//                .saveDir(destination) // Your destination folder
+                .saveDir(destination) // Your destination folder
                 .createIntent(intent -> {
                     if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
                         profileImgLauncher.launch(intent);
@@ -378,104 +368,36 @@ public class ProfileFragment extends Fragment {
                     return null;
                 });
     }
-
-
-
-//    public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                        Uri selectedImageUri = result.getData().getData();
-//                        if (selectedImageUri != null) {
-//                            startCropActivity(selectedImageUri);
-//                        }
-//                    }
-//                }
-//            }
-//    );
-
-
-//    public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                        Uri selectedImageUri = result.getData().getData();
-//                        if (selectedImageUri != null) {
-//                            try {
-//                                InputStream inputStream = getContext().getContentResolver().openInputStream(selectedImageUri);
-//                                if (inputStream != null) {
-//                                    int fileSizeInBytes = inputStream.available(); // get file size in bytes
-//                                    inputStream.close();
-//
-//                                    if (fileSizeInBytes > 2 * 1024 * 1024) { // 2 MB
-////                                        Toast.makeText(getContext(), "Image size should be of 2 MB", Toast.LENGTH_SHORT).show();
-//                                        common.errorToast(getString(R.string.image_size_exceeds));
-//                                    } else {
-//                                        startCropActivity(selectedImageUri); // if size is okay, proceed to crop
-//                                    }
-//                                }
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//    );
-
 
     public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Uri selectedImageUri = null;
-
-                        if (result.getData() != null && result.getData().getData() != null) {
-                            selectedImageUri = result.getData().getData();
-                        } else {
-                            // Jab direct camera se image aayi aur data null hai
-                            File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
-                            if (destination.exists()) {
-                                File[] files = destination.listFiles();
-                                if (files != null && files.length > 0) {
-                                    // Get the latest file (last clicked image)
-                                    File latestImage = files[files.length - 1];
-                                    selectedImageUri = Uri.fromFile(latestImage);
-                                }
-                            }
-                        }
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Uri selectedImageUri = result.getData().getData();
                         if (selectedImageUri != null) {
                             try {
                                 InputStream inputStream = getContext().getContentResolver().openInputStream(selectedImageUri);
                                 if (inputStream != null) {
-                                    int fileSizeInBytes = inputStream.available();
+                                    int fileSizeInBytes = inputStream.available(); // get file size in bytes
                                     inputStream.close();
 
-                                    if (fileSizeInBytes > 2 * 1024 * 1024) {
+                                    if (fileSizeInBytes > 2 * 1024 * 1024) { // 2 MB
+//                                        Toast.makeText(getContext(), "Image size should be of 2 MB", Toast.LENGTH_SHORT).show();
                                         common.errorToast(getString(R.string.image_size_exceeds));
                                     } else {
-                                        startCropActivity(selectedImageUri);
+                                        startCropActivity(selectedImageUri); // if size is okay, proceed to crop
                                     }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            Toast.makeText(getContext(), "Failed to pick image.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
             }
     );
-
-
 
     public void startCropActivity(Uri sourceUri) {
         Uri destinationUri = Uri.fromFile(new File(getContext().getCacheDir(), "croppedImage.jpg"));
@@ -512,7 +434,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
     );
-
+//
     public void handleCroppedImage(Uri croppedImageUri) {
         try {
             if (dialog_profile == null) {
@@ -548,7 +470,7 @@ public class ProfileFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
+//
     // Helper Method to downsample the image
     public Bitmap decodeSampledBitmapFromUri(Uri uri, int reqWidth, int reqHeight) throws Exception {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -569,7 +491,7 @@ public class ProfileFragment extends Fragment {
 
         return sampledBitmap;
     }
-
+//
     // Calculate best sample size
     public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         int height = options.outHeight;
@@ -589,86 +511,87 @@ public class ProfileFragment extends Fragment {
 
 
 
-//    public void handleCroppedImage(Uri croppedImageUri) {
-//        try {
-//            if (dialog_profile==null) {
-//                OpenProfileImageDialog();
+
+
+
+
+
+
+
+
+
+
+
+//    private void openCamera() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//                Toast.makeText(getContext(), "File creation failed", Toast.LENGTH_SHORT).show();
 //            }
 //
-//            // Convert the cropped image URI to Base64 string
-//            String imageBase64 = common.convertToBase64String(croppedImageUri, getContext());
-//            if (imageBase64 != null) {
-//                Bitmap bitmap = common.handleImageRotation(croppedImageUri, getContext());
-//
-////                if (removeBgType.equals("1")) {
-////                    //paid
-////                    RemoveBackground removeBackground = new RemoveBackground(getActivity());
-////                    removeBackground.uploadImageToRemoveBackground(bitmap, new OnRemoveBackgroundCallBack() {
-////                        @Override
-////                        public void onSuccess(Bitmap processedBitmap) {
-//
-//                            // Set the final bitmap and convert to Base64
-//                            imageString = common.convertBitmapToBase64(bitmap);
-//                            if (imageString != null && !imageString.isEmpty()) {
-////                                finalResultBitmap = processedBitmap;
-//                                iv_add.setImageBitmap(bitmap);
-//                                iv_add.setBackgroundColor(getContext().getResources().getColor(R.color.white));
-//                                // Call success callback
-//                            }
-//
-//                            if (imageString != null) {
-//                                Log.e("image", "Cropped Image Processed: " + imageString);
-//
-//                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
-////                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
-////                                    tv_message.setText(getString(R.string.logo_selected));
-////                                } else {
-//                                    tv_message.setText(getString(R.string.photo_selected));
-////                                }
-//                                tv_message.setTextColor(getResources().getColor(R.color.green_500));
-//                            }
-////                        }
-////
-////                        @Override
-////                        public void onFailure(String error) {
-////                            common.errorToast(error);
-////                            finalResultBitmap = null;
-////                            imageString = "";
-////                        }
-////                    });
-////                }else {
-//                    // important
-//                    // un-paid
-//                    // Process the cropped image
-////                    loadingBar.show();
-////
-////                    processImage(bitmap, new OnSuccessCallBack() {
-////                        @Override
-////                        public void onSuccess() {
-////                            loadingBar.dismiss();
-////                            if (imageString != null) {
-////                                Log.e("image", "Cropped Image Processed: " + imageString);
-////
-////                                TextView tv_message = dialog_profile.findViewById(R.id.tv_message);
-////                                if (activeCategoryId.equals(Constance.BUSINESS_CATEGORY)) {
-////                                    tv_message.setText(getString(R.string.logo_selected));
-////                                } else {
-////                                    tv_message.setText(getString(R.string.photo_selected));
-////                                }
-////                                tv_message.setTextColor(getResources().getColor(R.color.green));
-////                            }
-////                        }
-////
-////                        @Override
-////                        public void onFailure() {
-////                            loadingBar.dismiss();
-////                        }
-////                    });
-////                }
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(
+//                        getContext(),
+//                        getContext().getPackageName() + ".provider",
+//                        photoFile
+//                );
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, 1001);
 //            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
 //        }
 //    }
+
+
+//    private File createImageFile() throws IOException {
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//
+//        File image = File.createTempFile(
+//                imageFileName,
+//                ".jpg",
+//                storageDir
+//        );
+//
+//        // Save path to global variable
+//        currentPhotoPath = image.getAbsolutePath();
+//        return image;
+//    }
+//
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
+//            if (currentPhotoPath != null) {
+//                File file = new File(currentPhotoPath);
+//
+//                if (file.exists()) {
+//                    long fileSizeInBytes = file.length();
+//                    long fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+//
+//                    if (fileSizeInMB > 2) {
+//                        Toast.makeText(getContext(), "Image too large!", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+//                        iv_add.setImageBitmap(bitmap);
+//                    }
+//                } else {
+//                    Toast.makeText(getContext(), "File doesn't exist!", Toast.LENGTH_SHORT).show();
+//                }
+//            } else {
+//                Toast.makeText(getContext(), "Photo path is null!", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+
+
+
 
 }

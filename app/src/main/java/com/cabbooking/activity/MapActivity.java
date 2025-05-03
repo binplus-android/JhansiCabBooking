@@ -46,6 +46,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -118,7 +119,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private boolean pickupPlacesSelected=false;
     private int radius=1, distance=1; // km
     private static final int LIMIT=3;
-    private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
+    private String URL_BASE_API_PLACES = "https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
     String sharelink="",share_msg="";
@@ -132,19 +133,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     MenuAdapter menuAdapter;
     private ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
-
+    boolean allowToProcees = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+//        setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
+
+                // Request multiple permissions for Android 13 and above
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{
+//                                Manifest.permission.POST_NOTIFICATIONS
+//                        },
+//                        103);
+
         initView();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
         verifyGoogleAccount();
+
+        // Setup launchers
+        setupNotificationPermissionLauncher();
         setupLocationPermissionLauncher();
-        checkLocationPermission();
+
+        // First, ask for Notification Permission
+        requestNotificationPermission();
+
+//        setupLocationPermissionLauncher();
+//        checkLocationPermission();
         mapCode();
         mapAllClick();
         allClick();
@@ -228,6 +245,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
     }
+
+    private ActivityResultLauncher<String> notificationPermissionLauncher;
+
+    private void setupNotificationPermissionLauncher() {
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        // Notification permission granted
+//                        setupLocationPermissionLauncher();
+                        checkLocationPermission();
+                    } else {
+                        // User denied notification permission
+                        // Still proceed to request location permission
+//                        setupLocationPermissionLauncher();
+                        checkLocationPermission();
+                    }
+                }
+        );
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+ ke liye
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            } else {
+                // Already granted
+//                setupLocationPermissionLauncher();
+                checkLocationPermission();
+            }
+        } else {
+            // Below Android 13, no need to ask notification permission
+//            setupLocationPermissionLauncher();
+            checkLocationPermission();
+        }
+    }
+
+
 
     private void setupLocationPermissionLauncher() {
         locationPermissionLauncher = registerForActivityResult(
