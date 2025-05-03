@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.BookingDetailResp;
@@ -74,8 +75,6 @@ public class ProfileFragment extends Fragment {
     LinearLayout lin_add_image;
     ImageView iv_add, iv_edit;
     String imageString="";
-
-
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -272,41 +271,211 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    public void openImagePickerForProfile() {
-        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
-        if (!destination.exists()) {
-            destination.mkdirs();
-        }
-        ImagePicker.with(getActivity())
-                .compress(1024) // Max 1 MB
-                .maxResultSize(1080, 1080)
-                .saveDir(destination) // Save image to file, avoid large Intent
-                .createIntent(new Function1<Intent, Unit>() {
-                    @Override
-                    public Unit invoke(Intent intent) {
-                        if (getActivity() != null && !getActivity() .isFinishing() && !getActivity() .isDestroyed()) {
-                            profileImgLauncher.launch(intent);
-                        }
+//    public void openImagePickerForProfile() {
+//        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+//        if (!destination.exists()) {
+//            destination.mkdirs();
+//        }
+//
+//
+//        ImagePicker.with(getActivity())
+//                .compress(1024) // Max 1 MB
+//                .maxResultSize(1080, 1080)
+//                .saveDir(destination) // Save image to file, avoid large Intent
+//                .createIntent(new Function1<Intent, Unit>() {
+//                    @Override
+//                    public Unit invoke(Intent intent) {
+//                        if (getActivity() != null && !getActivity() .isFinishing() && !getActivity() .isDestroyed()) {
+//                            profileImgLauncher.launch(intent);
+//                        }
+//
+//                        return null;
+//                    }
+//                });
+//    }
 
-                        return null;
+
+    private void openImagePickerForProfile() {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_image_picker); // (custom layout banayenge niche)
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFDD0"))); // Cream color
+
+        Button btnCamera = dialog.findViewById(R.id.btnCamera);
+        Button btnGallery = dialog.findViewById(R.id.btnGallery);
+
+        btnCamera.setOnClickListener(v -> {
+            dialog.dismiss();
+            openCamera();
+        });
+
+        btnGallery.setOnClickListener(v -> {
+            dialog.dismiss();
+            openGallery();
+        });
+
+        dialog.show();
+    }
+
+
+//    private void openCamera() {
+//
+//        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+//        if (!destination.exists()) {
+//            destination.mkdirs();
+//        }
+//
+//        ImagePicker.with(this)
+//                .cameraOnly()
+//                .compress(1024)
+//                .maxResultSize(1080, 1080)
+//                .saveDir(destination) // Your destination folder
+//                .createIntent(intent -> {
+//                    if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
+//                        profileImgLauncher.launch(intent);
+//                    }
+//                    return null;
+//                });
+//    }
+
+    private void openCamera() {
+//        File destination = new File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+//        if (!destination.exists()) {
+//            destination.mkdirs();
+//        }
+
+        ImagePicker.with(this)
+                .cameraOnly()
+                .compress(500) // compress to around 500 KB (half MB)
+                .crop(1f, 1f) // optional: square crop at click time itself (useful for profile pic)
+                .maxResultSize(720, 720) // directly limit image size to safe dimension (memory safe)
+//                .saveDir(destination)
+                .createIntent(intent -> {
+                    if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
+                        profileImgLauncher.launch(intent);
                     }
+                    return null;
                 });
     }
+
+
+    private void openGallery() {
+
+//        File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+//        if (!destination.exists()) {
+//            destination.mkdirs();
+//        }
+
+        ImagePicker.with(this)
+                .galleryOnly()
+//                .compress(1024)
+//                .maxResultSize(1080, 1080)
+//                .saveDir(destination) // Your destination folder
+                .createIntent(intent -> {
+                    if (getActivity() != null && !getActivity().isFinishing() && !getActivity().isDestroyed()) {
+                        profileImgLauncher.launch(intent);
+                    }
+                    return null;
+                });
+    }
+
+
+
+//    public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            new ActivityResultCallback<ActivityResult>() {
+//                @Override
+//                public void onActivityResult(ActivityResult result) {
+//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+//                        Uri selectedImageUri = result.getData().getData();
+//                        if (selectedImageUri != null) {
+//                            startCropActivity(selectedImageUri);
+//                        }
+//                    }
+//                }
+//            }
+//    );
+
+
+//    public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            new ActivityResultCallback<ActivityResult>() {
+//                @Override
+//                public void onActivityResult(ActivityResult result) {
+//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+//                        Uri selectedImageUri = result.getData().getData();
+//                        if (selectedImageUri != null) {
+//                            try {
+//                                InputStream inputStream = getContext().getContentResolver().openInputStream(selectedImageUri);
+//                                if (inputStream != null) {
+//                                    int fileSizeInBytes = inputStream.available(); // get file size in bytes
+//                                    inputStream.close();
+//
+//                                    if (fileSizeInBytes > 2 * 1024 * 1024) { // 2 MB
+////                                        Toast.makeText(getContext(), "Image size should be of 2 MB", Toast.LENGTH_SHORT).show();
+//                                        common.errorToast(getString(R.string.image_size_exceeds));
+//                                    } else {
+//                                        startCropActivity(selectedImageUri); // if size is okay, proceed to crop
+//                                    }
+//                                }
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//    );
+
 
     public final ActivityResultLauncher<Intent> profileImgLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri selectedImageUri = result.getData().getData();
+                    if (result.getResultCode() == RESULT_OK) {
+                        Uri selectedImageUri = null;
+
+                        if (result.getData() != null && result.getData().getData() != null) {
+                            selectedImageUri = result.getData().getData();
+                        } else {
+                            // Jab direct camera se image aayi aur data null hai
+                            File destination = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ImagePicker");
+                            if (destination.exists()) {
+                                File[] files = destination.listFiles();
+                                if (files != null && files.length > 0) {
+                                    // Get the latest file (last clicked image)
+                                    File latestImage = files[files.length - 1];
+                                    selectedImageUri = Uri.fromFile(latestImage);
+                                }
+                            }
+                        }
+
                         if (selectedImageUri != null) {
-                            startCropActivity(selectedImageUri);
+                            try {
+                                InputStream inputStream = getContext().getContentResolver().openInputStream(selectedImageUri);
+                                if (inputStream != null) {
+                                    int fileSizeInBytes = inputStream.available();
+                                    inputStream.close();
+
+                                    if (fileSizeInBytes > 2 * 1024 * 1024) {
+                                        common.errorToast(getString(R.string.image_size_exceeds));
+                                    } else {
+                                        startCropActivity(selectedImageUri);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Failed to pick image.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
             }
     );
+
+
 
     public void startCropActivity(Uri sourceUri) {
         Uri destinationUri = Uri.fromFile(new File(getContext().getCacheDir(), "croppedImage.jpg"));
