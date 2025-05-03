@@ -27,15 +27,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_NAME = "jhansiCabBooking";
     private static final String TAG = "MyFirebaseMsgingService";
     public static  String rec_Token="";
+
     @Override
     public void onNewToken(String s) {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.e(TAG, "Refreshed token: " + refreshedToken);
 
         rec_Token=refreshedToken.toString();
-//        Toast.makeText(getApplicationContext(),""+rec_Token,Toast.LENGTH_LONG).show();
         // now subscribe to `global` topic to receive app wide notifications
-        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_GLOBAL);
+        // IMPORTANT: subscribe to topic here also!
+        FirebaseMessaging.getInstance().subscribeToTopic("jhansi_cab");
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -53,21 +54,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
 // Message data payload: {body={"type":1,"title":"","description":"Test notification"}}
 
+        Log.e("dxcfvghbnj","wsdegrtyju");
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "sdxfcgvbh: " + remoteMessage.getData().toString());
-        String type = "", title = "", message = "";
+        String title = "", message = "";
         try {
 
             JSONObject data = new JSONObject(remoteMessage.getData());
             Log.e("datanotification",data.toString());
             JSONObject body = new JSONObject(data.getString("body"));
-            type = String.valueOf(body.getInt("type"));
             title = body.getString("title");
             message = body.getString("description");
-            Log.d("getttt", "onMessageReceived: "+type);
 
             // Build and display the custom notification
-            sendNotification(title, message, type);
+            sendNotification(title, message);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //            handleNotification(remoteMessage.getNotification());
 //        }// Check if message contains a notification payload.
     }
-    private void sendNotification(String title, String message, String type) {
+    private void sendNotification(String title, String message) {
         Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
