@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdapter.ViewHolder> {
     Context context;
-    ArrayList<WalletHistoryModel> list;
+    ArrayList<WalletHistoryModel.RecordList> list;
    
     
-    public WalletHistoryAdapter(Context context, ArrayList<WalletHistoryModel> list) {
+    public WalletHistoryAdapter(Context context, ArrayList<WalletHistoryModel.RecordList> list) {
         this.context = context;
         this.list = list;
     }
@@ -36,11 +36,11 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        WalletHistoryModel model = list.get(position);
+        WalletHistoryModel.RecordList model = list.get(position);
         holder.tv_msg.setText(model.getMessage());
-
-
-
+        holder.tv_date.setText(model.getCreatedAt());
+        holder.tv_id.setText("#ID:"+String.valueOf(model.getId()));
+        holder.tv_amt.setText("+Rs."+String.valueOf(model.getAmount()));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_msg,tv_id,tv_date;
+        TextView tv_msg,tv_id,tv_date,tv_amt;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -57,6 +57,7 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
             tv_msg = itemView.findViewById(R.id.tv_msg);
             tv_id = itemView.findViewById(R.id.tv_id);
             tv_date = itemView.findViewById(R.id.tv_date);
+            tv_amt = itemView.findViewById(R.id.tv_amt);
         }
     }
 }

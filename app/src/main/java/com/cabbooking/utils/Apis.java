@@ -63,7 +63,7 @@ public interface Apis {
     Call<HomeBookingResp> getCurrentBooking(@Body  JsonObject jsonObject);
     @POST("getEnquiry")
     Call<EnquiryModel> getEnquiry(@Body  JsonObject jsonObject);
-    @POST("")
+    @POST("getWalletHistory")
     Call<WalletHistoryModel> getWalletHistory(@Body  JsonObject jsonObject);
     @POST("getBookingHistory")
     Call<BookingHistoryModel> getBookingHistory(@Body  JsonObject jsonObject);

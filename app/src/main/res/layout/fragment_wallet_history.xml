@@ -18,7 +18,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/background_car"
                 android:layout_width="match_parent"
-                android:layout_height="55pt"/>
+                android:layout_height="60pt"/>
             <LinearLayout
                 android:layout_marginBottom="@dimen/space_14"
                 android:layout_marginLeft="@dimen/space_8"
@@ -39,6 +39,7 @@
                         android:textAlignment="center"
                         style="@style/TextViewExtraBold"
                         android:text="Rs.00"
+                        android:id="@+id/tv_amt"
                         android:textAllCaps="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
