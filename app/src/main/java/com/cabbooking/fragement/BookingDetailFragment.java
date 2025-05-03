@@ -259,7 +259,6 @@ public class BookingDetailFragment extends Fragment {
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("#ID "+book_id+"\n"+date_val);
         //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
-
     }
 
     private void feedBack(JsonObject feedobject)
