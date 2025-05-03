@@ -125,28 +125,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     String sharelink="",share_msg="";
     String appLink="";
     Integer ver_code, is_forced=0, version_code;
-     Double pickupLat=0.0,destinationLat=0.0;
-     Double pickupLng=0.0,destinationLng=0.0;
-     String pickAddres="",destinationAddress="";
+    Double pickupLat=0.0,destinationLat=0.0;
+    Double pickupLng=0.0,destinationLng=0.0;
+    String pickAddres="",destinationAddress="";
     public static boolean isAddressFetched = false; // Add this field
     ArrayList<MenuModel>mlist;
     MenuAdapter menuAdapter;
     private ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
-    boolean allowToProcees = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
-
-                // Request multiple permissions for Android 13 and above
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{
-//                                Manifest.permission.POST_NOTIFICATIONS
-//                        },
-//                        103);
 
         initView();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
@@ -156,12 +148,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Setup launchers
         setupNotificationPermissionLauncher();
         setupLocationPermissionLauncher();
+        checkNotificationPermission();
 
-        // First, ask for Notification Permission
-        requestNotificationPermission();
-
-//        setupLocationPermissionLauncher();
-//        checkLocationPermission();
         mapCode();
         mapAllClick();
         allClick();
@@ -189,10 +177,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     } else if(frgmentName.contains("DestinationFragment")||
                             frgmentName.contains("EnquiryFragment")||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment")||
-                    frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
-                    frgmentName.equalsIgnoreCase("ContactUsFragment")||
-                    frgmentName.equalsIgnoreCase("ProfileFragment")||
-                    frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
+                            frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
+                            frgmentName.equalsIgnoreCase("ContactUsFragment")||
+                            frgmentName.equalsIgnoreCase("ProfileFragment")||
+                            frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
                             frgmentName.equalsIgnoreCase("BookingDetailFragment")
                     ) {
@@ -209,39 +197,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     } else {
                         common.setMap(false,true,160,binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
-                         binding.mytoolbar.setVisibility(View.GONE);
-                         binding.linToolbar.setVisibility(View.GONE);
-                         binding.mytoolbar.setNavigationIcon(null);
-                         binding.linBackMain.setVisibility(View.GONE);
-                         binding.linOnlyBack.setVisibility(View.VISIBLE);
+                        binding.mytoolbar.setVisibility(View.GONE);
+                        binding.linToolbar.setVisibility(View.GONE);
+                        binding.mytoolbar.setNavigationIcon(null);
+                        binding.linBackMain.setVisibility(View.GONE);
+                        binding.linOnlyBack.setVisibility(View.VISIBLE);
                         // setMap(false);
-                         binding.main.setVisibility(View.VISIBLE);
+                        binding.main.setVisibility(View.VISIBLE);
 
-                     }
+                    }
                 }
             }
         });
 
         common.getAppSettingData(new OnConfig() {
-                        @Override
+            @Override
             public void getAppSettingData(AppSettingModel model) {
-                            try {
-                                ver_code = (model.getVersion ( ));
-                                is_forced = (model.getIs_forced ( ));
-                               // sharelink = model.getShare_link ();
-                                sharelink = sessionManagment.getUserDetails().get(KEY_SHARE_LINK);
-                                share_msg=common.checkNullString(model.getShare_message());
-                                appLink=model.getApp_link();
-                                PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
-                                version_code = pInfo.versionCode;
-                                if (version_code < ver_code) {
-                                    callVersionDialog();
-                                }
+                try {
+                    ver_code = (model.getVersion ( ));
+                    is_forced = (model.getIs_forced ( ));
+                    // sharelink = model.getShare_link ();
+                    sharelink = sessionManagment.getUserDetails().get(KEY_SHARE_LINK);
+                    share_msg=common.checkNullString(model.getShare_message());
+                    appLink=model.getApp_link();
+                    PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
+                    version_code = pInfo.versionCode;
+                    if (version_code < ver_code) {
+                        callVersionDialog();
+                    }
 
-                            } catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         });
 
     }
@@ -253,37 +241,42 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
-                        // Notification permission granted
-//                        setupLocationPermissionLauncher();
-                        checkLocationPermission();
+                        checkLocationPermission(); // Notification ke baad Location permission
                     } else {
-                        // User denied notification permission
-                        // Still proceed to request location permission
-//                        setupLocationPermissionLauncher();
+                        Toast.makeText(activity, "Notification permission denied", Toast.LENGTH_SHORT).show();
+                        // Even if denied, still check location (your choice, or you can skip)
                         checkLocationPermission();
                     }
                 }
         );
     }
 
-    private void requestNotificationPermission() {
+    private void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+ ke liye
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             } else {
-                // Already granted
-//                setupLocationPermissionLauncher();
-                checkLocationPermission();
+                checkLocationPermission(); // Already granted, directly check location
             }
         } else {
-            // Below Android 13, no need to ask notification permission
-//            setupLocationPermissionLauncher();
+            // Android 12 ya neeche, notification permission nahi hoti
             checkLocationPermission();
         }
     }
 
-
+    private void requestLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (locationPermissionLauncher != null) {
+                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        } else {
+            Toast.makeText(activity, "Permission granted (legacy device)", Toast.LENGTH_SHORT).show();
+            if (!isLocationEnabled()) {
+                showEnableLocationDialog();
+            }
+        }
+    }
 
     private void setupLocationPermissionLauncher() {
         locationPermissionLauncher = registerForActivityResult(
@@ -352,7 +345,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             dialog.getWindow().setLayout(finalWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
-
+    //
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -367,7 +360,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
-
 
     private void showEnableLocationDialog() {
         Dialog dialog = new Dialog(activity);
@@ -412,78 +404,67 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
-    private void requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-        } else {
-            Toast.makeText(activity, "Permission granted (legacy device)", Toast.LENGTH_SHORT).show();
-            if (!isLocationEnabled()) {
-                showEnableLocationDialog();
-            }
-        }
-    }
-
     private void getMenuList() {
-       mlist.clear();
-       mlist.add(new MenuModel("Home",R.drawable.ic_home));
+        mlist.clear();
+        mlist.add(new MenuModel("Home",R.drawable.ic_home));
         mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
         mlist.add(new MenuModel("Booking History",R.drawable.ic_history));
         mlist.add(new MenuModel("Enquiry",R.drawable.ic_enquiry));
-       mlist.add(new MenuModel("Notifications",R.drawable.ic_bell));
+        mlist.add(new MenuModel("Notifications",R.drawable.ic_bell));
         mlist.add(new MenuModel("Contact Us",R.drawable.support));
-       mlist.add(new MenuModel("Terms & Conditions",R.drawable.policy));
-       mlist.add(new MenuModel("Privacy Policy",R.drawable.policy));
-       mlist.add(new MenuModel("Share App",R.drawable.ic_share));
+        mlist.add(new MenuModel("Terms & Conditions",R.drawable.policy));
+        mlist.add(new MenuModel("Privacy Policy",R.drawable.policy));
+        mlist.add(new MenuModel("Share App",R.drawable.ic_share));
 
 
-       menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
-           @Override
-           public void onSelection(int pos) {
-               Fragment fm=null;
-               String title=mlist.get(pos).getTitle();
-               switch (title.toLowerCase().toString()){
-                   case "home":
-                       fm=new HomeFragment();
-                       break;
-                   case "terms & conditions":
-                      Intent i = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
-                      i.putExtra("type","terms");
-                      startActivity(i);
-                       break;
-                   case "privacy policy":
-                       Intent i2 = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
-                       i2.putExtra("type","policy");
-                       startActivity(i2);
-                       break;
-                   case "notifications":
-                       Intent i3 = new Intent(MapActivity.this, NotificationsActivity.class);
-                       startActivity(i3);
-                       break;
-                   case "enquiry":
-                       fm=new EnquiryFragment();
-                       break;
-                   case "wallet history":
-                       fm=new WalletHistoryFragment();
-                       break;
-                   case "booking history":
-                       fm=new BookingHistoryFragment();
-                       break;
-                   case "contact us":
-                       fm=new ContactUsFragment();
-                       break;
-                       case "share app":
-                           common.shareLink(share_msg+"\n"+Html.fromHtml (sharelink));
-                           break;
-               }
-               binding.drawer.closeDrawer(GravityCompat.START);
-               if(fm!=null){
-                   binding.drawer.closeDrawer(GravityCompat.START);
-                   common.switchFragment(fm);
-               }
-           }
-       });
+        menuAdapter=new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                Fragment fm=null;
+                String title=mlist.get(pos).getTitle();
+                switch (title.toLowerCase().toString()){
+                    case "home":
+                        fm=new HomeFragment();
+                        break;
+                    case "terms & conditions":
+                        Intent i = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
+                        i.putExtra("type","terms");
+                        startActivity(i);
+                        break;
+                    case "privacy policy":
+                        Intent i2 = new Intent(MapActivity.this, PrivacyPolicyActivity.class);
+                        i2.putExtra("type","policy");
+                        startActivity(i2);
+                        break;
+                    case "notifications":
+                        Intent i3 = new Intent(MapActivity.this, NotificationsActivity.class);
+                        startActivity(i3);
+                        break;
+                    case "enquiry":
+                        fm=new EnquiryFragment();
+                        break;
+                    case "wallet history":
+                        fm=new WalletHistoryFragment();
+                        break;
+                    case "booking history":
+                        fm=new BookingHistoryFragment();
+                        break;
+                    case "contact us":
+                        fm=new ContactUsFragment();
+                        break;
+                    case "share app":
+                        common.shareLink(share_msg+"\n"+Html.fromHtml (sharelink));
+                        break;
+                }
+                binding.drawer.closeDrawer(GravityCompat.START);
+                if(fm!=null){
+                    binding.drawer.closeDrawer(GravityCompat.START);
+                    common.switchFragment(fm);
+                }
+            }
+        });
 
-       binding.recMenu.setAdapter(menuAdapter);
+        binding.recMenu.setAdapter(menuAdapter);
     }
     public void setImage(String val){
         Picasso.get().load(IMAGE_BASE_URL+val).placeholder(R.drawable.logo).
@@ -515,7 +496,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void getDestinationLatLng(Double Lat,Double Lng,String destinationAddressValue){
         destinationLat=Lat;
         destinationLng=Lng;
-       destinationAddress= destinationAddressValue;
+        destinationAddress= destinationAddressValue;
 
     }
 
@@ -524,7 +505,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(destinationLat.equals("")){
             return pickupLat;
         } else{
-        return destinationLat;
+            return destinationLat;
         }
     }
 
@@ -628,7 +609,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         location.inicializeLocation();
-         mapFragment = SupportMapFragment.newInstance();
+        mapFragment = SupportMapFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.map_container, mapFragment)
                 .commit();
@@ -718,7 +699,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void setTitle(String title){
-         binding.tvTitle.setText(title);
+        binding.tvTitle.setText(title);
     }
 //    public void setTitleWithSize(String title,int size){
 //         binding.tvTitle.setText(title);
@@ -730,7 +711,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding.ivWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               common.switchFragment(new WalletHistoryFragment());
+                common.switchFragment(new WalletHistoryFragment());
             }
         });
         binding.ivNotification.setOnClickListener(new View.OnClickListener() {
@@ -1011,20 +992,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //        displayLocation();
 //    }
     public void showCommonPickDestinationArea(boolean status,boolean is_close){
-       if(status){
-           binding.commonAddress.setVisibility(View.VISIBLE);
-           if(is_close){
-               binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.VISIBLE);
-               binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.VISIBLE);
-           }
-           else{
-               binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
-               binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
-           }
-       }
-       else{
-           binding.commonAddress.setVisibility(View.GONE);
-       }
+        if(status){
+            binding.commonAddress.setVisibility(View.VISIBLE);
+            if(is_close){
+                binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.VISIBLE);
+                binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.VISIBLE);
+            }
+            else{
+                binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
+                binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
+            }
+        }
+        else{
+            binding.commonAddress.setVisibility(View.GONE);
+        }
     }
 
     @Override
