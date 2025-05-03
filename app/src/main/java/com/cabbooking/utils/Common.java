@@ -699,6 +699,18 @@ public class Common {
 
     }
 
+    public  String convertToAmPm(String time24) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(time24);
+            return outputFormat.format(date).toUpperCase();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return time24;
+        }
+    }
+
     public String convertToBase64String(Uri uri, Context context) {
         String convertedString = null;
         try {

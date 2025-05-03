@@ -17,6 +17,7 @@ import com.cabbooking.R;
 import com.cabbooking.model.BookingHistoryModel;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.VechicleModel;
+import com.cabbooking.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
     ArrayList<BookingHistoryModel.RecordList> list;
     int pos=0;
     onTouchMethod listener;
+    Common common;
     public interface onTouchMethod{
         void onSelection(int pos);
     }
@@ -36,6 +38,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         this.context = context;
         this.list = list;
         this.listener=listener;
+        common=new Common(context);
     }
 
     @NonNull
@@ -57,7 +60,9 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
             }
         });
         holder.tv_id.setText("ID:#"+model.getTripId());
-        holder.tv_date.setText(model.getCreatedAt());
+        String[] date=model.getCreatedAt().split(" ");
+        holder.tv_date.setText(date[0]+" | "+common.convertToAmPm(date[1]));
+       // holder.tv_date.setText(common.convertToAmPm(model.getCreatedAt()));
         holder.tv_vname.setText("By "+model.getVehicleModelName());
         holder.tv_amt.setText("-Rs."+String.valueOf(model.getAmount()));
         holder.tv_status.setText(model.getTripStatus());

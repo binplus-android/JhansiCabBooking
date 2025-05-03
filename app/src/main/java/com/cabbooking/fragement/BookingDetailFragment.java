@@ -250,13 +250,16 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void initView() {
-        book_id=getArguments().getString("book_id");
-        book_date=getArguments().getString("book_date");
-        repository=new Repository(getActivity());
-        ((MapActivity)getActivity()).setTitle("#ID "+book_id+"\n"+book_date);
-        //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
+        book_id=getArguments().getString("book_id");
+        book_date=getArguments().getString("book_date");
+        String[] date=book_date.split(" ");
+        String date_val=date[0]+" | "+common.convertToAmPm(date[1]);
+        repository=new Repository(getActivity());
+        ((MapActivity)getActivity()).setTitle("#ID "+book_id+"\n"+date_val);
+        //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
+
     }
 
     private void feedBack(JsonObject feedobject)

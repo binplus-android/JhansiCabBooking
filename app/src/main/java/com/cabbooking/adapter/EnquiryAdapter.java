@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cabbooking.R;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.MenuModel;
+import com.cabbooking.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHolder> {
     Context context;
     ArrayList<EnquiryModel.RecordList> list;
+    Common common;
 
 
     public EnquiryAdapter(Context context, ArrayList<EnquiryModel.RecordList> list) {
         this.context = context;
         this.list = list;
+        common=new Common(context);
 
     }
 
@@ -51,7 +54,9 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
                 }
             }
         });
-        holder.tv_dateTime.setText(data.getCreatedAt());
+        String[] date=data.getCreatedAt().split(" ");
+        holder.tv_dateTime.setText(date[0]+" | "+common.convertToAmPm(date[1]));
+      //  holder.tv_dateTime.setText(common.convertToAmPm(data.getCreatedAt()));
         holder.tv_title.setText(data.getType());
         holder.tv_desctination.setText(data.getDescription());
 

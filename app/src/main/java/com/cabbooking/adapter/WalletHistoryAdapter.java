@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
 import com.cabbooking.model.WalletHistoryModel;
+import com.cabbooking.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,11 +21,13 @@ import java.util.ArrayList;
 public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdapter.ViewHolder> {
     Context context;
     ArrayList<WalletHistoryModel.RecordList> list;
-   
+
+    Common common;
     
     public WalletHistoryAdapter(Context context, ArrayList<WalletHistoryModel.RecordList> list) {
         this.context = context;
         this.list = list;
+        this.common=new Common(context);
     }
 
     @NonNull
@@ -38,7 +41,9 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         WalletHistoryModel.RecordList model = list.get(position);
         holder.tv_msg.setText(model.getMessage());
-        holder.tv_date.setText(model.getCreatedAt());
+        String[] date=model.getCreatedAt().split(" ");
+        holder.tv_date.setText(date[0]+" | "+common.convertToAmPm(date[1]));
+//        holder.tv_date.setText(model.getCreatedAt());
         holder.tv_id.setText("#ID:"+String.valueOf(model.getId()));
         holder.tv_amt.setText("+Rs."+String.valueOf(model.getAmount()));
     }
