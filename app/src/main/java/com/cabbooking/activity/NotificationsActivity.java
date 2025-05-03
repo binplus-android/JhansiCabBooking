@@ -85,12 +85,12 @@ public class NotificationsActivity extends AppCompatActivity {
                         list = resp.getRecordList();
                         if (list.size()>0) {
                             binding.recList.setVisibility (View.VISIBLE);
-                            binding.linNodata.setVisibility (View.GONE);
+                            binding.layNoadata.setVisibility (View.GONE);
                             adapter = new NotificationAdapter(activity, list);
                             binding.recList.setAdapter(adapter);
                         } else{
                             binding.recList.setVisibility (View.GONE);
-                            binding.linNodata.setVisibility (View.VISIBLE);
+                            binding.layNoadata.setVisibility (View.VISIBLE);
                         }
 
                         if (adapter!=null){

@@ -148,9 +148,15 @@ public class EnquiryFragment extends Fragment {
                         list.clear();
                         list = resp.getRecordList();
                       if(list.size()>0) {
+                          binding.recList.setVisibility(View.VISIBLE);
+                          binding.layNoadata.setVisibility(View.GONE);
                         adapter = new EnquiryAdapter(getActivity(), list);
                         binding.recList.setAdapter(adapter);
-                    }
+                       }
+                      else {
+                          binding.recList.setVisibility(View.GONE);
+                          binding.layNoadata.setVisibility(View.VISIBLE);
+                      }
                     }
                     else{
                         common.errorToast(resp.getError());

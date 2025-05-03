@@ -121,6 +121,12 @@ public class WalletHistoryFragment extends Fragment {
                         if(list.size()>0) {
                             adapter=new WalletHistoryAdapter(getActivity(),list);
                             binding.recList.setAdapter(adapter);
+                            binding.recList.setVisibility(View.VISIBLE);
+                            binding.layNoadata.setVisibility(View.GONE);
+                        }
+                        else{
+                            binding.recList.setVisibility(View.GONE);
+                            binding.layNoadata.setVisibility(View.VISIBLE);
                         }
                     }
                     else{

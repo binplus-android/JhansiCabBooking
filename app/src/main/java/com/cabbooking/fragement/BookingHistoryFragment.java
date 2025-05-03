@@ -105,7 +105,13 @@ public class BookingHistoryFragment extends Fragment {
                                     common.switchFragment(fm);
                                 }
                             });
+                            binding.recList.setVisibility(View.VISIBLE);
+                            binding.layNoadata.setVisibility(View.GONE);
                             binding.recList.setAdapter(adapter);
+                        }
+                        else {
+                            binding.recList.setVisibility(View.GONE);
+                            binding.layNoadata.setVisibility(View.VISIBLE);
                         }
                     }
                     else{
