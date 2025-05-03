@@ -51,10 +51,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.cabbooking.R;
 import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
+import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.cabbooking.interfaces.SuccessCallBack;
+import com.cabbooking.interfaces.WalletCallBack;
 import com.cabbooking.model.AppSettingModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -699,6 +701,18 @@ public class Common {
 
     }
 
+    public  String convertToAmPm(String time24) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(time24);
+            return outputFormat.format(date).toUpperCase();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return time24;
+        }
+    }
+
     public String convertToBase64String(Uri uri, Context context) {
         String convertedString = null;
         try {
@@ -846,4 +860,35 @@ public class Common {
                 });
     }
 
+    public  void getWalletAmount(Context context, WalletCallBack callback) {
+        // Create the request object for profile if needed
+        SessionManagment sessionManagment=new SessionManagment(context);
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        Repository repository = new Repository(context); // or use singleton if needed
+        repository.getProfile(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    ProfileDetailResp resp = (ProfileDetailResp) data;
+                    if (resp.getStatus() == 200) {
+                        int walletAmount = resp.getRecordList().getWalletAmount();
+                        callback.onWalletAmountReceived(walletAmount);
+                    } else {
+                        callback.onError(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onError("Parsing error");
+                }
+            }
+
+            @Override
+            public void onServerError(String errorMsg) {
+                callback.onError(errorMsg);
+            }
+        }, false);
+    }
 }
+
+

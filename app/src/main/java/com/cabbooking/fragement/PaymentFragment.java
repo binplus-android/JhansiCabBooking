@@ -37,6 +37,7 @@ import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.RideMateAdapter;
 import com.cabbooking.databinding.FragmentPaymentBinding;
 import com.cabbooking.databinding.FragmentRideBinding;
+import com.cabbooking.interfaces.WalletCallBack;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
@@ -65,6 +66,7 @@ public class PaymentFragment extends Fragment {
     SessionManagment sessionManagment;
     Repository repository;
     String amount_pay="0";
+    int wallet_amount=0;
     public static PaymentFragment newInstance(String param1, String param2) {
         PaymentFragment fragment = new PaymentFragment();
         Bundle args = new Bundle();
@@ -89,6 +91,17 @@ public class PaymentFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentPaymentBinding.inflate(inflater, container, false);
         initView();
+       common.getWalletAmount(getActivity(), new WalletCallBack() {
+            @Override
+            public void onWalletAmountReceived(int walletAmount) {
+                wallet_amount=walletAmount;
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
         allClick();
 
         getDetailApi(tripId);
@@ -122,7 +135,17 @@ public class PaymentFragment extends Fragment {
                     else{
                         paymentStatus="";
                     }
-                    callPayment(selectedText,paymentStatus);
+                    if(selectedText.equalsIgnoreCase("wallet")){
+                        if(Double.parseDouble(String.valueOf(wallet_amount))<Double.parseDouble(amount_pay)){
+                            common.errorToast("Insufficient amount");
+                        }
+                        else {
+                            callPayment(selectedText, paymentStatus);
+                        }
+                    }
+                    else {
+                        callPayment(selectedText, paymentStatus);
+                    }
                 }
 
 

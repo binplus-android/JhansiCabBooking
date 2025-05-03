@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.cabbooking.R;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.MenuModel;
+import com.cabbooking.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHolder> {
     Context context;
     ArrayList<EnquiryModel.RecordList> list;
+    Common common;
 
 
     public EnquiryAdapter(Context context, ArrayList<EnquiryModel.RecordList> list) {
         this.context = context;
         this.list = list;
+        common=new Common(context);
 
     }
 
@@ -45,13 +48,17 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
             public void onClick(View v) {
                 if(holder.lin_des.getVisibility()==View.VISIBLE){
                  holder.lin_des.setVisibility(View.GONE);
+                 holder.iv_arrow.setRotation(90);
                 }
                 else{
+                    holder.iv_arrow.setRotation(270);
                     holder.lin_des.setVisibility(View.VISIBLE);
                 }
             }
         });
-        holder.tv_dateTime.setText(data.getCreatedAt());
+        String[] date=data.getCreatedAt().split(" ");
+        holder.tv_dateTime.setText(date[0]+" | "+common.convertToAmPm(date[1]));
+      //  holder.tv_dateTime.setText(common.convertToAmPm(data.getCreatedAt()));
         holder.tv_title.setText(data.getType());
         holder.tv_desctination.setText(data.getDescription());
 
@@ -68,10 +75,12 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_title,tv_desctination,tv_sol,tv_dateTime;
         LinearLayout lin_main,lin_des;
+        ImageView iv_arrow;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            iv_arrow=itemView.findViewById(R.id.iv_arrow);
            lin_main = itemView.findViewById(R.id.lin_main);
           tv_title = itemView.findViewById(R.id.tv_title);
             tv_sol = itemView.findViewById(R.id.tv_sol);

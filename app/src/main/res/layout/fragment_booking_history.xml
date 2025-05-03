@@ -22,6 +22,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </LinearLayout>
+        <include
+            android:id="@+id/lay_noadata"
+            android:visibility="gone"
+            layout="@layout/common_no_data"/>
     </RelativeLayout>
 
 

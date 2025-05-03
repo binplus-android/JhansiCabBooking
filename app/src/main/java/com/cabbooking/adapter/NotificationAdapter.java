@@ -51,7 +51,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         if(!common.checkNullString(model.getCreatedAt()).isEmpty()){
             String[] date=model.getCreatedAt().split(" ");
-            holder.tv_date.setText(date[0]+" | "+date[1]);
+            holder.tv_date.setText(date[0]+" | "+common.convertToAmPm(date[1]));
             holder.tv_date.setVisibility(View.VISIBLE);
         }
     }

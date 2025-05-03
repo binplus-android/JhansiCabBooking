@@ -7,71 +7,81 @@
     android:layout_height="match_parent"
     tools:context=".fragement.EnquiryFragment">
         <ScrollView
+            android:fillViewport="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_marginHorizontal="@dimen/space_8"
-                android:layout_marginVertical="@dimen/space_5"
-                android:orientation="vertical"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
-                    android:textAlignment="center"
-                    style="@style/MyTextview_semibold"
-                    android:textSize="@dimen/space_8"
-                    android:text="@string/enquiryTitle"
+                <LinearLayout
+                    android:layout_marginHorizontal="@dimen/space_8"
+                    android:layout_marginVertical="@dimen/space_5"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:textColor="@color/gray"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/space_5"
-                    android:text="@string/enquiryDEs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <RelativeLayout
-                    android:layout_marginTop="@dimen/space_8"
-                    android:paddingVertical="@dimen/space_5"
-                    android:background="@drawable/bg_outline_box_grey"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <Spinner
-                        android:id="@+id/spin_data"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:textAlignment="center"
+                        style="@style/MyTextview_semibold"
+                        android:textSize="@dimen/space_8"
+                        android:text="@string/enquiryTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-                </RelativeLayout>
+                    <TextView
+                        android:textColor="@color/gray"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/space_5"
+                        android:text="@string/enquiryDEs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <RelativeLayout
+                        android:layout_marginTop="@dimen/space_8"
+                        android:paddingVertical="@dimen/space_5"
+                        android:background="@drawable/bg_outline_box_grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <Spinner
+                            android:id="@+id/spin_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
 
-                <EditText
-                    android:id="@+id/et_des"
-                    android:layout_marginTop="@dimen/space_5"
-                    android:inputType="textMultiLine"
-                    android:gravity="top"
-                    android:paddingTop="@dimen/space_2"
-                    android:hint="@string/enter_here"
-                    android:layout_width="match_parent"
-                    android:layout_height="30pt"/>
-                <Button
-                    android:id="@+id/btn_submit"
-                    style="@style/button"
-                    android:layout_marginTop="@dimen/space_5"
-                    android:layout_gravity="center_horizontal"
-                    android:text="@string/submit"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="@dimen/button_height"/>
-                <TextView
-                    android:textSize="@dimen/space_8"
-                    android:text="@string/MyEnquiry"
-                    style="@style/TextViewExtraSemBold"
-                    android:layout_marginTop="@dimen/space_8"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_marginTop="@dimen/space_2"
-                    android:id="@+id/rec_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    <EditText
+                        android:id="@+id/et_des"
+                        android:layout_marginTop="@dimen/space_5"
+                        android:inputType="textMultiLine"
+                        android:gravity="top"
+                        android:paddingTop="@dimen/space_2"
+                        android:hint="@string/enter_here"
+                        android:layout_width="match_parent"
+                        android:layout_height="30pt"/>
+                    <Button
+                        android:id="@+id/btn_submit"
+                        style="@style/button"
+                        android:layout_marginTop="@dimen/space_5"
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/submit"
+                        android:layout_width="@dimen/button_width"
+                        android:layout_height="@dimen/button_height"/>
+                    <TextView
+                        android:textSize="@dimen/space_8"
+                        android:text="@string/MyEnquiry"
+                        style="@style/TextViewExtraSemBold"
+                        android:layout_marginTop="@dimen/space_8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginTop="@dimen/space_2"
+                        android:id="@+id/rec_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
 
-            </LinearLayout>
+                </LinearLayout>
+                <include
+                    android:id="@+id/lay_noadata"
+                    android:visibility="gone"
+                    layout="@layout/common_no_data"/>
+            </RelativeLayout>
+
         </ScrollView>
 
 
