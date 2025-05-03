@@ -760,9 +760,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             if (frgmentName.contains("AfterPaymentDoneFragment")) {
                 Intent intent=new Intent(this,MapActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 finish();
             }
