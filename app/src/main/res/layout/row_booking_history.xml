@@ -98,6 +98,18 @@
                     android:layout_width="@dimen/space_21"
                     android:layout_height="@dimen/space_21"/>
             </LinearLayout>
+            <Button
+                android:visibility="gone"
+               android:layout_gravity="end"
+                android:id="@+id/tv_track"
+                android:layout_marginTop="@dimen/space_2"
+                android:text="Track Ride"
+                android:textSize="@dimen/space_5"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="12pt"/>
+
 
         </LinearLayout>
         <ImageView

@@ -90,6 +90,29 @@ public class BookingDetailFragment extends Fragment {
                     BookingDetailResp resp = (BookingDetailResp) data;
                     Log.e("BookingDetail ",data.toString());
                     if (resp.getStatus()==200) {
+                        if(resp.getRecordList().getTripStatus().equalsIgnoreCase("scheduled")||
+                           resp.getRecordList().getTripStatus().equalsIgnoreCase("running")){
+                           binding.linTrack.setVisibility(View.VISIBLE);
+                           binding.relPay.setVisibility(View.GONE);
+                           binding.linData.setVisibility(View.GONE);
+                           binding.linFill.setVisibility(View.GONE);
+
+                        }
+                        else{
+                            binding.linTrack.setVisibility(View.GONE);
+                            binding.relPay.setVisibility(View.VISIBLE);
+                            if(common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")){
+                                binding.linFill.setVisibility(View.VISIBLE);
+                                binding.etFeed.setText("");
+                                binding.etAfterfeed.setText("");
+                                binding.linData.setVisibility(View.GONE);
+                            } else {
+                                binding.etFeed.setText(resp.getRecordList().getUserFeedback());
+                                binding.etAfterfeed.setText(resp.getRecordList().getUserFeedback());
+                                binding.linFill.setVisibility(View.GONE);
+                                binding.linData.setVisibility(View.VISIBLE);
+                            }
+                        }
                         tripId= String.valueOf(resp.getRecordList().getId());
 
                         Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleImage()).placeholder(R.drawable.logo).
@@ -110,17 +133,7 @@ public class BookingDetailFragment extends Fragment {
                         binding.tvPick.setText(resp.getRecordList().getPickup());
                         binding.tvDesctination.setText(resp.getRecordList().getDestination());
 
-                        if(common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")){
-                            binding.linFill.setVisibility(View.VISIBLE);
-                            binding.etFeed.setText("");
-                            binding.etAfterfeed.setText("");
-                            binding.linData.setVisibility(View.GONE);
-                        } else {
-                            binding.etFeed.setText(resp.getRecordList().getUserFeedback());
-                            binding.etAfterfeed.setText(resp.getRecordList().getUserFeedback());
-                            binding.linFill.setVisibility(View.GONE);
-                            binding.linData.setVisibility(View.VISIBLE);
-                        }
+
 
                     }else{
                         common.errorToast(resp.getError());
@@ -138,6 +151,21 @@ public class BookingDetailFragment extends Fragment {
     }
 
     private void allClick() {
+        binding.tvCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.callCancleDialog(getActivity(),tripId);
+            }
+        });binding.tvTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment=new AfterPaymentDoneFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId",tripId);
+                fragment.setArguments(bundle);
+                common.switchFragment(fragment);
+            }
+        });
         binding.tDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

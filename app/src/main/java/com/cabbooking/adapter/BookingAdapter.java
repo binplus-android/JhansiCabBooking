@@ -3,17 +3,21 @@ package com.cabbooking.adapter;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
+import com.cabbooking.fragement.AfterPaymentDoneFragment;
 import com.cabbooking.model.BookingHistoryModel;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.VechicleModel;
@@ -71,6 +75,24 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_dimg);
 
+        if(model.getTripStatus().equalsIgnoreCase("scheduled")||
+           model.getTripStatus().equalsIgnoreCase("running")){
+            holder.tv_track.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.tv_track.setVisibility(View.GONE);
+        }
+
+        holder.tv_track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment=new AfterPaymentDoneFragment();
+                Bundle bundle=new Bundle();
+                bundle.putString("tripId", String.valueOf(model.getTripId()));
+                fragment.setArguments(bundle);
+                common.switchFragment(fragment);
+            }
+        });
 
 
 
@@ -87,6 +109,7 @@ ImageView iv_detail;
 TextView tv_id,tv_date,tv_vname,tv_amt,tv_status;
 ImageView iv_vimg;
 CircleImageView iv_dimg;
+Button tv_track;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -95,6 +118,7 @@ CircleImageView iv_dimg;
             iv_detail=itemView.findViewById(R.id.iv_detail);
 
             tv_id=itemView.findViewById(R.id.tv_id);
+            tv_track=itemView.findViewById(R.id.tv_track);
             tv_date=itemView.findViewById(R.id.tv_date);
             tv_vname=itemView.findViewById(R.id.tv_vname);
             iv_vimg=itemView.findViewById(R.id.iv_vimg);

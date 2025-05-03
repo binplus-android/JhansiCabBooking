@@ -98,6 +98,7 @@
                     android:layout_height="1dp"
                     android:background="@color/grey"/>
                 <RelativeLayout
+                    android:id="@+id/rel_pay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_2">
@@ -176,6 +177,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/grey"/>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/lin_track"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_track"
+                        android:layout_marginVertical="@dimen/space_5"
+                        android:layout_gravity="center_vertical"
+                        android:text="Track Ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <View
+                        android:layout_marginVertical="@dimen/space_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey"/>
+                    <TextView
+                        android:id="@+id/tv_cancle"
+                        android:layout_marginVertical="@dimen/space_5"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/Cancel_Ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <View
+                        android:layout_marginVertical="@dimen/space_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey"/>
+                </LinearLayout>
+
+
                 <LinearLayout
                     android:padding="@dimen/space_4"
                     android:weightSum="2"
