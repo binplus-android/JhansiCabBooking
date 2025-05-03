@@ -92,7 +92,6 @@
                             android:weightSum="2"
                             android:layout_height="50pt">
                             <LinearLayout
-                                android:background="@drawable/bg_shadow_box"
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
                                 android:layout_gravity="center"
@@ -114,7 +113,6 @@
                             <LinearLayout
 
                                 android:layout_marginLeft="@dimen/space_5"
-                                android:background="@drawable/bg_shadow_box"
                                 android:layout_weight="1"
                                 android:layout_width="0dp"
                                 android:layout_gravity="center"
