@@ -48,8 +48,10 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
             public void onClick(View v) {
                 if(holder.lin_des.getVisibility()==View.VISIBLE){
                  holder.lin_des.setVisibility(View.GONE);
+                 holder.iv_arrow.setRotation(90);
                 }
                 else{
+                    holder.iv_arrow.setRotation(270);
                     holder.lin_des.setVisibility(View.VISIBLE);
                 }
             }
@@ -73,10 +75,12 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_title,tv_desctination,tv_sol,tv_dateTime;
         LinearLayout lin_main,lin_des;
+        ImageView iv_arrow;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            iv_arrow=itemView.findViewById(R.id.iv_arrow);
            lin_main = itemView.findViewById(R.id.lin_main);
           tv_title = itemView.findViewById(R.id.tv_title);
             tv_sol = itemView.findViewById(R.id.tv_sol);
