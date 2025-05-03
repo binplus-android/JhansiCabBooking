@@ -3,69 +3,97 @@ package com.cabbooking.Response;
 import java.util.ArrayList;
 
 public class NotificationResp {
-//    public boolean response;
-//    public String message;
-//    public ArrayList<Datum> data;
+    public int status;
+    public ArrayList<RecordList> recordList;
+    public int totalCount;
+    String error;
 
-//    public NotificationResp() {
-//    }
-//
-//    public boolean isResponse() {
-//        return response;
-//    }
-//
-//    public void setResponse(boolean response) {
-//        this.response = response;
-//    }
-//
-//    public String getMessage() {
-//        return message;
-//    }
-//
-//    public void setMessage(String message) {
-//        this.message = message;
-//    }
-//
-//    public ArrayList<Datum> getData() {
-//        return data;
-//    }
-//
-//    public void setData(ArrayList<Datum> data) {
-//        this.data = data;
-//    }
-//
-//    public class Datum{
-//        public String title;
-//        public String message;
-//        String create_at;
-//
-//        public Datum() {
-//        }
-//
-//        public String getMessage() {
-//            return message;
-//        }
-//
-//        public void setMessage(String message) {
-//            this.message = message;
-//        }
-//
-//        public String getCreate_at() {
-//            return create_at;
-//        }
-//
-//        public void setCreate_at(String create_at) {
-//            this.create_at = create_at;
-//        }
-//
-//        public String getTitle() {
-//            return title;
-//        }
-//
-//        public void setTitle(String title) {
-//            this.title = title;
-//        }
-//
-//
-//    }
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public ArrayList<RecordList> getRecordList() {
+        return recordList;
+    }
+
+    public void setRecordList(ArrayList<RecordList> recordList) {
+        this.recordList = recordList;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public class RecordList{
+        public int id;
+        public String title;
+        public String description;
+        public String created_at;
+        public String source;
+        public String createdAt;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public void setSource(String source) {
+            this.source = source;
+        }
+
+        public String getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(String createdAt) {
+            this.createdAt = createdAt;
+        }
+    }
 }

@@ -3,13 +3,15 @@ package com.cabbooking.model;
 public class AppSettingModel {
     public int id;
     public int version;
+    public String app_link;
     public String share_link;
     public String facebook_link;
     public String insta_link;
     public String linkedin_link;
     public String itunes_link;
     public int is_forced;
-    public String refer_percentage;
+    public int first_trip_discount;
+    public int referral_comm;
     public String refer_message;
     public String share_message;
     public String support_mobile;
@@ -23,6 +25,8 @@ public class AppSettingModel {
     public int msg_status;
     public String term_conditions_link;
     public int showServerError;
+    public String homeImage1;
+    public String homeImage2;
 
     public String getSupport_whatsapp() {
         return support_whatsapp;
@@ -101,13 +105,7 @@ public class AppSettingModel {
         this.is_forced = is_forced;
     }
 
-    public String getRefer_percentage() {
-        return refer_percentage;
-    }
 
-    public void setRefer_percentage(String refer_percentage) {
-        this.refer_percentage = refer_percentage;
-    }
 
     public String getRefer_message() {
         return refer_message;
@@ -203,5 +201,45 @@ public class AppSettingModel {
 
     public void setShowServerError(int showServerError) {
         this.showServerError = showServerError;
+    }
+
+    public String getApp_link() {
+        return app_link;
+    }
+
+    public void setApp_link(String app_link) {
+        this.app_link = app_link;
+    }
+
+    public int getFirst_trip_discount() {
+        return first_trip_discount;
+    }
+
+    public void setFirst_trip_discount(int first_trip_discount) {
+        this.first_trip_discount = first_trip_discount;
+    }
+
+    public int getReferral_comm() {
+        return referral_comm;
+    }
+
+    public void setReferral_comm(int referral_comm) {
+        this.referral_comm = referral_comm;
+    }
+
+    public String getHomeImage1() {
+        return homeImage1;
+    }
+
+    public void setHomeImage1(String homeImage1) {
+        this.homeImage1 = homeImage1;
+    }
+
+    public String getHomeImage2() {
+        return homeImage2;
+    }
+
+    public void setHomeImage2(String homeImage2) {
+        this.homeImage2 = homeImage2;
     }
 }

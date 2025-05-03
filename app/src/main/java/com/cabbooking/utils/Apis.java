@@ -56,8 +56,8 @@ public interface Apis {
     Call<DriverLocationResp> driverLocation(@Body  JsonObject jsonObject);
   @POST("appSettings")
   Call<AppSettingModel> appSetting();
-  //dummy
-    @POST("")
+
+    @POST("getNotifications")
     Call<NotificationResp> getNotification(@Body  JsonObject jsonObject);
     @POST("getCurrentTrips")
     Call<HomeBookingResp> getCurrentBooking(@Body  JsonObject jsonObject);

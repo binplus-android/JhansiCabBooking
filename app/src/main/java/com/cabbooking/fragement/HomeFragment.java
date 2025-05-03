@@ -42,8 +42,10 @@ import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
+import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
@@ -90,6 +92,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // Ensure focusable behavior
         binding.getRoot().setFocusableInTouchMode(true);
         binding.getRoot().requestFocus();
+        common.getAppSettingData(new OnConfig() {
+            @Override
+            public void getAppSettingData(AppSettingModel model) {
+                if(!common.checkNullString(model.getHomeImage1()).equalsIgnoreCase("")){
+                Picasso.get().load(IMAGE_BASE_URL+model.getHomeImage1()).
+                        placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.homeimg1);}
+                else{
+                    binding.homeimg1.setVisibility(View.GONE);
+                }
+                if(!common.checkNullString(model.getHomeImage2()).equalsIgnoreCase("")){
+                Picasso.get().load(IMAGE_BASE_URL+model.getHomeImage2()).placeholder(R.drawable.logo).
+                        error(R.drawable.logo).into(binding.homeimg2);}
+                else{
+                    binding.homeimg2.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
 
         return binding.getRoot();
     }
