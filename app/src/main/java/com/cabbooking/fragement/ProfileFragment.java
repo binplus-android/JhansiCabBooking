@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
+import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
 import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
 import android.app.Dialog;
@@ -108,6 +109,7 @@ public class ProfileFragment extends Fragment {
                         binding.tvEmail.setText(resp.getRecordList().getEmail());
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(binding.imgProfile);
+                        sessionManagment.setValue(KEY_SHARE_LINK,resp.getRecordList().getReferralLink());
 
                     }else{
                         common.errorToast(resp.getError());

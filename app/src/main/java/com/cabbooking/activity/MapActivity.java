@@ -4,6 +4,7 @@ import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
+import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
 import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
 
 import android.Manifest;
@@ -120,8 +121,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private String URL_BASE_API_PLACES="https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
-    String sharelink=BASE_URL,share_msg="";
-    String appLink=BASE_URL;
+    String sharelink="",share_msg="";
+    String appLink="";
     Integer ver_code, is_forced=0, version_code;
      Double pickupLat=0.0,destinationLat=0.0;
      Double pickupLng=0.0,destinationLng=0.0;
@@ -148,7 +149,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapAllClick();
         allClick();
         loadFragment(new HomeFragment());
-
+        sharelink = sessionManagment.getUserDetails().get(KEY_SHARE_LINK);
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
@@ -210,9 +211,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             try {
                                 ver_code = (model.getVersion ( ));
                                 is_forced = (model.getIs_forced ( ));
-                                sharelink = model.getShare_link ();
-                                share_msg=model.getShare_message();
-                                appLink=model.getShare_link();
+                               // sharelink = model.getShare_link ();
+                                sharelink = sessionManagment.getUserDetails().get(KEY_SHARE_LINK);
+                                share_msg=common.checkNullString(model.getShare_message());
+                                appLink=model.getApp_link();
                                 PackageInfo pInfo = getPackageManager().getPackageInfo(MapActivity.this.getPackageName(), 0);
                                 version_code = pInfo.versionCode;
                                 if (version_code < ver_code) {
@@ -414,7 +416,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                        fm=new ContactUsFragment();
                        break;
                        case "share app":
-                           common.shareLink(share_msg+"\n"+Html.fromHtml (BASE_URL));
+                           common.shareLink(share_msg+"\n"+Html.fromHtml (sharelink));
                            break;
                }
                binding.drawer.closeDrawer(GravityCompat.START);
