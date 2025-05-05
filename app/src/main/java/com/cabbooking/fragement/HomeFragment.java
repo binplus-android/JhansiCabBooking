@@ -37,6 +37,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.cabbooking.R;
 import com.cabbooking.Response.BookingDetailResp;
 import com.cabbooking.Response.CommonResp;
@@ -74,11 +76,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
         initView();
-        callCurrentBooking();
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.swipeRefresh.setRefreshing(false);
+                callCurrentBooking();
+
+            }
+        });
         allClicks();
         getDestinatioList();
+        callCurrentBooking();
+
         // Set back key listener
         binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -102,17 +112,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setSessionData() {
-        if(!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG1)).equalsIgnoreCase("")){
-            Picasso.get().load(IMAGE_BASE_URL+sessionManagment.getValue(KEY_HOME_IMG1)).
-                    placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.homeimg1);}
-        else{
-            binding.homeimg1.setVisibility(View.GONE);
-        }
-        if(!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG2)).equalsIgnoreCase("")){
-            Picasso.get().load(IMAGE_BASE_URL+sessionManagment.getValue(KEY_HOME_IMG2)).placeholder(R.drawable.logo).
-                    error(R.drawable.logo).into(binding.homeimg2);}
-        else{
-            binding.homeimg2.setVisibility(View.GONE);
+        if((common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG1)).equalsIgnoreCase(""))&&
+           (common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG2)).equalsIgnoreCase(""))){
+            binding.linAds.setVisibility(View.GONE);
+        } else {
+            binding.linAds.setVisibility(View.VISIBLE);
+            if (!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG1)).equalsIgnoreCase("")) {
+                binding.homeimg1.setVisibility(View.VISIBLE);
+                Picasso.get().load(IMAGE_BASE_URL + sessionManagment.getValue(KEY_HOME_IMG1)).
+                        placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.homeimg1);
+            } else {
+                binding.homeimg1.setVisibility(View.GONE);
+            }
+            if (!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG2)).equalsIgnoreCase("")) {
+                binding.homeimg2.setVisibility(View.VISIBLE);
+                Picasso.get().load(IMAGE_BASE_URL + sessionManagment.getValue(KEY_HOME_IMG2)).placeholder(R.drawable.logo).
+                        error(R.drawable.logo).into(binding.homeimg2);
+            } else {
+                binding.homeimg2.setVisibility(View.GONE);
+            }
         }
     }
 

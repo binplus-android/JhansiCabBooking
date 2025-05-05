@@ -7,269 +7,280 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".fragement.HomeFragment">
-        <ScrollView
-            android:fillViewport="true"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
-                android:background="@color/white"
-                android:layout_marginVertical="@dimen/space_5"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <RelativeLayout
+                <ScrollView
+                    android:fillViewport="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
                     <LinearLayout
-                        android:id="@+id/lin_home"
-                        android:layout_marginHorizontal="@dimen/space_8"
-                        android:orientation="vertical"
+                        android:background="@color/white"
+                        android:layout_marginVertical="@dimen/space_5"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:layout_height="50pt">
-                            <LinearLayout
-                                android:id="@+id/lin_local"
-                                android:background="@drawable/bg_shadow_box"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
-                                    android:layout_marginTop="@dimen/space_2"
-                                    android:id="@+id/iv_local"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_local"
-                                    android:layout_width="65pt"
-                                    android:layout_height="30pt"/>
-                                <TextView
-                                    android:layout_marginBottom="@dimen/space_2"
-                                    android:layout_marginTop="@dimen/space_5"
-                                    android:text="@string/local"
-                                    android:textSize="@dimen/space_6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/lin_outstation"
-                                android:layout_marginLeft="@dimen/space_5"
-                                android:background="@drawable/bg_shadow_box"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
-                                    android:layout_marginTop="@dimen/space_4"
-                                    android:id="@+id/iv_outstation"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_outstation"
-                                    android:layout_width="45pt"
-                                    android:layout_height="30pt"/>
-                                <TextView
-                                    android:layout_marginBottom="@dimen/space_2"
-                                    android:layout_marginTop="@dimen/space_5"
-                                    android:text="@string/outstation"
-                                    android:textSize="@dimen/space_6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:id="@+id/lin_ads"
-                            android:layout_marginTop="@dimen/space_5"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:weightSum="2"
-                            android:layout_height="50pt">
-                            <LinearLayout
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
-                                    android:scaleType="fitXY"
-                                    android:adjustViewBounds="true"
-                                    android:id="@+id/homeimg1"
-                                    android:layout_marginTop="@dimen/space_2"
-                                    android:layout_gravity="center"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"/>
-
-
-                            </LinearLayout>
-                            <LinearLayout
-
-                                android:layout_marginLeft="@dimen/space_5"
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
-                                    android:scaleType="fitXY"
-                                    android:adjustViewBounds="true"
-                                    android:id="@+id/homeimg2"
-                                    android:layout_marginTop="@dimen/space_2"
-                                    android:layout_gravity="center"
-
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"/>
-
-
-                            </LinearLayout>
-                        </LinearLayout>
-
-
-                        <androidx.cardview.widget.CardView
-                            android:visibility="gone"
-                            android:id="@+id/card_search"
-                            android:layout_marginHorizontal="@dimen/space_1"
-                            android:layout_marginTop="@dimen/space_5"
-                            android:orientation="vertical"
-                            app:cardBackgroundColor="@color/white"
-                            app:cardCornerRadius="@dimen/radius_8dp"
+                        android:layout_height="match_parent">
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <LinearLayout
-                                android:layout_margin="@dimen/space_5"
+                                android:id="@+id/lin_home"
+                                android:layout_marginHorizontal="@dimen/space_8"
                                 android:orientation="vertical"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
+
                                 <LinearLayout
-                                    android:id="@+id/lin_destination"
-                                    android:backgroundTint="@color/grey_5"
-                                    android:background="@drawable/bg_shadow_box"
-                                    android:gravity="center_vertical"
-                                    android:layout_gravity="center"
-                                    android:padding="@dimen/space_6"
+
                                     android:orientation="horizontal"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-                                    <ImageView
-                                        android:layout_marginLeft="@dimen/space_2"
-                                        android:src="@drawable/search"
-                                        android:layout_width="12pt"
-                                        android:layout_height="10pt"/>
-                                    <TextView
-                                        style="@style/TextViewSemBold"
-                                        android:textSize="@dimen/space_7"
+                                    android:weightSum="2"
+                                    android:layout_height="50pt">
+                                    <LinearLayout
+                                        android:id="@+id/lin_local"
+                                        android:background="@drawable/bg_shadow_box"
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
+                                            android:layout_marginTop="@dimen/space_2"
+                                            android:id="@+id/iv_local"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/ic_local"
+                                            android:layout_width="65pt"
+                                            android:layout_height="30pt"/>
+                                        <TextView
+                                            android:layout_marginBottom="@dimen/space_2"
+                                            android:layout_marginTop="@dimen/space_5"
+                                            android:text="@string/local"
+                                            android:textSize="@dimen/space_6"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:id="@+id/lin_outstation"
                                         android:layout_marginLeft="@dimen/space_5"
-                                        android:text="@string/search_destination"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"/>
+                                        android:background="@drawable/bg_shadow_box"
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
+                                            android:layout_marginTop="@dimen/space_4"
+                                            android:id="@+id/iv_outstation"
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/ic_outstation"
+                                            android:layout_width="45pt"
+                                            android:layout_height="30pt"/>
+                                        <TextView
+                                            android:layout_marginBottom="@dimen/space_2"
+                                            android:layout_marginTop="@dimen/space_5"
+                                            android:text="@string/outstation"
+                                            android:textSize="@dimen/space_6"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+
+                                    </LinearLayout>
                                 </LinearLayout>
-                                <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/rec_destination"
+                                <LinearLayout
+                                    android:id="@+id/lin_ads"
+                                    android:layout_marginTop="@dimen/space_5"
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:weightSum="2"
+                                    android:layout_height="50pt">
+                                    <LinearLayout
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
+                                            android:scaleType="fitXY"
+                                            android:adjustViewBounds="true"
+                                            android:id="@+id/homeimg1"
+                                            android:layout_marginTop="@dimen/space_2"
+                                            android:layout_gravity="center"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"/>
+
+
+                                    </LinearLayout>
+                                    <LinearLayout
+
+                                        android:layout_marginLeft="@dimen/space_5"
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
+                                            android:scaleType="fitXY"
+                                            android:adjustViewBounds="true"
+                                            android:id="@+id/homeimg2"
+                                            android:layout_marginTop="@dimen/space_2"
+                                            android:layout_gravity="center"
+
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"/>
+
+
+                                    </LinearLayout>
+                                </LinearLayout>
+
+
+                                <androidx.cardview.widget.CardView
+                                    android:visibility="gone"
+                                    android:id="@+id/card_search"
+                                    android:layout_marginHorizontal="@dimen/space_1"
+                                    android:layout_marginTop="@dimen/space_5"
+                                    android:orientation="vertical"
+                                    app:cardBackgroundColor="@color/white"
+                                    app:cardCornerRadius="@dimen/radius_8dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <LinearLayout
+                                        android:layout_margin="@dimen/space_5"
+                                        android:orientation="vertical"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+                                        <LinearLayout
+                                            android:id="@+id/lin_destination"
+                                            android:backgroundTint="@color/grey_5"
+                                            android:background="@drawable/bg_shadow_box"
+                                            android:gravity="center_vertical"
+                                            android:layout_gravity="center"
+                                            android:padding="@dimen/space_6"
+                                            android:orientation="horizontal"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+                                            <ImageView
+                                                android:layout_marginLeft="@dimen/space_2"
+                                                android:src="@drawable/search"
+                                                android:layout_width="12pt"
+                                                android:layout_height="10pt"/>
+                                            <TextView
+                                                style="@style/TextViewSemBold"
+                                                android:textSize="@dimen/space_7"
+                                                android:layout_marginLeft="@dimen/space_5"
+                                                android:text="@string/search_destination"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"/>
+                                        </LinearLayout>
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/rec_destination"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"/>
+                                    </LinearLayout>
+                                </androidx.cardview.widget.CardView>
+                                <TextView
+                                    android:textAlignment="center"
+                                    android:layout_marginTop="@dimen/space_8"
+                                    android:text="@string/why_us"
+                                    style="@style/TextViewExtraBold"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                        <TextView
-                            android:textAlignment="center"
-                            android:layout_marginTop="@dimen/space_8"
-                            android:text="@string/why_us"
-                            style="@style/TextViewExtraBold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                        <LinearLayout
-                            android:layout_marginTop="@dimen/space_5"
-                            android:orientation="horizontal"
-                            android:layout_width="match_parent"
-                            android:weightSum="3"
-                            android:layout_height="50pt">
-                            <LinearLayout
-
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
-
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/safe_rides"
-                                    android:layout_width="32pt"
-                                    android:layout_height="32pt"/>
-                                <TextView
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/space_5"
+                                <LinearLayout
                                     android:layout_marginTop="@dimen/space_5"
-                                    android:text="@string/safe_rides"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
+                                    android:orientation="horizontal"
+                                    android:layout_width="match_parent"
+                                    android:weightSum="3"
+                                    android:layout_height="50pt">
+                                    <LinearLayout
 
-                            </LinearLayout> <LinearLayout
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
 
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:layout_gravity="center"
-                                android:src="@drawable/certified"
-                                android:layout_width="32pt"
-                                android:layout_height="32pt"/>
-                            <TextView
-                                android:textStyle="bold"
-                                android:textSize="@dimen/space_5"
-                                android:layout_marginTop="@dimen/space_5"
-                                android:text="@string/certified_riders"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/safe_rides"
+                                            android:layout_width="32pt"
+                                            android:layout_height="32pt"/>
+                                        <TextView
+                                            android:textStyle="bold"
+                                            android:textSize="@dimen/space_5"
+                                            android:layout_marginTop="@dimen/space_5"
+                                            android:text="@string/safe_rides"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
 
-                        </LinearLayout>
-                            <LinearLayout
-                                android:layout_marginLeft="@dimen/space_5"
+                                    </LinearLayout> <LinearLayout
 
-                                android:layout_weight="1"
-                                android:layout_width="0dp"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:layout_height="match_parent">
-                                <ImageView
+                                    android:layout_weight="1"
+                                    android:layout_width="0dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/easy_payment"
-                                    android:layout_width="32pt"
-                                    android:layout_height="32pt"/>
-                                <TextView
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/space_5"
-                                    android:layout_marginTop="@dimen/space_5"
-                                    android:text="@string/easy_payments"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:layout_height="match_parent">
+                                    <ImageView
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/certified"
+                                        android:layout_width="32pt"
+                                        android:layout_height="32pt"/>
+                                    <TextView
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/space_5"
+                                        android:layout_marginTop="@dimen/space_5"
+                                        android:text="@string/certified_riders"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"/>
 
+                                </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_marginLeft="@dimen/space_5"
+
+                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_height="match_parent">
+                                        <ImageView
+                                            android:layout_gravity="center"
+                                            android:src="@drawable/easy_payment"
+                                            android:layout_width="32pt"
+                                            android:layout_height="32pt"/>
+                                        <TextView
+                                            android:textStyle="bold"
+                                            android:textSize="@dimen/space_5"
+                                            android:layout_marginTop="@dimen/space_5"
+                                            android:text="@string/easy_payments"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+
+                                    </LinearLayout>
+                                </LinearLayout>
                             </LinearLayout>
-                        </LinearLayout>
+                        </RelativeLayout>
+
                     </LinearLayout>
-                </RelativeLayout>
+                </ScrollView>
+                <include
+                    android:visibility="gone"
+                    android:id="@+id/lay_booking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    layout="@layout/layout_home_booking"/>
+            </RelativeLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            </LinearLayout>
-        </ScrollView>
-        <include
-            android:visibility="gone"
-            android:id="@+id/lay_booking"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            layout="@layout/layout_home_booking"/>
+
 
     </RelativeLayout>
 </layout>
