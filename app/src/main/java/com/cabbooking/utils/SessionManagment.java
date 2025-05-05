@@ -31,6 +31,16 @@ public class SessionManagment {
     public static final String KEY_SHARE_LINK="shareLink";
     public static final String KEY_TOKEN_TYPE="tokenType";
     public static final String KEY_USER_IMAGE="IMAGE";
+    public static final String KEY_TERMS="TERMS";
+    public static final String KEY_PRIVACY="PRIVACY";
+    public static final String KEY_SUPPORT_EMAIL="KEY_SUPPORT_EMAIL";
+    public static final String KEY_WHATSPP="KEY_WHATSPP";
+    public static final String KEY_SUPPORT_SUBJ="KEY_SUPPORT_SUBJ";
+    public static final String KEY_SUPPORT_MOBILE="KEY_SUPPORT_MOBILE";
+    public static final String KEY_HOME_IMG1="KEY_HOME_IMG1";
+    public static final String KEY_HOME_IMG2="KEY_HOME_IMG2";
+    public static final String KEY_ENQUIRY="KEY_ENQUIRY";
+    public static final String KEY_NOTIFICATION="KEY_NOTIFICATION";
 
     public SessionManagment(Context context) {
         this.context = context;

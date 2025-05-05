@@ -7,6 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragement.ContactUsFragment">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -103,5 +107,6 @@
 
             </LinearLayout>
         </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
 </layout>

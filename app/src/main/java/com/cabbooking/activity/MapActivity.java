@@ -2,10 +2,18 @@ package com.cabbooking.activity;
 
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG1;
+import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
+import static com.cabbooking.utils.SessionManagment.KEY_PRIVACY;
 import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
 import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
+import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_EMAIL;
+import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_MOBILE;
+import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_SUBJ;
+import static com.cabbooking.utils.SessionManagment.KEY_TERMS;
 import static com.cabbooking.utils.SessionManagment.KEY_USER_IMAGE;
+import static com.cabbooking.utils.SessionManagment.KEY_WHATSPP;
 
 import android.Manifest;
 import android.app.Activity;
@@ -107,19 +115,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Common common;
     ActivityMapBinding binding;
     SessionManagment sessionManagment;
-    private GoogleApiClient mGoogleApiClient;
-    private GoogleMap mMap;
+    public GoogleApiClient mGoogleApiClient;
+    public GoogleMap mMap;
     Location location;
-    private Marker riderMarket, destinationMarker;
-    private Double currentLat, currentLng;
-    private String mPlaceLocation, mPlaceDestination;
-    private SupportMapFragment mapFragment;
-    private DatabaseReference driversAvailable;
-    private ArrayList<Marker> driverMarkers=new ArrayList<>();
-    private boolean pickupPlacesSelected=false;
-    private int radius=1, distance=1; // km
-    private static final int LIMIT=3;
-    private String URL_BASE_API_PLACES = "https://maps.googleapis.com/maps/api/place/textsearch/json?";
+    public Marker riderMarket, destinationMarker;
+    public Double currentLat, currentLng;
+    public String mPlaceLocation, mPlaceDestination;
+    public SupportMapFragment mapFragment;
+    public DatabaseReference driversAvailable;
+    public ArrayList<Marker> driverMarkers=new ArrayList<>();
+    public boolean pickupPlacesSelected=false;
+    public int radius=1, distance=1; // km
+    public static final int LIMIT=3;
+    public String URL_BASE_API_PLACES = "https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick,tvDestination;
     String sharelink="",share_msg="";
@@ -131,7 +139,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static boolean isAddressFetched = false; // Add this field
     ArrayList<MenuModel>mlist;
     MenuAdapter menuAdapter;
-    private ActivityResultLauncher<String> locationPermissionLauncher;
+    public ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
 
     @Override
@@ -141,6 +149,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
 
         initView();
+        storeDataSession();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
         verifyGoogleAccount();
@@ -234,9 +243,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    private ActivityResultLauncher<String> notificationPermissionLauncher;
+    public void storeDataSession() {
+        common.getAppSettingData(new OnConfig() {
+            @Override
+            public void getAppSettingData(AppSettingModel model) {
+                sessionManagment.setValue(KEY_TERMS,model.getTerms_conditions());
+                sessionManagment.setValue(KEY_PRIVACY,model.getPrivacy_policy());
+                sessionManagment.setValue(KEY_SUPPORT_EMAIL,model.getSupport_email());
+                sessionManagment.setValue(KEY_SUPPORT_MOBILE,model.getSupport_mobile());
+                sessionManagment.setValue(KEY_WHATSPP,model.getSupport_whatsapp());
+                sessionManagment.setValue(KEY_SUPPORT_SUBJ,model.getSupport_message());
+                sessionManagment.setValue(KEY_HOME_IMG1,model.getHomeImage1());
+                sessionManagment.setValue(KEY_HOME_IMG2,model.getHomeImage2());
+            }
+        });
+    }
 
-    private void setupNotificationPermissionLauncher() {
+    public ActivityResultLauncher<String> notificationPermissionLauncher;
+
+    public void setupNotificationPermissionLauncher() {
         notificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
@@ -251,7 +276,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         );
     }
 
-    private void checkNotificationPermission() {
+    public void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+ ke liye
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -265,7 +290,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void requestLocationPermission() {
+    public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (locationPermissionLauncher != null) {
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -278,7 +303,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void setupLocationPermissionLauncher() {
+    public void setupLocationPermissionLauncher() {
         locationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
@@ -303,14 +328,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         );
     }
 
-    private void openAppSettings() {
+    public void openAppSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         startActivity(intent);
     }
 
-    private void showCustomLocationDialog() {
+    public void showCustomLocationDialog() {
         Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_permission);
@@ -346,7 +371,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
     //
-    private void checkLocationPermission() {
+    public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             showCustomLocationDialog();
@@ -361,7 +386,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void showEnableLocationDialog() {
+    public void showEnableLocationDialog() {
         Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_permission);
@@ -397,14 +422,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private boolean isLocationEnabled() {
+    public boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         return locationManager != null &&
                 (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                         locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
-    private void getMenuList() {
+    public void getMenuList() {
         mlist.clear();
         mlist.add(new MenuModel("Home",R.drawable.ic_home));
         mlist.add(new MenuModel("Wallet History",R.drawable.ic_wallet));
@@ -527,7 +552,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void mapAllClick() {
+    public void mapAllClick() {
 
     }
 
@@ -630,7 +655,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private void loadAllAvailableDriver(final LatLng location) {
+    public void loadAllAvailableDriver(final LatLng location) {
         for (Marker driverMarker:driverMarkers) {
             driverMarker.remove();
         }
@@ -707,7 +732,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //        binding.tvTitle.setTextSize(size);
 //    }
 
-    private void allClick() {
+    public void allClick() {
         binding.ivWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -756,7 +781,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    private void showLogoutDialog() {
+    public void showLogoutDialog() {
         Dialog dialog;
 
         dialog = new Dialog (MapActivity.this);
@@ -821,7 +846,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
     }
 
-    private void initView() {
+    public void initView() {
         activity = MapActivity.this;
         mlist=new ArrayList<>();
         sessionManagment=new SessionManagment(MapActivity.this);
@@ -1018,7 +1043,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-    private void fetchNearbyLocations(double latitude, double longitude) {
+    public void fetchNearbyLocations(double latitude, double longitude) {
         String apiKey = getString(R.string.google_maps_key); // Make sure this is defined in your strings.xml
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
                 + "location=" + latitude + "," + longitude
@@ -1050,7 +1075,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }).start();
     }
 
-    private void parseNearbyPlaces(String json) {
+    public void parseNearbyPlaces(String json) {
         try {
             Log.e("josn",json);
 

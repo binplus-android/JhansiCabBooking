@@ -5,6 +5,7 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,6 +75,13 @@ public class BookingHistoryFragment extends Fragment {
         initView();
         allClick();
         getList();
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.swipeRefresh.setRefreshing(false);
+                getList();
+            }
+        });
 
         return binding.getRoot();
     }

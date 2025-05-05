@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.utils.SessionManagment.KEY_ENQUIRY;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,9 +32,13 @@ import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.ToastMsg;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,9 +49,10 @@ public class EnquiryFragment extends Fragment {
     FragmentEnquiryBinding binding;
     Common common;
     SessionManagment sessionManagment;
-    ArrayList<EnquiryModel.RecordList>list;
+    ArrayList<EnquiryModel.RecordList> list;
     EnquiryAdapter adapter;
     Repository repository;
+
     public EnquiryFragment() {
         // Required empty public constructor
     }
@@ -70,14 +77,38 @@ public class EnquiryFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_enquiry, container, false);
         binding = FragmentEnquiryBinding.inflate(inflater, container, false);
         initView();
-        getList();
+        setSessionData();
         allClick();
-       return binding.getRoot();
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.swipeRefresh.setRefreshing(false);
+                getList();
+            }
+        });
+        return binding.getRoot();
 
     }
 
+    private void setSessionData() {
+        list.clear();
+        String jsonList = sessionManagment.getValue(KEY_ENQUIRY);
+        Type type = new TypeToken<List<EnquiryModel.RecordList>>() {
+        }.getType();
+        list = new Gson().fromJson(jsonList, type);
+        if (list.size() > 0) {
+            binding.recList.setVisibility(View.VISIBLE);
+            binding.layNoadata.setVisibility(View.GONE);
+            adapter = new EnquiryAdapter(getActivity(), list);
+            binding.recList.setAdapter(adapter);
+        } else {
+            binding.recList.setVisibility(View.GONE);
+            binding.layNoadata.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void allClick() {
-        String[] items = {"Select","Enquiry", "Complaint"};
+        String[] items = {"Select", "Enquiry", "Complaint"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinData.setAdapter(adapter);
@@ -86,100 +117,100 @@ public class EnquiryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String selectedItem = binding.spinData.getSelectedItem().toString();
-                String message=binding.etDes.getText().toString();
+                String message = binding.etDes.getText().toString();
                 if (selectedItem.equals("Select")) {
                     common.errorToast("Please select first");
-                    }else if (message.equalsIgnoreCase("")) {
+                } else if (message.equalsIgnoreCase("")) {
                     common.errorToast("Message required");
-                    }
-                else {
-                    callSubmitApi(selectedItem,message);
+                } else {
+                    callSubmitApi(selectedItem, message);
                 }
             }
         });
     }
 
-    private void callSubmitApi(String selectedItem,String message)
-       {
-            JsonObject object=new JsonObject();
-            object.addProperty("type",selectedItem);
-            object.addProperty("description",message);
-           object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+    private void callSubmitApi(String selectedItem, String message) {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", selectedItem);
+        object.addProperty("description", message);
+        object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
 
-           repository.postEnquiry(object, new ResponseService() {
-                @Override
-                public void onResponse(Object data) {
-                    try {
-                        CommonResp resp = (CommonResp) data;
-                        Log.e("callenquiry ",data.toString());
-                        if (resp.getStatus()==200) {
-                            common.successToast(resp.getMessage ());
-                            binding.etDes.setText("");
-                            getList();
-
-                        }else{
-                            common.errorToast(resp.getError());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, true);
-
-        }
-
-
-
-    private void getList() {
-        list.clear();
-        JsonObject object=new JsonObject();
-        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        repository.getEnquiryList(object, new ResponseService() {
+        repository.postEnquiry(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
                 try {
-                    EnquiryModel resp = (EnquiryModel) data;
-                    Log.e("getEnquiryresp ",data.toString());
-                    if (resp.getStatus()==200) {
-                        list.clear();
-                        list = resp.getRecordList();
-                      if(list.size()>0) {
-                          binding.recList.setVisibility(View.VISIBLE);
-                          binding.layNoadata.setVisibility(View.GONE);
-                        adapter = new EnquiryAdapter(getActivity(), list);
-                        binding.recList.setAdapter(adapter);
-                       }
-                      else {
-                          binding.recList.setVisibility(View.GONE);
-                          binding.layNoadata.setVisibility(View.VISIBLE);
-                      }
-                    }
-                    else{
+                    CommonResp resp = (CommonResp) data;
+                    Log.e("callenquiry ", data.toString());
+                    if (resp.getStatus() == 200) {
+                        common.successToast(resp.getMessage());
+                        binding.etDes.setText("");
+                        getList();
+
+                    } else {
                         common.errorToast(resp.getError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onServerError(String errorMsg) {
-                Log.e("errorMsg",errorMsg);
+                Log.e("errorMsg", errorMsg);
+            }
+        }, true);
+
+    }
+
+
+    private void getList() {
+        list.clear();
+        JsonObject object = new JsonObject();
+        object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
+        repository.getEnquiryList(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    EnquiryModel resp = (EnquiryModel) data;
+                    Log.e("getEnquiryresp ", data.toString());
+                    if (resp.getStatus() == 200) {
+                        list.clear();
+                        list = resp.getRecordList();
+                        Gson gson = new Gson();
+                        String jsonList = gson.toJson(resp.getRecordList());
+                        sessionManagment.setValue(KEY_ENQUIRY, jsonList);
+                        if (list.size() > 0) {
+                            binding.recList.setVisibility(View.VISIBLE);
+                            binding.layNoadata.setVisibility(View.GONE);
+                            adapter = new EnquiryAdapter(getActivity(), list);
+                            binding.recList.setAdapter(adapter);
+                        } else {
+                            binding.recList.setVisibility(View.GONE);
+                            binding.layNoadata.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg", errorMsg);
             }
         }, true);
 
     }
 
     private void initView() {
-        repository=new Repository(getActivity());
-        ((MapActivity)getActivity()).setTitle("Enquiry");
+        repository = new Repository(getActivity());
+        ((MapActivity) getActivity()).setTitle("Enquiry");
         binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        list=new ArrayList<>();
-        sessionManagment=new SessionManagment(getActivity());
-        common=new Common(getActivity());
+        list = new ArrayList<>();
+        sessionManagment = new SessionManagment(getActivity());
+        common = new Common(getActivity());
 
     }
 }

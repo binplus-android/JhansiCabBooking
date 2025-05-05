@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,6 +80,15 @@ public class WalletHistoryFragment extends Fragment {
         callViewlineClick ( binding.vReferral,binding.vWinning);
         callCommonClick (binding.tvReferral,binding.tvWinning);
         iniList ("referral");
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.swipeRefresh.setRefreshing(false);
+                callViewlineClick ( binding.vReferral,binding.vWinning);
+                callCommonClick (binding.tvReferral,binding.tvWinning);
+                iniList ("referral");
+            }
+        });
         return binding.getRoot();
     }
 

@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG1;
+import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
@@ -92,27 +94,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // Ensure focusable behavior
         binding.getRoot().setFocusableInTouchMode(true);
         binding.getRoot().requestFocus();
-        common.getAppSettingData(new OnConfig() {
-            @Override
-            public void getAppSettingData(AppSettingModel model) {
-                if(!common.checkNullString(model.getHomeImage1()).equalsIgnoreCase("")){
-                Picasso.get().load(IMAGE_BASE_URL+model.getHomeImage1()).
-                        placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.homeimg1);}
-                else{
-                    binding.homeimg1.setVisibility(View.GONE);
-                }
-                if(!common.checkNullString(model.getHomeImage2()).equalsIgnoreCase("")){
-                Picasso.get().load(IMAGE_BASE_URL+model.getHomeImage2()).placeholder(R.drawable.logo).
-                        error(R.drawable.logo).into(binding.homeimg2);}
-                else{
-                    binding.homeimg2.setVisibility(View.GONE);
-                }
-            }
-        });
+        setSessionData();
 
 
 
         return binding.getRoot();
+    }
+
+    private void setSessionData() {
+        if(!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG1)).equalsIgnoreCase("")){
+            Picasso.get().load(IMAGE_BASE_URL+sessionManagment.getValue(KEY_HOME_IMG1)).
+                    placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.homeimg1);}
+        else{
+            binding.homeimg1.setVisibility(View.GONE);
+        }
+        if(!common.checkNullString(sessionManagment.getValue(KEY_HOME_IMG2)).equalsIgnoreCase("")){
+            Picasso.get().load(IMAGE_BASE_URL+sessionManagment.getValue(KEY_HOME_IMG2)).placeholder(R.drawable.logo).
+                    error(R.drawable.logo).into(binding.homeimg2);}
+        else{
+            binding.homeimg2.setVisibility(View.GONE);
+        }
     }
 
     private void callCurrentBooking() {

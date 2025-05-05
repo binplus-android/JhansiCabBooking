@@ -10,8 +10,12 @@
         <include
             layout="@layout/layout_toolbar"
             android:id="@+id/inc_toolbar"/>
-        <RelativeLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_below="@+id/inc_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
@@ -23,6 +27,7 @@
                 android:visibility="gone"
                 layout="@layout/common_no_data"/>
     </RelativeLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </RelativeLayout>
 </layout>
