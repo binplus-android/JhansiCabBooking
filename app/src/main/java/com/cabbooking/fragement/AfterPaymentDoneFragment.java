@@ -112,7 +112,6 @@ public class AfterPaymentDoneFragment extends Fragment {
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
                         String payment_mode="cash";
-
                         showPaymentMode(payment_mode);
 
                         binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
