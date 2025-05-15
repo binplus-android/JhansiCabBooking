@@ -213,7 +213,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void getDestinatioList() {
         Log.d("hjhfjy", "getDestinatioList: "+areaList.size());
         ArrayList<nearAreaNameModel>list1=areaList;
-        adapter = new DestinationHomeAdapter(getActivity(), list1);
+        adapter = new DestinationHomeAdapter(getActivity(), list1, new DestinationHomeAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
+                        areaList.get(pos).getLng(),areaList.get(pos).getName());
+                common.switchFragment(new DestinationFragment());
+            }
+        });
         binding.recDestination.setAdapter(adapter);
     }
 

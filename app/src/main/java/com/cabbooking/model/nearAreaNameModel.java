@@ -3,14 +3,23 @@ package com.cabbooking.model;
 import org.json.JSONObject;
 
 public class nearAreaNameModel {
-    String name ;
+    String name ,formatted_address;
     double lat;
     double lng;
 
-    public nearAreaNameModel(String name, double lat, double lng) {
+    public nearAreaNameModel(String name, double lat, double lng,String formatted_address) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
+        this.formatted_address = formatted_address;
+    }
+
+    public String getFormatted_address() {
+        return formatted_address;
+    }
+
+    public void setFormatted_address(String formatted_address) {
+        this.formatted_address = formatted_address;
     }
 
     public String getName() {

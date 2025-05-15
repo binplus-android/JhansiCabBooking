@@ -36,6 +36,7 @@ import android.widget.TimePicker;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.LoginResp;
+import com.cabbooking.Response.PickupResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
@@ -134,16 +135,66 @@ public class VechileFragment extends Fragment {
         binding.btnBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
-                Fragment fm=new PickUpFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("myList", list);
-                bundle.putString("pos", String.valueOf(sel_pos));
-                bundle.putString("returnDate",returnDateval);
-                fm.setArguments(bundle);
-                common.switchFragment(fm);
+                //new
+                addTrip();
+
+                //old
+//                String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
+//                Fragment fm=new PickUpFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelableArrayList("myList", list);
+//                bundle.putString("pos", String.valueOf(sel_pos));
+//                bundle.putString("returnDate",returnDateval);
+//                fm.setArguments(bundle);
+//                common.switchFragment(fm);
             }
         });
+    }
+    public void addTrip() {
+        String distance="10";
+
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("isOutstation",trip_type);
+        object.addProperty("isRound",outstation_type);
+        common.addLocationData(object);
+        object.addProperty("vehicleType",list.get(sel_pos).getId());
+        object.addProperty("distance",distance);
+        object.addProperty("amount",list.get(sel_pos).getFare()*Double.parseDouble(distance));
+        if(outstation_type.equalsIgnoreCase("1")) {
+            object.addProperty("returnDate",getArguments().getString("returnDate"));  }
+        else{
+            object.addProperty("returnDate","");
+        }
+
+        repository.addTrip(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    PickupResp resp = (PickupResp) data;
+                    Fragment fragment=new RideFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putParcelable("pickupResp", resp);
+                    fragment.setArguments(bundle);
+                    Log.e("addTrip ",data.toString());
+                    if (resp.getStatus()==200) {
+                        common.successToast(resp.getMessage());
+                        Log.d("datts", "onResponse: "+resp.getRecordList());
+                        common.switchFragment(fragment);
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, true);
+
     }
     public static String getFormattedDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());

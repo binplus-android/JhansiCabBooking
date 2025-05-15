@@ -1,5 +1,6 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.activity.MapActivity.areaList;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
@@ -50,15 +51,6 @@ int vechicle_pos;
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PickUpFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PickUpFragment newInstance(String param1, String param2) {
         PickUpFragment fragment = new PickUpFragment();
         Bundle args = new Bundle();
@@ -87,13 +79,18 @@ int vechicle_pos;
 
         return binding.getRoot();
     }
+    public void updateText(String text) {
+        if (binding.tvAddress != null) {
+            binding.tvAddress.setText(text);
+        }
+    }
 
     private void allClick() {
         binding.btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTrip();
-
+               // addTrip();
+                common.popFragment();
             }
         });
     }
@@ -108,61 +105,61 @@ int vechicle_pos;
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
-        vechicle_pos=Integer.parseInt(getArguments().getString("pos"));
-        vec_list=new ArrayList<>();
-        vec_list=getArguments() != null ?
-                getArguments().getParcelableArrayList("myList") : null;
-        Log.d("ggghj", "initView: "+vec_list.get(vechicle_pos).getName());
-
-        binding.tvAddress.setText(((MapActivity) getActivity()).getPickupAddress());
-
-    }
-
-    public void addTrip() {
-        String distance="10";
-
-        JsonObject object=new JsonObject();
-        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("isOutstation",trip_type);
-        object.addProperty("isRound",outstation_type);
-        common.addLocationData(object);
-         object.addProperty("vehicleType",vec_list.get(vechicle_pos).getId());
-         object.addProperty("distance",distance);
-         object.addProperty("amount",vec_list.get(vechicle_pos).getFare()*Double.parseDouble(distance));
-        if(outstation_type.equalsIgnoreCase("1")) {
-            object.addProperty("returnDate",getArguments().getString("returnDate"));  }
-        else{
-            object.addProperty("returnDate","");
-        }
-
-        repository.addTrip(object, new ResponseService() {
-            @Override
-            public void onResponse(Object data) {
-                try {
-                    PickupResp resp = (PickupResp) data;
-                    Fragment fragment=new RideFragment();
-                    Bundle bundle=new Bundle();
-                    bundle.putParcelable("pickupResp", resp);
-                    fragment.setArguments(bundle);
-                    Log.e("addTrip ",data.toString());
-                    if (resp.getStatus()==200) {
-                        common.successToast(resp.getMessage());
-                    Log.d("datts", "onResponse: "+resp.getRecordList());
-                   common.switchFragment(fragment);
-
-                    }else{
-                        common.errorToast(resp.getError());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onServerError(String errorMsg) {
-                Log.e("errorMsg",errorMsg);
-            }
-        }, true);
+//        vechicle_pos=Integer.parseInt(getArguments().getString("pos"));
+//        vec_list=new ArrayList<>();
+//        vec_list=getArguments() != null ?
+//                getArguments().getParcelableArrayList("myList") : null;
+//        Log.d("ggghj", "initView: "+vec_list.get(vechicle_pos).getName());
+//
+//        binding.tvAddress.setText(((MapActivity) getActivity()).getPickupAddress());
 
     }
+
+//    public void addTrip() {
+//        String distance="10";
+//
+//        JsonObject object=new JsonObject();
+//        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+//        object.addProperty("isOutstation",trip_type);
+//        object.addProperty("isRound",outstation_type);
+//        common.addLocationData(object);
+//         object.addProperty("vehicleType",vec_list.get(vechicle_pos).getId());
+//         object.addProperty("distance",distance);
+//         object.addProperty("amount",vec_list.get(vechicle_pos).getFare()*Double.parseDouble(distance));
+//        if(outstation_type.equalsIgnoreCase("1")) {
+//            object.addProperty("returnDate",getArguments().getString("returnDate"));  }
+//        else{
+//            object.addProperty("returnDate","");
+//        }
+//
+//        repository.addTrip(object, new ResponseService() {
+//            @Override
+//            public void onResponse(Object data) {
+//                try {
+//                    PickupResp resp = (PickupResp) data;
+//                    Fragment fragment=new RideFragment();
+//                    Bundle bundle=new Bundle();
+//                    bundle.putParcelable("pickupResp", resp);
+//                    fragment.setArguments(bundle);
+//                    Log.e("addTrip ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        common.successToast(resp.getMessage());
+//                    Log.d("datts", "onResponse: "+resp.getRecordList());
+//                   common.switchFragment(fragment);
+//
+//                    }else{
+//                        common.errorToast(resp.getError());
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            @Override
+//            public void onServerError(String errorMsg) {
+//                Log.e("errorMsg",errorMsg);
+//            }
+//        }, true);
+//
+//    }
 
 }

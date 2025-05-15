@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,10 +18,14 @@ import java.util.ArrayList;
 public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHomeAdapter.ViewHolder> {
     Context context;
     ArrayList<nearAreaNameModel> list;
-
-    public DestinationHomeAdapter(Context context, ArrayList<nearAreaNameModel> list) {
+    onTouchMethod listener;
+    public interface onTouchMethod{
+        void onSelection(int pos);
+    }
+    public DestinationHomeAdapter(Context context, ArrayList<nearAreaNameModel> list, onTouchMethod listener) {
         this.context = context;
         this.list = list;
+        this.listener=listener;
     }
 
     @NonNull
@@ -38,7 +43,14 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
             holder.vline.setVisibility(View.GONE);
         }
         holder.tv_title.setText(model.getName());
+        holder.rel_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSelection (position);
 
+
+            }
+        });
     }
 
     @Override
@@ -48,13 +60,13 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
 
     public class ViewHolder extends RecyclerView.ViewHolder {
        TextView tv_title;
-//        ImageView img_icon;
+       RelativeLayout rel_main;
         View vline;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             vline=itemView.findViewById(R.id.vline);
            tv_title = itemView.findViewById(R.id.tv_address);
-//            img_icon = itemView.findViewById(R.id.iv_icon);
+          rel_main = itemView.findViewById(R.id.rel_main);
         }
     }
 }
