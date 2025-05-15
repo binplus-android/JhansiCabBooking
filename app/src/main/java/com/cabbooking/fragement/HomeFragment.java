@@ -1,4 +1,5 @@
 package com.cabbooking.fragement;
+import static com.cabbooking.activity.MapActivity.areaList;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG1;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
@@ -48,6 +49,7 @@ import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.DestinationModel;
+import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.Repository;
@@ -209,11 +211,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getDestinatioList() {
-        list.clear();
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        adapter = new DestinationHomeAdapter(getActivity(), list);
+        Log.d("hjhfjy", "getDestinatioList: "+areaList.size());
+        ArrayList<nearAreaNameModel>list1=areaList;
+        adapter = new DestinationHomeAdapter(getActivity(), list1);
         binding.recDestination.setAdapter(adapter);
     }
 

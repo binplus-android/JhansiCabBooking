@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 
+import static com.cabbooking.activity.MapActivity.areaList;
+
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
@@ -7,6 +9,7 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.DestinationModel;
+import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.RecyclerTouchListener;
 
@@ -77,12 +81,10 @@ public class DestinationFragment extends Fragment {
         return  binding.getRoot();
     }
 
-    private void getDestinatioList() {
-        list.clear();
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        adapter=new DestinationAdapter(getActivity(),list);
+    public void getDestinatioList() {
+        Log.d("hjhfjy", "getDestinatioList: "+areaList.size());
+       ArrayList<nearAreaNameModel>list1=areaList;
+        adapter=new DestinationAdapter(getActivity(),list1);
         binding.recDestination.setAdapter(adapter);
     }
 

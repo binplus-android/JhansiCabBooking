@@ -74,6 +74,7 @@ import com.cabbooking.fragement.ProfileFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
+import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Location;
 import com.cabbooking.utils.OnConfig;
@@ -114,6 +115,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         GoogleMap.OnInfoWindowClickListener {
     Common common;
     ActivityMapBinding binding;
+    public  static ArrayList<nearAreaNameModel>areaList=new ArrayList<>();
     SessionManagment sessionManagment;
     public GoogleApiClient mGoogleApiClient;
     public GoogleMap mMap;
@@ -649,7 +651,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             if (!isAddressFetched) {
                 loadAllAvailableDriver(new LatLng(currentLat, currentLng));
-//                fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
+                fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
                 isAddressFetched = true;
             }
         }
@@ -1077,6 +1079,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void parseNearbyPlaces(String json) {
         try {
+            areaList.clear();
             Log.e("josn",json);
 
             JSONObject jsonObject = new JSONObject(json);
@@ -1091,7 +1094,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 double lng = location.getDouble("lng");
 
                 Log.d("NearbyPlace", "Name: " + name + " LatLng: " + lat + "," + lng);
-
+                areaList.add(new nearAreaNameModel(name,lat,lng));
+                Log.d("hjhfjy2", "getDestinatioList: "+areaList.size());
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(lat, lng))
                         .title(name)
