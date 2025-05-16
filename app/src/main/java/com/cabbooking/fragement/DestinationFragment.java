@@ -2,10 +2,8 @@ package com.cabbooking.fragement;
 
 import static com.cabbooking.activity.MapActivity.areaList;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -14,15 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cabbooking.R;
-import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
-import com.cabbooking.utils.RecyclerTouchListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -77,8 +73,9 @@ public class DestinationFragment extends Fragment {
         adapter=new DestinationAdapter(getActivity(), list1, new DestinationAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
+                LatLng latLng = new LatLng(areaList.get(pos).getLat(),  areaList.get(pos).getLng());
                 ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
-                        areaList.get(pos).getLng(),areaList.get(pos).getName());
+                        areaList.get(pos).getLng(),areaList.get(pos).getName(), latLng);
                 common.switchFragment(new VechileFragment());
             }
         });

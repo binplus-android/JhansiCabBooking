@@ -6,21 +6,11 @@ import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -32,33 +22,26 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.cabbooking.R;
-import com.cabbooking.Response.BookingDetailResp;
-import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
-import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
-import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -216,8 +199,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         adapter = new DestinationHomeAdapter(getActivity(), list1, new DestinationHomeAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
+                LatLng latLng = new LatLng(areaList.get(pos).getLat(),  areaList.get(pos).getLng());
                 ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
-                        areaList.get(pos).getLng(),areaList.get(pos).getName());
+                        areaList.get(pos).getLng(),areaList.get(pos).getName(), latLng);
                 common.switchFragment(new DestinationFragment());
             }
         });

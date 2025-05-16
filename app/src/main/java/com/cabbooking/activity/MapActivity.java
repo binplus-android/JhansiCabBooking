@@ -1,12 +1,9 @@
 package com.cabbooking.activity;
 
-import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG1;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
-import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_PRIVACY;
-import static com.cabbooking.utils.SessionManagment.KEY_REFERCODE;
 import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
 import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_EMAIL;
 import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_MOBILE;
@@ -32,19 +29,17 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +50,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -101,6 +95,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
@@ -108,11 +103,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -150,6 +148,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     MenuAdapter menuAdapter;
     public ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
+    LatLng pickLatLng,destinationLatLng;
+    String apiKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +158,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
 
         initView();
+         apiKey = getString(R.string.google_maps_key);
         storeDataSession();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
@@ -507,11 +508,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
 
-    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue) {
+    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue,LatLng latLng) {
         pickupLat = Lat;
         pickupLng = Lng;
         pickAddres = pickAddressValue;
         tvpick.setText(pickAddressValue);
+        pickLatLng=latLng;
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof PickUpFragment) {
@@ -537,14 +539,106 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return pickupLng;
     }
 
-    public void getDestinationLatLng(Double Lat, Double Lng, String destinationAddressValue) {
+    public void getDestinationLatLng(Double Lat, Double Lng, String destinationAddressValue, LatLng latLng) {
         destinationLat = Lat;
         destinationLng = Lng;
         destinationAddress = destinationAddressValue;
+        destinationLatLng=latLng;
         tvDestination.setText(destinationAddressValue);
+
+        drawRoute(pickLatLng,destinationLatLng);
 
     }
 
+    private void drawRoute(LatLng origin, LatLng dest) {
+        Log.d("draww", "drawRoute: "+origin+"=="+dest);
+        String url = getDirectionsUrl(origin, dest);
+
+        new DownloadTask().execute(url);
+    }
+
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+        String output = "json";
+        String apiKeyval = apiKey;
+
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKeyval;
+    }
+    private class DownloadTask extends AsyncTask<String, Void, String> {
+        protected String doInBackground(String... url) {
+            String data = "";
+            try {
+                URL myUrl = new URL(url[0]);
+                HttpURLConnection connection = (HttpURLConnection) myUrl.openConnection();
+                connection.connect();
+                InputStream iStream = connection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+
+                br.close();
+                iStream.close();
+                connection.disconnect();
+
+            } catch (Exception e) {
+                Log.d("DownloadTask", e.toString());
+            }
+            return data;
+        }
+
+        protected void onPostExecute(String result) {
+            new ParserTask().execute(result);
+        }
+    }
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+    protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+        ArrayList<LatLng> points;
+        PolylineOptions lineOptions = null;
+
+        for (List<HashMap<String, String>> path : result) {
+            points = new ArrayList<>();
+            lineOptions = new PolylineOptions();
+
+            for (HashMap<String, String> point : path) {
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                points.add(new LatLng(lat, lng));
+            }
+
+            lineOptions.addAll(points);
+            lineOptions.width(10);
+            lineOptions.color(Color.BLUE);
+        }
+
+        if (lineOptions != null)
+            mMap.addPolyline(lineOptions);
+    }
+}
     public Double getDestinationLat() {
 
         return destinationLat;
@@ -639,7 +733,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Common.currenLocation = new LatLng(currentLat, currentLng);
                 Log.e("sxdcfgvbhjnk", String.valueOf(currentLat));
                 displayLocation();
-                getPickUpLatLng(currentLat, currentLng, tvpick.getText().toString());
+                getPickUpLatLng(currentLat, currentLng, tvpick.getText().toString(),Common.currenLocation);
 
             }
         });
@@ -694,7 +788,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
             tvpick.setText(address);
-            getPickUpLatLng(currentLat, currentLng, address);
+            getPickUpLatLng(currentLat, currentLng, address,location);
 
         }
     }
@@ -960,7 +1054,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // Get address and update UI
                 String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
                 //  tvDestination.setText(address);
-                getDestinationLatLng(latLng.latitude, latLng.longitude, address);
+                getDestinationLatLng(latLng.latitude, latLng.longitude, address,latLng);
                 binding.tvAddress.setText(address);
                 if (tvpick != null) tvpick.setText(address);
             }
@@ -1114,7 +1208,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void fetchNearbyLocations(double latitude, double longitude) {
-        String apiKey = getString(R.string.google_maps_key); // Make sure this is defined in your strings.xml
+       // Make sure this is defined in your strings.xml
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
                 + "location=" + latitude + "," + longitude
                 + "&radius=2500" // meters
@@ -1166,10 +1260,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     areaList.add(model);
                     Log.d("NearbyPlace", "Name: " + name + " LatLng: " + lat + "," + lng + " Address: " + address);
 
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(lat, lng))
-                            .title(name)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+//                    mMap.addMarker(new MarkerOptions()
+//                            .position(new LatLng(lat, lng))
+//                            .title(name)
+//                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
                     Log.d("hjhfjy2", "getDestinatioList: " + areaList.size());
                 });
