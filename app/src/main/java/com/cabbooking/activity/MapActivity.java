@@ -95,6 +95,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
@@ -150,6 +151,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Activity activity;
     LatLng pickLatLng,destinationLatLng;
     String apiKey;
+    private Polyline currentPolyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -520,7 +522,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 ((PickUpFragment) fragment).updateText(pickAddressValue);
             }
         }
+        showPickupMarker(latLng);
 
+
+    }
+
+    private void showPickupMarker(LatLng latLng) {
+        // Resize the drawable
+        int height = 130; // you can adjust
+        int width = 130;  // you can adjust
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_blue_loc);
+        Bitmap b = bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+//        riderMarket = mMap.addMarker(new MarkerOptions()
+//                .position(latLng)
+//                .title("You")
+//                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+        if (riderMarket != null) {
+            riderMarket.remove();
+            riderMarket = null;
+        }
+        riderMarket = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("You")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
     }
 
     public void setDriverLocation(String Lat, String Lng) {
@@ -546,6 +571,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         destinationLatLng=latLng;
         tvDestination.setText(destinationAddressValue);
 
+        if (mMap != null) {
+            if (destinationMarker != null) {
+                destinationMarker.remove();
+            }
+
+            destinationMarker=mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("Destination"));
+        } else {
+            Log.e("MapError", "Google Map not ready yet. Skipping marker placement.");
+        }
         drawRoute(pickLatLng,destinationLatLng);
 
     }
@@ -616,29 +652,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             return routes;
         }
-    protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-        ArrayList<LatLng> points;
-        PolylineOptions lineOptions = null;
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points;
+            PolylineOptions lineOptions = null;
 
-        for (List<HashMap<String, String>> path : result) {
-            points = new ArrayList<>();
-            lineOptions = new PolylineOptions();
+            for (List<HashMap<String, String>> path : result) {
+                points = new ArrayList<>();
+                lineOptions = new PolylineOptions();
 
-            for (HashMap<String, String> point : path) {
-                double lat = Double.parseDouble(point.get("lat"));
-                double lng = Double.parseDouble(point.get("lng"));
-                points.add(new LatLng(lat, lng));
+                for (HashMap<String, String> point : path) {
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    points.add(new LatLng(lat, lng));
+                }
+
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+                lineOptions.color(Color.BLUE);
+                lineOptions.geodesic(true); // optional: smoother lines
             }
 
-            lineOptions.addAll(points);
-            lineOptions.width(10);
-            lineOptions.color(Color.BLUE);
+            if (currentPolyline != null) {
+                currentPolyline.remove();
+            }
+
+            if (lineOptions != null && mMap != null) {
+                currentPolyline = mMap.addPolyline(lineOptions);
+            }
         }
 
-        if (lineOptions != null)
-            mMap.addPolyline(lineOptions);
     }
-}
     public Double getDestinationLat() {
 
         return destinationLat;
@@ -769,18 +812,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (!pickupPlacesSelected) {
             if (riderMarket != null)
                 riderMarket.remove();
-            // Resize the drawable
-            int height = 130; // you can adjust
-            int width = 130;  // you can adjust
-            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_blue_loc);
-            Bitmap b = bitmapdraw.getBitmap();
-            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-
-            riderMarket = mMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title("You")
-                    .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
@@ -1043,20 +1075,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if (riderMarket != null) riderMarket.remove();
 
                 // Add new marker
-                riderMarket = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title("Selected Location")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
+//                riderMarket = mMap.addMarker(new MarkerOptions()
+//                        .position(latLng)
+//                        .title("Selected Location")
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+             showPickupMarker(latLng);
                 // Move camera
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
 
                 // Get address and update UI
                 String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                //  tvDestination.setText(address);
-                getDestinationLatLng(latLng.latitude, latLng.longitude, address,latLng);
                 binding.tvAddress.setText(address);
-                if (tvpick != null) tvpick.setText(address);
+                if (tvpick != null)
+                    tvpick.setText(address);
+                drawRoute(latLng,destinationLatLng);
             }
         });
 
@@ -1075,10 +1107,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 // Optional: move marker to center
                 if (riderMarket != null) riderMarket.remove();
-                riderMarket = mMap.addMarker(new MarkerOptions()
-                        .position(center)
-                        .title("Selected Location")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                showPickupMarker(center);
 
                 // Example coordinates for fetchAndDrawRoute
 
