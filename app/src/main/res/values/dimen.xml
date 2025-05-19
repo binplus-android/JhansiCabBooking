@@ -161,7 +161,7 @@
     <dimen name="cell_padding_vertical">5pt</dimen>
     <dimen name="card_radius">5pt</dimen>
     <dimen name="tab_14dpt">12dp</dimen>
-    <dimen name="radius_8dp">9dp</dimen>
+    <dimen name="radius_8dp">8dp</dimen>
     <dimen name="radius_10dp">8dp</dimen>
     <dimen name="radius_15dp">12dp</dimen>
     <dimen name="chart_tab_40dp">40dp</dimen>

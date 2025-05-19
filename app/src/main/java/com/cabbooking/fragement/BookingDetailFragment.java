@@ -104,9 +104,11 @@ public class BookingDetailFragment extends Fragment {
                            binding.relPay.setVisibility(View.GONE);
                            binding.linData.setVisibility(View.GONE);
                            binding.linFill.setVisibility(View.GONE);
+                         //  binding.linInvoice.setVisibility(View.GONE);
 
                         }
                         else{
+                            binding.linInvoice.setVisibility(View.VISIBLE);
                             binding.linTrack.setVisibility(View.GONE);
                             binding.relPay.setVisibility(View.VISIBLE);
                             if(common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")){
@@ -174,7 +176,7 @@ public class BookingDetailFragment extends Fragment {
                 common.switchFragment(fragment);
             }
         });
-        binding.tDownload.setOnClickListener(new View.OnClickListener() {
+        binding.linInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {

@@ -449,10 +449,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Booking History", R.drawable.ic_history));
         mlist.add(new MenuModel("Enquiry", R.drawable.ic_enquiry));
         mlist.add(new MenuModel("Notifications", R.drawable.ic_bell));
-        mlist.add(new MenuModel("Contact Us", R.drawable.support));
-        mlist.add(new MenuModel("Terms & Conditions", R.drawable.policy));
-        mlist.add(new MenuModel("Privacy Policy", R.drawable.policy));
+        mlist.add(new MenuModel("Contact Us", R.drawable.ic_support));
+        mlist.add(new MenuModel("Terms & Conditions", R.drawable.ic_policy));
+        mlist.add(new MenuModel("Privacy Policy", R.drawable.ic_policy));
         mlist.add(new MenuModel("Share App", R.drawable.ic_share));
+        mlist.add(new MenuModel("Logout", R.drawable.ic_logout));
 
 
         menuAdapter = new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
@@ -461,6 +462,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Fragment fm = null;
                 String title = mlist.get(pos).getTitle();
                 switch (title.toLowerCase().toString()) {
+                    case "logout":
+                        showLogoutDialog();
+                        break;
                     case "home":
                         fm = new HomeFragment();
                         break;
@@ -927,15 +931,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        binding.tvLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
-                    binding.drawer.closeDrawer(GravityCompat.START);
-                }
-                showLogoutDialog();
-            }
-        });
+
 
         binding.navHeader.linMain.setOnClickListener(new View.OnClickListener() {
             @Override
