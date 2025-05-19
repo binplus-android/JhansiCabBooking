@@ -14,15 +14,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.DriverLocationResp;
+import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentAfterPaymentDoneBinding;
 import com.cabbooking.databinding.FragmentPaymentBinding;
+import com.cabbooking.interfaces.WalletCallBack;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
@@ -52,6 +55,8 @@ public class AfterPaymentDoneFragment extends Fragment {
     private boolean isFragmentVisible = false;
 
     private static final long API_REFRESH_INTERVAL = 8000; //  8 seconds
+    String amount_pay="0";
+    int wallet_amount=0;
 
     public AfterPaymentDoneFragment() {
         // Required empty public constructor
@@ -80,6 +85,17 @@ public class AfterPaymentDoneFragment extends Fragment {
         startApiRefresh();
         getDetailApi();
         allClick();
+        common.getWalletAmount(getActivity(), new WalletCallBack() {
+            @Override
+            public void onWalletAmountReceived(int walletAmount) {
+                wallet_amount=walletAmount;
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
 
         return binding.getRoot();
     }
@@ -95,6 +111,8 @@ public class AfterPaymentDoneFragment extends Fragment {
                     TripDetailRes resp = (TripDetailRes) data;
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
+                        String payment_mode="cash";
+                        showPaymentMode(payment_mode);
 
                         binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
@@ -114,6 +132,7 @@ public class AfterPaymentDoneFragment extends Fragment {
                             binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
                         }
                         binding.tvPrice.setText("Rs. "+resp.getRecordList().getAmount());
+                        amount_pay=resp.getRecordList().getAmount();
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
 
 
@@ -132,6 +151,21 @@ public class AfterPaymentDoneFragment extends Fragment {
 
     }
 
+    private void showPaymentMode(String payment_mode) {
+        if(payment_mode.equalsIgnoreCase("upi")){
+            binding.rdUpi.setChecked(true);
+        }
+        else if(payment_mode.equalsIgnoreCase("credit card")){
+            binding.rdCredit.setChecked(true);
+        }else if(payment_mode.equalsIgnoreCase("debit card")){
+            binding.rdDebit.setChecked(true);
+        }else if(payment_mode.equalsIgnoreCase("cash")){
+            binding.rdCash.setChecked(true);
+        }else if(payment_mode.equalsIgnoreCase("wallet")){
+            binding.rdWallet.setChecked(true);
+        }
+    }
+
     private void allClick() {
         binding.ivCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,9 +179,84 @@ public class AfterPaymentDoneFragment extends Fragment {
                 common.callCancleDialog(getActivity(),tripId);
             }
         });
+        binding.btnPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+                {
+                    int selectedId = binding.rdGrp.getCheckedRadioButtonId();
+
+                    if (selectedId == -1) {
+                        common.errorToast("Please select a payment method");
+                    } else {
+                        RadioButton selectedRadio = binding.getRoot().findViewById(selectedId);
+                        String selectedText = selectedRadio.getText().toString();
+                        String paymentStatus="";
+                        if(selectedText.equalsIgnoreCase("cash")||
+                                selectedText.equalsIgnoreCase("wallet")){
+                            paymentStatus="Success";
+                        }
+                        else{
+                            paymentStatus="";
+                        }
+                        if(selectedText.equalsIgnoreCase("wallet")){
+                            if(Double.parseDouble(String.valueOf(wallet_amount))<Double.parseDouble(amount_pay)){
+                                common.errorToast("Insufficient amount");
+                            }
+                            else {
+                                callPayment(selectedText, paymentStatus);
+                            }
+                        }
+                        else {
+                            callPayment(selectedText, paymentStatus);
+                        }
+                    }
+
+
+                }
+
+        });
 
     }
+    public void callPayment(String paymentTypeVal,String payment_status)
+    {
+        JsonObject object=new JsonObject();
+        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("tripId",tripId);
+        object.addProperty("paymentMode",paymentTypeVal);
+        object.addProperty("amount", amount_pay);
+        object.addProperty("gst","");
+        object.addProperty("paymentReference","");
+        object.addProperty("paymentStatus",payment_status);
 
+        object.addProperty("signature","");
+        object.addProperty("description","");
+        repository.paymentApi(object, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    PaymentResp resp = (PaymentResp) data;
+                    Log.e("paymentApi ",data.toString());
+                    if (resp.getStatus()==200) {
+                        common.successToast(resp.getMessage());
+
+                        //getDetailApi();
+                        common.popFragment();
+
+
+                    }else{
+                        common.errorToast(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg",errorMsg);
+            }
+        }, false);
+
+    }
     private void initView() {
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());

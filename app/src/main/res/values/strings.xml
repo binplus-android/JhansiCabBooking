@@ -76,8 +76,9 @@
     <string name="leaving_so_soon">Leaving so soon ?</string>
     <string name="are_you_sure_you_want_to_close_this_app">Are you sure you want to close this application?</string>
     <string name="are_you_sure_you_want_to_logout_this_app">Are you sure you want to logout this application?</string>
-    <string name="are_you_sure_you_want_to_cancle_ride">Are you sure you want to cancel ride?</string>
-   <string name="are_you_sure_you_want_to_delete_feedbck">Are you sure you want to delete feedback?</string>
+    <string name="are_you_sure_you_want_to_cancle_ride">Do you really want to cancel the ride?</string>
+
+    <string name="are_you_sure_you_want_to_delete_feedbck">Are you sure you want to delete feedback?</string>
     <!--    <string name="allow_google_map">Allow &quot; Google Maps&quot; to access location while you use the app?</string>-->
     <string name="allow_google_map">Allow "Google Maps" to access your location while you use the app?</string>
     <string name="yes">Yes</string>
@@ -92,7 +93,7 @@
     <string name="permission_denied_location">Permission is required to obtain location</string>
 
     <string name="pickup_here">Pickup here</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyC4fngsamEvebR4RPeb83BmgOjzu-R1pLo</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBHSCfIxqJMxTsVjox61dk4eKDL7tuxRfA</string>
     <string name="cannot_get_location">Cannot get your location</string>
 
     <string name="channel_arrived">Arrived</string>

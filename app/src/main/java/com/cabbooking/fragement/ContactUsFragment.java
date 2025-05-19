@@ -63,6 +63,8 @@ public class ContactUsFragment extends Fragment {
         binding.tvMobile.setText(mobile_num);
         whatsapp_num = sessionManagment.getValue(SessionManagment.KEY_WHATSPP);
         email_subject = common.checkNullString(sessionManagment.getValue(SessionManagment.KEY_SUPPORT_SUBJ));
+        binding.tvEmail.setText(email);
+        binding.tvChat.setText(whatsapp_num);
     }
 
     private void initView() {

@@ -74,15 +74,13 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
                 error(R.drawable.logo).into(holder.iv_vimg);
         Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_dimg);
-
         if(model.getTripStatus().equalsIgnoreCase("scheduled")||
-           model.getTripStatus().equalsIgnoreCase("running")){
-            holder.tv_track.setVisibility(View.VISIBLE);
-        }
-        else {
+           model.getTripStatus().equalsIgnoreCase("running"))
+        {
+         holder.tv_track.setVisibility(View.VISIBLE);
+        }else {
             holder.tv_track.setVisibility(View.GONE);
         }
-
         holder.tv_track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,9 +91,6 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
                 common.switchFragment(fragment);
             }
         });
-
-
-
     }
 
     @Override

@@ -4,22 +4,28 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
-import com.cabbooking.model.DestinationModel;
+import com.cabbooking.model.nearAreaNameModel;
 
 import java.util.ArrayList;
 
 public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHomeAdapter.ViewHolder> {
     Context context;
-    ArrayList<DestinationModel> list;
-
-    public DestinationHomeAdapter(Context context, ArrayList<DestinationModel> list) {
+    ArrayList<nearAreaNameModel> list;
+    onTouchMethod listener;
+    public interface onTouchMethod{
+        void onSelection(int pos);
+    }
+    public DestinationHomeAdapter(Context context, ArrayList<nearAreaNameModel> list, onTouchMethod listener) {
         this.context = context;
         this.list = list;
+        this.listener=listener;
     }
 
     @NonNull
@@ -32,12 +38,19 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        DestinationModel DestinationModel = list.get(position);
+        nearAreaNameModel model = list.get(position);
         if(list.size()-1==position){
             holder.vline.setVisibility(View.GONE);
         }
+        holder.tv_title.setText(model.getName());
+        holder.rel_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onSelection (position);
 
 
+            }
+        });
     }
 
     @Override
@@ -46,14 +59,14 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-//        TextView tv_title;
-//        ImageView img_icon;
+       TextView tv_title;
+       RelativeLayout rel_main;
         View vline;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             vline=itemView.findViewById(R.id.vline);
-//            tv_title = itemView.findViewById(R.id.tv_title);
-//            img_icon = itemView.findViewById(R.id.iv_icon);
+           tv_title = itemView.findViewById(R.id.tv_address);
+          rel_main = itemView.findViewById(R.id.rel_main);
         }
     }
 }

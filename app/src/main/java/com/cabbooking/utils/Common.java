@@ -239,18 +239,21 @@ public class Common {
         dialog.getWindow().setGravity(Gravity.CENTER);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         dialog.setContentView (R.layout.dialog_cancle_confirm);
-        Button btn_no,btn_yes;
+        Button btn_yes;
+        ImageView iv_close;
         btn_yes=dialog.findViewById (R.id.btn_yes);
-        btn_no=dialog.findViewById (R.id.btn_no);
+        iv_close=dialog.findViewById (R.id.iv_close);
+
         EditText et_reason=dialog.findViewById(R.id.et_reason);
 
 
-        btn_no.setOnClickListener (new View.OnClickListener ( ) {
+        iv_close.setOnClickListener (new View.OnClickListener ( ) {
             @Override
             public void onClick(View v) {
                 dialog.dismiss ();
             }
         });
+
 
         btn_yes.setOnClickListener (new View.OnClickListener ( ) {
             @Override

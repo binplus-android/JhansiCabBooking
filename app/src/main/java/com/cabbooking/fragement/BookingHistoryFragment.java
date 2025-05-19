@@ -144,7 +144,12 @@ public class BookingHistoryFragment extends Fragment {
     private void initView() {
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Booking History");
-        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+
+        binding.recList.setLayoutManager(layoutManager);
         list=new ArrayList<>();
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());

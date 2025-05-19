@@ -221,15 +221,86 @@
                     </LinearLayout>
 
 
+                    <TextView
+                        android:layout_marginTop="@dimen/space_2"
+                        style="@style/TextViewSemBold"
+                        android:layout_alignParentEnd="true"
+                        android:text="@string/payment_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <RadioGroup
+                        android:id="@+id/rd_grp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <RadioButton
+                            android:id="@+id/rd_upi"
+                            android:text="@string/Upi"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:id="@+id/rd_credit"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"                            android:text="@string/Credit_Card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:id="@+id/rd_debit"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"                            android:text="@string/Debit_Card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:id="@+id/rd_cash"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"                            android:text="@string/cash"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <RadioButton
+                            android:id="@+id/rd_wallet"
+                            android:scaleX=".8"
+                            android:scaleY=".8"
+                            android:buttonTint="@color/colorAccent"
+                            android:layout_marginLeft="-20pt"
+                            android:text="@string/wallet"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RadioGroup>
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/space_5"
+                        android:weightSum="2"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
                         <Button
                             style="@style/button"
                             android:id="@+id/btn_cancle"
-                            android:layout_marginTop="@dimen/space_15"
+                            android:layout_weight="1"
                             android:text="@string/Cancel_Ride"
                             android:textColor="@color/white"
                             android:backgroundTint="@color/red_600"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="@dimen/button_height"/>
+                        <Button
+                            style="@style/button"
+                            android:textColor="@color/white"
+                            android:id="@+id/btn_pay"
+                            android:layout_marginLeft="@dimen/space_8"
+                            android:layout_weight="1"
+                            android:text="@string/payment"
+                            android:backgroundTint="@color/green_500"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"/>
+                    </LinearLayout>
 
 
                 </LinearLayout>

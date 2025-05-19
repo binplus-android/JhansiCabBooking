@@ -1,24 +1,24 @@
 package com.cabbooking.fragement;
 
-import android.content.res.ColorStateList;
+import static com.cabbooking.activity.MapActivity.areaList;
+
 import android.os.Bundle;
 
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cabbooking.R;
-import com.cabbooking.activity.MainActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.DestinationModel;
+import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
-import com.cabbooking.utils.RecyclerTouchListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -62,28 +62,26 @@ public class DestinationFragment extends Fragment {
         initView();
         getDestinatioList();
 
-        binding.recDestination.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), binding.recDestination, new RecyclerTouchListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                common.switchFragment(new VechileFragment());
-            }
 
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
 
         return  binding.getRoot();
     }
 
-    private void getDestinatioList() {
-        list.clear();
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        list.add(new DestinationModel());
-        adapter=new DestinationAdapter(getActivity(),list);
+    public void getDestinatioList() {
+        Log.d("hjhfjy", "getDestinatioList: "+areaList.size());
+       ArrayList<nearAreaNameModel>list1=areaList;
+        adapter=new DestinationAdapter(getActivity(), list1, new DestinationAdapter.onTouchMethod() {
+            @Override
+            public void onSelection(int pos) {
+                LatLng latLng = new LatLng(areaList.get(pos).getLat(),  areaList.get(pos).getLng());
+                ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
+                        areaList.get(pos).getLng(),areaList.get(pos).getName(), latLng);
+                common.switchFragment(new VechileFragment());
+            }
+        });
         binding.recDestination.setAdapter(adapter);
+
+
     }
 
     public void initView() {
