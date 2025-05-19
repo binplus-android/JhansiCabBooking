@@ -2,7 +2,7 @@ package com.cabbooking.utils;
 
 import static android.content.ContentValues.TAG;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
-
+import android.location.Location;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -109,6 +109,23 @@ public class Common {
         toastMsg = new ToastMsg(context);
         sessionManagment=new SessionManagment(context);
         repository = new Repository(context);
+    }
+
+
+    // Function to get distance in km
+    public float getDistanceInKm(Activity activity) {
+        Location pickupLocation = new Location(String.valueOf(activity));
+        pickupLocation.setLatitude(((MapActivity)context).getPickupLat());
+        pickupLocation.setLongitude(((MapActivity)context).getPickupLng());
+
+        Location destinationLocation = new Location(String.valueOf(activity));
+        destinationLocation.setLatitude(((MapActivity) context).getDestinationLat());
+        destinationLocation.setLongitude( ((MapActivity) context).getDestinationLng());
+
+        float distanceInMeters = pickupLocation.distanceTo(destinationLocation);
+        float distanceInKm = distanceInMeters / 1000; // Convert to km
+
+        return distanceInKm;
     }
 
     public void addLocationData(JsonObject object) {

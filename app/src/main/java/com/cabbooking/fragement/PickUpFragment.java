@@ -116,7 +116,7 @@ int vechicle_pos;
     }
 
 //    public void addTrip() {
-//        String distance="10";
+//
 //
 //        JsonObject object=new JsonObject();
 //        object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));

@@ -151,7 +151,8 @@ public class VechileFragment extends Fragment {
         });
     }
     public void addTrip() {
-        String distance="10";
+        String distance= String.valueOf(common.getDistanceInKm(getActivity()));
+        Log.d("getetette_dis", "addTrip: "+distance);
 
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
@@ -160,9 +161,11 @@ public class VechileFragment extends Fragment {
         common.addLocationData(object);
         object.addProperty("vehicleType",list.get(sel_pos).getId());
         object.addProperty("distance",distance);
-        object.addProperty("amount",list.get(sel_pos).getFare()*Double.parseDouble(distance));
+      //make it .3
+        object.addProperty("amount",String.format(Locale.US, "%.0f", list.get(sel_pos).getFare()*Double.parseDouble(distance)));
         if(outstation_type.equalsIgnoreCase("1")) {
-            object.addProperty("returnDate",getArguments().getString("returnDate"));  }
+            String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
+            object.addProperty("returnDate",returnDateval);  }
         else{
             object.addProperty("returnDate","");
         }
