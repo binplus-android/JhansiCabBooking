@@ -112,8 +112,8 @@ public class DestinationFragment extends Fragment {
     public void fetchAutocompleteSuggestions(String query) {
         Double pickLat=((MapActivity)getActivity()).getPickupLat();
         Double pickLng=((MapActivity)getActivity()).getPickupLng();
-       // LatLng myLocation = new LatLng(pickLat, pickLng);
-        LatLng myLocation = new LatLng(23.2599, 77.4126);
+        LatLng myLocation = new LatLng(pickLat, pickLng);
+
         double lat = myLocation.latitude;
         double lng = myLocation.longitude;
         double delta = 0.3; // Approx. 30–40 km
