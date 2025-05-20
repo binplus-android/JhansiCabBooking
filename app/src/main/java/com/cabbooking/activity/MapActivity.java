@@ -22,9 +22,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
@@ -32,6 +34,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
@@ -91,6 +94,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -152,6 +156,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     LatLng pickLatLng,destinationLatLng;
     String apiKey;
     private Polyline currentPolyline;
+    LatLng pickUpFinalLat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +188,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 if (fragment != null && fragment.getClass() != null) {
                     String frgmentName = fragment.getClass().getSimpleName();
+
+                    if (frgmentName.equalsIgnoreCase("VechileFragment")) {
+                        if (riderMarket != null) {
+                            riderMarket.remove();
+                            riderMarket = null;
+                        }
+                        riderMarket = mMap.addMarker(new MarkerOptions()
+                            .position(pickUpFinalLat)
+                                .title("You")
+                                .icon(bitmapDescriptorFromVector(MapActivity.this, R.drawable.ic_pickup_location)));
+                    }
+
 
                     if (frgmentName.contains("HomeFragment")) {
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -524,16 +541,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         showPickupMarker(latLng);
 
-
     }
 
     private void showPickupMarker(LatLng latLng) {
-        // Resize the drawable
-        int height = 130; // you can adjust
-        int width = 130;  // you can adjust
-        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_blue_loc);
-        Bitmap b = bitmapdraw.getBitmap();
-        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        pickUpFinalLat = latLng;
 //        riderMarket = mMap.addMarker(new MarkerOptions()
 //                .position(latLng)
 //                .title("You")
@@ -542,10 +553,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             riderMarket.remove();
             riderMarket = null;
         }
+
+        // Determine fragment name
+        String fragmentName = getCurrentFragmentName(); // We'll define this function below
+
+        int markerIconResId;
+
+        // Decide icon based on current fragment
+        if ("HomeFragment".equals(fragmentName)) {
+            markerIconResId = R.drawable.ic_blue_loc; // example icon
+        } else if ("PickUpFragment".equals(fragmentName)) {
+            markerIconResId = R.drawable.ic_blue_loc;
+        }else {
+            markerIconResId = R.drawable.ic_pickup_location; // fallback
+        }
+
         riderMarket = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title("You")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                .icon(bitmapDescriptorFromVector(this, markerIconResId)));
+
     }
 
     public void setDriverLocation(String Lat, String Lng) {
@@ -578,19 +606,52 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             destinationMarker=mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title("Destination"));
+                    .title("Destination")
+                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_destination_location)));
         } else {
             Log.e("MapError", "Google Map not ready yet. Skipping marker placement.");
         }
-        drawRoute(pickLatLng,destinationLatLng);
 
+        // Determine fragment name
+        String fragmentName = getCurrentFragmentName(); // We'll define this function below
+
+        int markerIconResId;
+
+        // Decide icon based on current fragment
+//        if ("HomeFragment".equals(fragmentName)) {
+//
+//        } else if ("PickUpFragment".equals(fragmentName)) {
+//
+//        }else {
+            drawRoute(pickLatLng,destinationLatLng);
+//        }
+
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+//        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+//        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+//        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        vectorDrawable.draw(canvas);
+//        return BitmapDescriptorFactory.fromBitmap(bitmap);
+
+
+        int height = 100; // you can adjust
+        int width = 100;  // you can adjust
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(vectorResId);
+        Bitmap b = bitmapdraw.getBitmap();
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        return BitmapDescriptorFactory.fromBitmap(smallMarker);
     }
 
     private void drawRoute(LatLng origin, LatLng dest) {
         Log.d("draww", "drawRoute: "+origin+"=="+dest);
-        String url = getDirectionsUrl(origin, dest);
-
-        new DownloadTask().execute(url);
+        String url="";
+        if (dest != null && origin != null) {
+             url = getDirectionsUrl(origin, dest);
+            new DownloadTask().execute(url);
+        }
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
@@ -1063,6 +1124,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    private boolean isMapClicked = false;
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -1071,26 +1135,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
-                // Remove previous marker
-                if (riderMarket != null) riderMarket.remove();
+                String fragmentName = getCurrentFragmentName();
+                if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
+                    isMapClicked = true; // ✅ Set flag
+                    if (riderMarket != null) riderMarket.remove();
+                    showPickupMarker(latLng);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
 
-                // Add new marker
-//                riderMarket = mMap.addMarker(new MarkerOptions()
-//                        .position(latLng)
-//                        .title("Selected Location")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-             showPickupMarker(latLng);
-                // Move camera
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                    String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                    binding.tvAddress.setText(address);
+                    if (tvpick != null)
+                        tvpick.setText(address);
+                    drawRoute(latLng, destinationLatLng);
 
-                // Get address and update UI
-                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                binding.tvAddress.setText(address);
-                if (tvpick != null)
-                    tvpick.setText(address);
-                drawRoute(latLng,destinationLatLng);
+                    // ✅ Reset flag after small delay (e.g. 1 sec)
+                    new Handler().postDelayed(() -> isMapClicked = false, 1000);
+                }
             }
         });
+
 
         // Optional: show current location once map is ready
 //        displayLocation();
@@ -1098,51 +1161,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                LatLng center = mMap.getCameraPosition().target;
+                if (isMapClicked) return; // ✅ Ignore if just clicked
 
-                // Update the address from camera's center location
-                String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
-                binding.tvAddress.setText(address);
-                if (tvpick != null) tvpick.setText(address);
+                String fragmentName = getCurrentFragmentName();
+                if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
 
-                // Optional: move marker to center
-                if (riderMarket != null) riderMarket.remove();
-                showPickupMarker(center);
+                    LatLng center = mMap.getCameraPosition().target;
 
-                // Example coordinates for fetchAndDrawRoute
+                    String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+                    binding.tvAddress.setText(address);
+                    if (tvpick != null)
+                        tvpick.setText(address);
 
-//                LatLng pickupLocation = new LatLng(28.6139, 77.2090);      // Delhi
-//                LatLng destinationLocation = new LatLng(28.7041, 77.1025); // Nearby Delhi
-//
-//                // Add Pickup Marker
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(pickupLocation)
-//                        .title("Pickup Location"));
-//
-//                // Add Destination Marker
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(destinationLocation)
-//                        .title("Destination"));
-//
-//                // Move camera to show both
-//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//                builder.include(pickupLocation);
-//                builder.include(destinationLocation);
-//                LatLngBounds bounds = builder.build();
-//
-//                int padding = 100; // space around markers
-//                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-//                mMap.animateCamera(cu);
-//
-//                // You can now call your directions API using these coordinates
-//                common.fetchAndDrawRoute(MapActivity.this,mMap,"28.6139", "77.2090", "28.7041","77.1025");
-
-
+                    if (riderMarket != null) riderMarket.remove();
+                    showPickupMarker(center);
+                    drawRoute(center, destinationLatLng);
+                }
             }
         });
-//                displayLocation();
 
+    }
 
+    private String getCurrentFragmentName() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout); // replace with your container ID
+        if (currentFragment != null) {
+            return currentFragment.getClass().getSimpleName(); // e.g., "HomeFragment"
+        }
+        return null;
     }
 
 

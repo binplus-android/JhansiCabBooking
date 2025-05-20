@@ -130,7 +130,7 @@ public class Common {
         switch (code) {
             case 401:
                 // Handle unauthorized access
-                commonTokenExpiredLogout(new Activity());
+                commonTokenExpiredLogout((Activity) context);
                 break;
         }
     }
@@ -270,14 +270,15 @@ public class Common {
         dialog.setCanceledOnTouchOutside (false);
         dialog.show ();
 
-
     }
+
     public boolean isValidEmailAddress(String email) {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
         return m.matches();
     }
+
     public String checkNullString(String value) {
         String str = "";
         if (value == null || value.isEmpty ( ) || value.equals ("")) {
@@ -294,6 +295,7 @@ public class Common {
         java.util.regex.Matcher m = p.matcher(mobileNumber);
         return m.matches();
     }
+
     public void switchFragment(Fragment fragment) {
         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager ( );
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction ( );
@@ -302,16 +304,19 @@ public class Common {
         fragmentTransaction.commit ( );
 
     }
+
     public void popFragment() {
         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
         fragmentManager.popBackStack();
     }
+
     public void calling(String phoneNumber){
             Uri dialUri = Uri.parse("tel:" + phoneNumber);
             Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
             context.startActivity(dialIntent);
 
     }
+
     public boolean isValidName(String name){
         if (name.isEmpty ( )) {
            // errorToast ( context.getString(R.string.name_required));

@@ -94,8 +94,11 @@ public class SessionManagment {
         logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        activity.startActivity(logout);
-        activity.finish();
+
+        if (activity!=null) {
+            activity.startActivity(logout);
+            activity.finish();
+        }
 
     }
 
