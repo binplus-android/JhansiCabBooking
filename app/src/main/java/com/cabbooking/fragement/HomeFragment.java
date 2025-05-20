@@ -199,10 +199,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         adapter = new DestinationHomeAdapter(getActivity(), list1, new DestinationHomeAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
-                LatLng latLng = new LatLng(areaList.get(pos).getLat(),  areaList.get(pos).getLng());
-                ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
-                        areaList.get(pos).getLng(),areaList.get(pos).getName(), latLng);
-                common.switchFragment(new VechileFragment());
+                if (areaList.size() > 1) {
+                    LatLng latLng = new LatLng(areaList.get(pos).getLat(), areaList.get(pos).getLng());
+                    ((MapActivity) getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
+                            areaList.get(pos).getLng(), areaList.get(pos).getName(), latLng);
+                    common.switchFragment(new VechileFragment());
+                }
             }
         });
         binding.recDestination.setAdapter(adapter);

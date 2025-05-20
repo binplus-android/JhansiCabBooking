@@ -33,7 +33,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -902,7 +904,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 common.switchFragment(new PickUpFragment());
             }
-        }); tvDestination.setOnClickListener(new View.OnClickListener() {
+        });
+        tvDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
@@ -914,6 +917,39 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
+
+
+
+        tvDestination.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().isEmpty()) {
+                    try {
+                        // Find your fragment instance
+                        DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+                                .findFragmentById(R.id.main_framelayout);
+
+                        if (fragment != null) {
+                            fragment.fetchAutocompleteSuggestions(s.toString());
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                } else {
+                    // You can clear list too, by calling method in fragment or via interface
+                    DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.main_framelayout);
+
+                    if (fragment != null) {
+                        fragment.clearList();
+                    }
+                }
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
         binding.commonAddress.findViewById(R.id.iv_pick).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
