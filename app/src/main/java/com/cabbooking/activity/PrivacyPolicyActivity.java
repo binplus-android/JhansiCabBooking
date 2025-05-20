@@ -70,10 +70,12 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         try {
             if (type.equals("terms")) {
                 binding.tvHeading.setText(getResources().getString(R.string.terms));
+                binding.incToolbar.tvTitle.setText(getResources().getString(R.string.terms));
                 binding.tvDescription.setText(sessionManagment.getValue(KEY_TERMS));
 
             } else {
                 binding.tvHeading.setText(getResources().getString(R.string.privacy_policy));
+                binding.incToolbar.tvTitle.setText(getResources().getString(R.string.privacy_policy));
                 binding.tvDescription.setText(sessionManagment.getValue(KEY_PRIVACY));
             }
         }

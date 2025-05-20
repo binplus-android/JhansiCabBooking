@@ -47,7 +47,10 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
         MenuModel model = list.get(position);
         holder.tv_title.setText(model.getTitle());
         Picasso.get().load(model.getImage()).placeholder(R.drawable.logo).error(R.drawable.logo).into(holder.iv_img);
-
+        if(model.getTitle().equalsIgnoreCase("logout")){
+            holder.tv_title.setTextColor(context.getColor(R.color.red_600));
+            holder.iv_img.setImageTintList(context.getColorStateList(R.color.red_600));
+        }
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -202,7 +202,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 LatLng latLng = new LatLng(areaList.get(pos).getLat(),  areaList.get(pos).getLng());
                 ((MapActivity)getActivity()).getDestinationLatLng(areaList.get(pos).getLat(),
                         areaList.get(pos).getLng(),areaList.get(pos).getName(), latLng);
-                common.switchFragment(new DestinationFragment());
+                common.switchFragment(new VechileFragment());
             }
         });
         binding.recDestination.setAdapter(adapter);

@@ -97,6 +97,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -212,15 +213,31 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 binding.main.findViewById(R.id.lin_search));
                         binding.main.setVisibility(View.VISIBLE);
 
-                    } else if (frgmentName.contains("DestinationFragment") ||
+                    }
+//                    else if(frgmentName.equalsIgnoreCase("BookingDetailFragment")){
+//                        binding.linToolbar.setVisibility(View.GONE);
+//                        binding.mytoolbar.setNavigationIcon(null);
+//                        binding.mytoolbar.setVisibility(View.VISIBLE);
+//                        binding.linBackMain.setVisibility(View.VISIBLE);
+//                        binding.linOnlyBack.setVisibility(View.GONE);
+//                        // setMap(false);
+//                        binding.main.setVisibility(View.VISIBLE);
+//                        common.setMap(false, true, 160, binding.mapContainer,
+//                                binding.main.findViewById(R.id.lin_search));
+//                        LatLng pickupLatLng = new LatLng(28.6139, 77.2090);        // Pickup Location
+//                        LatLng destinationLatLng = new LatLng(28.7041, 77.1025);   // Destination Location
+//                        disbaleMap(pickupLatLng,destinationLatLng);
+//                    }
+                    else if (frgmentName.contains("DestinationFragment") ||
                             frgmentName.contains("EnquiryFragment") ||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("ContactUsFragment") ||
                             frgmentName.equalsIgnoreCase("ProfileFragment") ||
                             frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
-                            frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
+                            frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
                             frgmentName.equalsIgnoreCase("BookingDetailFragment")
+
                     ) {
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
@@ -466,10 +483,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mlist.add(new MenuModel("Booking History", R.drawable.ic_history));
         mlist.add(new MenuModel("Enquiry", R.drawable.ic_enquiry));
         mlist.add(new MenuModel("Notifications", R.drawable.ic_bell));
-        mlist.add(new MenuModel("Contact Us", R.drawable.support));
-        mlist.add(new MenuModel("Terms & Conditions", R.drawable.policy));
-        mlist.add(new MenuModel("Privacy Policy", R.drawable.policy));
+        mlist.add(new MenuModel("Contact Us", R.drawable.ic_support));
+        mlist.add(new MenuModel("Terms & Conditions", R.drawable.ic_policy));
+        mlist.add(new MenuModel("Privacy Policy", R.drawable.ic_policy));
         mlist.add(new MenuModel("Share App", R.drawable.ic_share));
+        mlist.add(new MenuModel("Logout", R.drawable.ic_logout));
 
 
         menuAdapter = new MenuAdapter(MapActivity.this, mlist, new MenuAdapter.onTouchMethod() {
@@ -478,6 +496,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Fragment fm = null;
                 String title = mlist.get(pos).getTitle();
                 switch (title.toLowerCase().toString()) {
+                    case "logout":
+                        showLogoutDialog();
+                        break;
                     case "home":
                         fm = new HomeFragment();
                         break;
@@ -646,11 +667,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void drawRoute(LatLng origin, LatLng dest) {
-        Log.d("draww", "drawRoute: "+origin+"=="+dest);
-        String url="";
-        if (dest != null && origin != null) {
-             url = getDirectionsUrl(origin, dest);
+        if (origin != null && dest != null) {
+            Log.d("draww", "drawRoute: " + origin + "==" + dest);
+            String url = getDirectionsUrl(origin, dest);
             new DownloadTask().execute(url);
+        }else {
+            Log.e("MapActivity", "Pickup  Destination location null");
         }
     }
 
@@ -988,15 +1010,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        binding.tvLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
-                    binding.drawer.closeDrawer(GravityCompat.START);
-                }
-                showLogoutDialog();
-            }
-        });
+
 
         binding.navHeader.linMain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1008,6 +1022,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
+
+
 
     public void showLogoutDialog() {
         Dialog dialog;
@@ -1347,5 +1363,88 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
+    public void disbaleMap(LatLng pickLatLng,LatLng destinationLatLng)
+    {
+        // 1. Add markers
+        mMap.addMarker(new MarkerOptions().position(pickLatLng).title("Pickup Location"));
+        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination Location"));
+
+        // 2. Draw polyline between pickup and destination
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .add(pickLatLng)
+                .add(destinationLatLng)
+                .width(8)               // लाइन की मोटाई
+                .color(Color.BLUE)      // लाइन का रंग
+                .geodesic(true);        // वास्तविक धरती की सतह के हिसाब से लाइन
+
+        mMap.addPolyline(polylineOptions);
+
+        // 3. Disable all gestures and UI controls
+        mMap.getUiSettings().setAllGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+
+        // 4. Disable marker clicks by consuming click events
+        mMap.setOnMarkerClickListener(marker -> true);
+
+        // 5. Camera को दोनों locations के बीच सेट करें ताकि दोनों markers और polyline दिखें
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(pickLatLng);
+        builder.include(destinationLatLng);
+        LatLngBounds bounds = builder.build();
+
+        int padding = 100; // padding around the edges of the map in pixels
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+        // 6. Prevent user from moving camera away from these bounds
+        mMap.setOnCameraMoveStartedListener(reason -> {
+            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+            }
+        });
+    }
+    public void enableMap(){
+        {
+            // 1. Add markers
+            mMap.addMarker(new MarkerOptions().position(pickLatLng).title("Pickup Location"));
+            mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination Location"));
+
+            // 2. Draw polyline between pickup and destination
+            PolylineOptions polylineOptions = new PolylineOptions()
+                    .add(pickLatLng)
+                    .add(destinationLatLng)
+                    .width(8)
+                    .color(Color.BLUE)
+                    .geodesic(true);
+
+            mMap.addPolyline(polylineOptions);
+
+            // 3. Enable all gestures (default is enabled, लेकिन explicitly कर सकते हैं)
+            mMap.getUiSettings().setAllGesturesEnabled(true);
+            mMap.getUiSettings().setZoomControlsEnabled(true);        // Zoom buttons दिखाएं
+            mMap.getUiSettings().setCompassEnabled(true);             // Compass दिखाएं
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);    // My Location button दिखाएं
+            mMap.getUiSettings().setMapToolbarEnabled(true);          // Map toolbar दिखाएं
+
+            // 4. Allow marker clicks with default behaviour (optional)
+            mMap.setOnMarkerClickListener(null);
+
+            // 5. Camera को दोनों locations के बीच सेट करें ताकि दोनों markers और polyline दिखें
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(pickLatLng);
+            builder.include(destinationLatLng);
+            LatLngBounds bounds = builder.build();
+
+            int padding = 100; // padding around the edges of the map in pixels
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        }
+    }
+
+
+
 
 }

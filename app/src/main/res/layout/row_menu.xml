@@ -20,7 +20,6 @@
             android:layout_height="12pt"/>
         <TextView
             android:id="@+id/tv_title"
-            style="@style/TextViewSemBold"
             android:textSize="@dimen/space_6"
             android:layout_marginLeft="@dimen/space_12"
             android:layout_gravity="center_vertical"

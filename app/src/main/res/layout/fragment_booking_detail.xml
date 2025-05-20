@@ -17,11 +17,11 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView
-                android:scaleType="fitXY"
-                android:src="@drawable/map_dummy"
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="100pt"/>
+                android:layout_height="120pt" />
             <LinearLayout
                 android:layout_marginTop="@dimen/space_5"
                 android:orientation="vertical"
@@ -86,10 +86,10 @@
                         android:layout_alignParentEnd="true"
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_button"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/space_5"
                         android:text=""
-                        android:backgroundTint="@color/grey_20"
+                        android:backgroundTint="@color/red_600"
                         android:paddingHorizontal="@dimen/space_5"
                         android:paddingVertical="@dimen/space_1"
                         android:layout_width="wrap_content"
@@ -146,6 +146,7 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:layout_centerVertical="true"
                         android:gravity="end"
                         android:orientation="vertical"
                         android:layout_alignParentEnd="true"
@@ -158,19 +159,7 @@
                             android:textSize="@dimen/space_5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-                        <TextView
-                            android:id="@+id/t_download"
-                            android:layout_marginTop="@dimen/space_2"
-                            android:background="@drawable/bg_button"
-                            android:paddingVertical="@dimen/space_2"
-                            android:paddingHorizontal="@dimen/space_5"
-                         android:layout_gravity="end"
-                            android:gravity="end"
-
-                        android:text="Receipt"
-                        android:textSize="@dimen/space_6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                      
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -180,6 +169,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/grey"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/lin_invoice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
+                        android:paddingVertical="@dimen/space_4"
+                        android:layout_marginTop="@dimen/space_2"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/ic_right_arrow"
+                            android:layout_width="@dimen/space_8"
+                            android:layout_height="@dimen/space_8"/>
+
+                        <TextView
+                            style="@style/TextViewSemBold"
+                            android:id="@+id/t_download"
+                            android:text="@string/get_invoice"
+                            android:textSize="@dimen/space_6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_marginVertical="@dimen/space_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey"/>
+                </LinearLayout>
+                
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/lin_track"
@@ -363,14 +387,14 @@
                             <ImageView
                                 android:id="@+id/iv_edit"
                                 android:src="@drawable/ic_edit"
-                                android:layout_width="11pt"
-                                android:layout_height="11pt"/>
+                                android:layout_width="10pt"
+                                android:layout_height="10pt"/>
                             <ImageView
                                 android:id="@+id/iv_delete"
                                 android:layout_marginLeft="@dimen/space_10"
                                 android:src="@drawable/ic_delete"
-                                android:layout_width="11pt"
-                                android:layout_height="11pt"/>
+                                android:layout_width="10pt"
+                                android:layout_height="10pt"/>
                         </LinearLayout>
                     </RelativeLayout>
 
