@@ -6,14 +6,20 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +40,17 @@ import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -44,14 +61,25 @@ import java.util.ArrayList;
  * Use the {@link BookingDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookingDetailFragment extends Fragment {
+public class BookingDetailFragment extends Fragment implements OnMapReadyCallback  {
     FragmentBookingDetailBinding binding;
     Common common;
     SessionManagment sessionManagment;
     String book_id="",book_date="",tripId="";
     Repository repository;
     JsonObject feedobject=new JsonObject();
+    private GoogleMap mMap;
+    private LatLng pickupLatLng = null;
+    private LatLng destinationLatLng = null;
 
+
+    public void setLocations(double pickupLat, double pickupLng, double destLat, double destLng) {
+        pickupLatLng = new LatLng(pickupLat, pickupLng);
+        destinationLatLng = new LatLng(destLat, destLng);
+        if (mMap != null) {
+            updateMapMarkers();
+        }
+    }
     public BookingDetailFragment() {
         // Required empty public constructor
     }
@@ -76,6 +104,17 @@ public class BookingDetailFragment extends Fragment {
         initView();
         getAllData();
         allClick();
+        SupportMapFragment mapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentById(R.id.map);
+
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(this);
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -84,6 +123,61 @@ public class BookingDetailFragment extends Fragment {
             }
         });
         return binding.getRoot();
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        // Disable all gestures
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomGesturesEnabled(false);
+        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setRotateGesturesEnabled(false);
+        uiSettings.setTiltGesturesEnabled(false);
+        // Disable marker clicks
+        mMap.setOnMarkerClickListener(marker -> true);
+        if (pickupLatLng != null && destinationLatLng != null) {
+            updateMapMarkers();
+        }
+    }
+
+    private void updateMapMarkers() {
+        mMap.clear();
+
+        // Add pickup marker with custom icon
+        mMap.addMarker(new MarkerOptions()
+                .position(pickupLatLng)
+                .title("Pickup")
+                .icon(resizeMapIcon(R.drawable.ic_circle_loc_blue, 60, 80)));
+
+        // Add destination marker with custom icon
+        mMap.addMarker(new MarkerOptions()
+                .position(destinationLatLng)
+                .title("Destination")
+                .icon(resizeMapIcon(R.drawable.ic_circle_loc_black, 60, 80)));
+
+        // Adjust camera to show both points
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(pickupLatLng);
+        builder.include(destinationLatLng);
+        LatLngBounds bounds = builder.build();
+
+        int padding = 100; // pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMap.moveCamera(cu);
+
+        // 👉 Ensure minimum zoom level so map doesn't look too far
+        float currentZoom = mMap.getCameraPosition().zoom;
+        float minZoom = 13.5f; // Adjust as needed (13-15 is street level)
+
+        if (currentZoom < minZoom) {
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(minZoom));
+        }
+    }
+
+    private BitmapDescriptor resizeMapIcon(int drawableRes, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     private void getAllData()
@@ -98,6 +192,8 @@ public class BookingDetailFragment extends Fragment {
                     BookingDetailResp resp = (BookingDetailResp) data;
                     Log.e("BookingDetail ",data.toString());
                     if (resp.getStatus()==200) {
+                        setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()),Double.parseDouble( resp.getRecordList().getPickupLng()),
+                                Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
                         if(resp.getRecordList().getTripStatus().equalsIgnoreCase("scheduled")||
                            resp.getRecordList().getTripStatus().equalsIgnoreCase("running")){
                            binding.linTrack.setVisibility(View.VISIBLE);
@@ -108,6 +204,7 @@ public class BookingDetailFragment extends Fragment {
 
                         }
                         else{
+
                             binding.linInvoice.setVisibility(View.VISIBLE);
                             binding.linTrack.setVisibility(View.GONE);
                             binding.relPay.setVisibility(View.VISIBLE);
