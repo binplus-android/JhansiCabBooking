@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -99,9 +100,11 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -271,7 +274,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("ProfileFragment") ||
                             frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
-                            frgmentName.equalsIgnoreCase("BookingDetailFragment")
+                            frgmentName.equalsIgnoreCase("BookingDetailFragment")||
+                            frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")
 
                     ) {
                         binding.linToolbar.setVisibility(View.GONE);
@@ -328,6 +332,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    private void animateCameraWithOffset(final LatLng targetLatLng) {
+//        mMap.setOnMapLoadedCallback(() -> {
+//            Projection projection = mMap.getProjection();
+//            Point point = projection.toScreenLocation(targetLatLng);
+//
+//            point.y -= 250; // pt height fix hai → marker ko 300px upar shift karo
+//
+//            LatLng adjustedLatLng = projection.fromScreenLocation(point);
+           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 15.0f));
+        //});
+//        mMap.setPadding(0, 250, 0, 0); // Top padding for fixed height map
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetLatLng, 15f);
+//        mMap.animateCamera(cameraUpdate);
+    }
 
 
     public void storeDataSession() {
@@ -589,23 +607,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
 
-//    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue,LatLng latLng) {
-//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-//            pickupLat = Lat;
-//            pickupLng = Lng;
-//            pickAddres = pickAddressValue;
-//            tvpick.setText(pickAddressValue);
-//            pickLatLng=latLng;
-//            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-//            for (Fragment fragment : fragments) {
-//                if (fragment instanceof PickUpFragment) {
-//                    ((PickUpFragment) fragment).updateText(pickAddressValue);
-//                }
-//            }
-//            showPickupMarker(latLng);
-//
-//        }, 200);  // 200ms delay gives enough time for fragment to settle
-//    }
 
     public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue, LatLng latLng) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -999,7 +1000,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 riderMarket.remove();
 
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+          //  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+            animateCameraWithOffset(location);
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
             binding.tvAddress.setText(address);
 
@@ -1296,8 +1298,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(latLng);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-
+                    //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                    animateCameraWithOffset(latLng);
                      binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
@@ -1353,53 +1355,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return null;
     }
 
-//    private String getCurrentFragmentName() {
-//        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
-//        if (navHostFragment instanceof NavHostFragment) {
-//            Fragment currentFragment = ((NavHostFragment) navHostFragment)
-//                    .getChildFragmentManager()
-//                    .getPrimaryNavigationFragment();
-//
-//            if (currentFragment != null) {
-//                return currentFragment.getClass().getSimpleName();
-//            }
-//        }
-//        return null;
-//    }
-
-
-
-    //    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//        mMap.getUiSettings().setZoomControlsEnabled(true);
-//        mMap.getUiSettings().setZoomGesturesEnabled(true);
-//        mMap.setInfoWindowAdapter(new CustomInfoWindow(this));
-//        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.uber_style_map));
-//
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(LatLng latLng) {
-//                if(destinationMarker!=null)
-//                    destinationMarker.remove();
-//
-//                int height = 70; // you can adjust
-//                int width = 50;  // you can adjust
-//
-//                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_location);
-//                Bitmap b = bitmapdraw.getBitmap();
-//                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-//                destinationMarker=mMap.addMarker(new MarkerOptions().position(latLng)
-//                        .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
-//                        .title("Destination"));
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-//                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-//                tvDestination.setText(address);
-//            }
-//        });
-//        mMap.setOnInfoWindowClickListener(this);
-//        displayLocation();
-//    }
     public void showCommonPickDestinationArea(boolean status, boolean is_close) {
         if (status) {
             binding.commonAddress.setVisibility(View.VISIBLE);

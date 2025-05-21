@@ -110,6 +110,31 @@ public class Common {
         sessionManagment=new SessionManagment(context);
         repository = new Repository(context);
     }
+    public String getDirectionsUrl(LatLng origin, LatLng dest) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Mode
+        String mode = "mode=driving"; // or walking/bicycling
+
+        // API key
+        String key = "key=YOUR_GOOGLE_MAPS_API_KEY"; // replace with your actual API key
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + key;
+
+        // Output format
+        String output = "json";
+
+        // Building the final URL
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+    }
 
 
     // Function to get distance in km

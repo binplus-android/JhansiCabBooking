@@ -5,6 +5,10 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,7 +18,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cabbooking.R;
@@ -30,10 +36,35 @@ import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.core.Repo;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Retrofit;
@@ -43,7 +74,7 @@ import retrofit2.Retrofit;
  * Use the {@link AfterPaymentDoneFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AfterPaymentDoneFragment extends Fragment {
+public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCallback {
 
     String trip_type="",outstation_type="",tripId="",driver_Number="";
     SessionManagment sessionManagment;
@@ -57,7 +88,25 @@ public class AfterPaymentDoneFragment extends Fragment {
     private static final long API_REFRESH_INTERVAL = 8000; //  8 seconds
     String amount_pay="0";
     int wallet_amount=0;
+    private GoogleMap mMap;
+    private LatLng pickupLatLng = null;
+    private LatLng destinationLatLng = null;
+    private Polyline currentPolyline; // add this at class level
 
+
+    //public void setLocations(double pickupLat, double pickupLng, double destLat, double destLng) {
+        public void setLocations(double pickupLat, double pickupLng,double destLat, double destLng) {
+            common=new Common(getActivity());
+        pickupLatLng = new LatLng(pickupLat, pickupLng);
+            LatLng updatedPickupLatLng = new LatLng(pickupLat, pickupLng);
+        destinationLatLng = new LatLng(destLat, destLng);
+            updateRoute(pickupLatLng,destinationLatLng);
+        if (mMap != null) {
+            updateMapMarkers();
+
+        }
+
+    }
     public AfterPaymentDoneFragment() {
         // Required empty public constructor
     }
@@ -74,7 +123,171 @@ public class AfterPaymentDoneFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
     }
+    private void updateRoute(LatLng pickupLatLng, LatLng dropLatLng) {
+        String url = getDirectionsUrl(pickupLatLng, dropLatLng);
+        new FetchURL().execute(url);
+    }
 
+
+    // 3. FetchURL class to get directions
+    private class FetchURL extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String data = "";
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.connect();
+                InputStream inputStream = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuffer buffer = new StringBuffer();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                data = buffer.toString();
+                reader.close();
+                inputStream.close();
+                conn.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            new ParserTask().execute(s);
+        }
+    }
+
+    // 4. ParserTask to parse the route and draw polyline
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points;
+            PolylineOptions lineOptions = null;
+
+            if (currentPolyline != null) currentPolyline.remove(); // remove old line
+
+            for (int i = 0; i < result.size(); i++) {
+                points = new ArrayList<>();
+                lineOptions = new PolylineOptions();
+                List<HashMap<String, String>> path = result.get(i);
+
+                for (HashMap<String, String> point : path) {
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    points.add(new LatLng(lat, lng));
+                }
+
+                lineOptions.addAll(points);
+                lineOptions.width(4);
+                lineOptions.color(Color.BLUE);
+                lineOptions.geodesic(true);
+            }
+
+            // draw on map
+            if (lineOptions != null && mMap != null) {
+                currentPolyline = mMap.addPolyline(lineOptions);
+            }
+        }
+    }
+
+    // 5. DirectionsJSONParser class inside AfterPaymentDoneFragment
+    private class DirectionsJSONParser {
+        public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
+            List<List<HashMap<String, String>>> routes = new ArrayList<>();
+            JSONArray jRoutes;
+            JSONArray jLegs;
+            JSONArray jSteps;
+
+            try {
+                jRoutes = jObject.getJSONArray("routes");
+
+                for (int i = 0; i < jRoutes.length(); i++) {
+                    jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+                    List<HashMap<String, String>> path = new ArrayList<>();
+
+                    for (int j = 0; j < jLegs.length(); j++) {
+                        jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+
+                        for (int k = 0; k < jSteps.length(); k++) {
+                            String polyline = "";
+                            polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
+                            List<LatLng> list = decodePoly(polyline);
+
+                            for (LatLng latLng : list) {
+                                HashMap<String, String> hm = new HashMap<>();
+                                hm.put("lat", Double.toString(latLng.latitude));
+                                hm.put("lng", Double.toString(latLng.longitude));
+                                path.add(hm);
+                            }
+                        }
+                    }
+                    routes.add(path);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        private List<LatLng> decodePoly(String encoded) {
+            List<LatLng> poly = new ArrayList<>();
+            int index = 0, len = encoded.length();
+            int lat = 0, lng = 0;
+
+            while (index < len) {
+                int b, shift = 0, result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
+
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+
+                LatLng p = new LatLng((((double) lat / 1E5)), (((double) lng / 1E5)));
+                poly.add(p);
+            }
+            return poly;
+        }
+    }
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String mode = "mode=driving";
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        String output = "json";
+        String apiKey = getActivity().getString(R.string.google_maps_key); // replace with your actual key
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,8 +309,74 @@ public class AfterPaymentDoneFragment extends Fragment {
 
             }
         });
+        SupportMapFragment mapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentById(R.id.map);
 
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_container, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(this);
         return binding.getRoot();
+    }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        // Disable all gestures
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomGesturesEnabled(false);
+        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setRotateGesturesEnabled(false);
+        uiSettings.setTiltGesturesEnabled(false);
+        // Disable marker clicks
+        mMap.setOnMarkerClickListener(marker -> true);
+        if (pickupLatLng != null && destinationLatLng != null) {
+            updateMapMarkers();
+        }
+    }
+
+    private void updateMapMarkers() {
+           // check this aftervreal updation mMap.clear(); to off blink comment this
+       // mMap.clear();
+
+        // Add pickup marker with custom icon
+        mMap.addMarker(new MarkerOptions()
+                .position(pickupLatLng)
+                .title("Pickup")
+                .icon(resizeMapIcon(R.drawable.ic_local, 120, 110)));
+
+        // Add destination marker with custom icon
+        mMap.addMarker(new MarkerOptions()
+                .position(destinationLatLng)
+                .title("Destination")
+                .icon(resizeMapIcon(R.drawable.ic_pickup_location, 100, 100)));
+
+        // Adjust camera to show both points
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(pickupLatLng);
+        builder.include(destinationLatLng);
+        LatLngBounds bounds = builder.build();
+
+        int padding = 100; // pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMap.moveCamera(cu);
+
+        // 👉 Ensure minimum zoom level so map doesn't look too far
+        float currentZoom = mMap.getCameraPosition().zoom;
+        float minZoom = 13.5f; // Adjust as needed (13-15 is street level)
+
+        if (currentZoom < minZoom) {
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(minZoom));
+        }
+    }
+
+    private BitmapDescriptor resizeMapIcon(int drawableRes, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), drawableRes);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     public void getDetailApi()    {
@@ -111,6 +390,17 @@ public class AfterPaymentDoneFragment extends Fragment {
                     TripDetailRes resp = (TripDetailRes) data;
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
+                        TextView tvpick=binding.commonAddress.findViewById(R.id.tv_pick);
+                        EditText et_des=binding.commonAddress.findViewById(R.id.tv_desctination);
+                        et_des.setEnabled(false);
+                        et_des.setFocusable(false);
+                        tvpick.setText(resp.getRecordList().getPickup());
+                        et_des.setText(resp.getRecordList().getDestination());
+                        pickupLatLng = new LatLng(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()));
+                        destinationLatLng = new LatLng(Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
+
+                        binding.commonAddress.findViewById(R.id.tv_desctination).setEnabled(false);
+
                         String payment_mode="cash";
                         showPaymentMode(payment_mode);
 
@@ -258,7 +548,9 @@ public class AfterPaymentDoneFragment extends Fragment {
 
     }
     private void initView() {
-        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
+        binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
+        binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
+       // ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
         repository=new Repository(getActivity());
@@ -336,8 +628,20 @@ public class AfterPaymentDoneFragment extends Fragment {
                     DriverLocationResp resp = (DriverLocationResp) data;
                     Log.e("driverLocation ",data.toString());
                     if (resp.getStatus()==200) {
-                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
-                                resp.getRecordList().getLng());
+//                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
+//                                resp.getRecordList().getLng());
+                        String status="pending";//started,running
+                        if(!status.equalsIgnoreCase("started")||!status.equalsIgnoreCase("running")) {
+                            //car-pickup,user -destination(trip not started)
+                            setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+                                    pickupLatLng.latitude,pickupLatLng.longitude );
+                        }
+                        else{
+                            //car-pickup,actual destination-destination(trip started)
+                            setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+                                    destinationLatLng.latitude,destinationLatLng.longitude );
+                        }
+
 
                     }else{
                         common.errorToast(resp.getError());
