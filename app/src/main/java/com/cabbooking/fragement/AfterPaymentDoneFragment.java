@@ -630,7 +630,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                     if (resp.getStatus()==200) {
 //                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
 //                                resp.getRecordList().getLng());
-                        String status="pending";//started,running
+                        String status="";//started,running
                         if(!status.equalsIgnoreCase("started")||!status.equalsIgnoreCase("running")) {
                             //car-pickup,user -destination(trip not started)
                             setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
