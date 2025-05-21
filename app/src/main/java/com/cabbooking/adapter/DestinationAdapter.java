@@ -53,6 +53,7 @@ public class DestinationAdapter extends RecyclerView.Adapter<DestinationAdapter.
 
     @Override
     public int getItemCount() {
+
         return list.size();
     }
 
