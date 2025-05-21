@@ -75,6 +75,7 @@ import com.cabbooking.fragement.ContactUsFragment;
 import com.cabbooking.fragement.DestinationFragment;
 import com.cabbooking.fragement.EnquiryFragment;
 import com.cabbooking.fragement.HomeFragment;
+import com.cabbooking.fragement.PickUpAddressFragment;
 import com.cabbooking.fragement.PickUpFragment;
 import com.cabbooking.fragement.ProfileFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
@@ -266,7 +267,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //                        LatLng destinationLatLng = new LatLng(28.7041, 77.1025);   // Destination Location
 //                        disbaleMap(pickupLatLng,destinationLatLng);
 //                    }
-                    else if (frgmentName.contains("DestinationFragment") ||
+                    else if (frgmentName.contains("DestinationFragment") ||frgmentName.contains("PickUpAddressFragment") ||
                             frgmentName.contains("EnquiryFragment") ||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
@@ -1059,6 +1060,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //    }
 
     public void allClick() {
+        binding.main.findViewById(R.id.lin_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                common.switchFragment(new PickUpAddressFragment());
+            }
+        });
         tvpick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1345,6 +1352,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+    }
+    public void setHomeAddress(String address){
+        binding.tvAddress.setText(address);
     }
 
     private String getCurrentFragmentName() {
