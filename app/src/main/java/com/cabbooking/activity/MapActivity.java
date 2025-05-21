@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -56,6 +57,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -92,7 +94,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -157,9 +163,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     MenuAdapter menuAdapter;
     public ActivityResultLauncher<String> locationPermissionLauncher;
     Activity activity;
-    LatLng pickLatLng,destinationLatLng;
+    LatLng pickLatLng, destinationLatLng;
     String apiKey;
     private Polyline currentPolyline;
+    FusedLocationProviderClient fusedLocationClient;
+    LocationRequest locationRequest;
     LatLng pickUpFinalLat;
     private boolean pickupPlacesAllReadySelected = false;
     String currentFragment = "";
@@ -262,7 +270,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("ContactUsFragment") ||
                             frgmentName.equalsIgnoreCase("ProfileFragment") ||
                             frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
-                            frgmentName.equalsIgnoreCase("BookingHistoryFragment")||
+                            frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("BookingDetailFragment")
 
                     ) {
@@ -277,6 +285,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 binding.main.findViewById(R.id.lin_search));
 
                     } else {
+                        if (frgmentName.equalsIgnoreCase("VechileFragment")) {
+                            disbaleMap();
+                        }
+
                         common.setMap(false, true, 160, binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
@@ -315,6 +327,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
     }
+
+
 
     public void storeDataSession() {
         common.getAppSettingData(new OnConfig() {
@@ -609,6 +623,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (fragment instanceof PickUpFragment && fragment.isVisible()) {
                         Log.e("FragmentCheck", "Updating PickUpFragment");
+                        tvpick.setText(pickAddressValue);
                         ((PickUpFragment) fragment).updateText(pickAddressValue);
                         break;
                     }
@@ -1275,15 +1290,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
                     pickupPlacesSelected = true; // ✅ Stop auto-updating pickup
                     isMapClicked = true; // ✅ Set flag
+                    String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
 
-                    getPickUpLatLng(latLng.latitude, latLng.longitude, tvpick.getText().toString(), latLng);
+                    getPickUpLatLng(latLng.latitude, latLng.longitude, address, latLng);
 
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(latLng);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
 
-                    String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
-                    binding.tvAddress.setText(address);
+                     binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
                     drawRoute(latLng, destinationLatLng);
@@ -1307,12 +1322,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
 
                     LatLng center = mMap.getCameraPosition().target;
-
-//                    Common.currenLocation = new LatLng(latLng.latitude, latLng.longitude);
-                    getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
-
-
                     String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+                 //  Common.currenLocation = new LatLng(center.latitude, center.longitude);
+                  //  getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
+                    getPickUpLatLng(center.latitude, center.longitude, address,center);
+
+
+
                     binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
@@ -1320,6 +1336,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(center);
                     drawRoute(center, destinationLatLng);
+//                    if(fragmentName.equalsIgnoreCase("HomeFragment")){
+//                        common.switchFragment(new PickUpFragment());
+//                    }
                 }
             }
         });
@@ -1507,7 +1526,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    public void disbaleMap(LatLng pickLatLng,LatLng destinationLatLng)
+    //public void disbaleMap(LatLng pickLatLng,LatLng destinationLatLng)
+    public void disbaleMap()
     {
         // 1. Add markers
         mMap.addMarker(new MarkerOptions().position(pickLatLng).title("Pickup Location"));

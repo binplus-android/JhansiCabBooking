@@ -166,11 +166,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 
 
     private void allClicks() {
@@ -209,7 +204,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         });
         binding.recDestination.setAdapter(adapter);
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+       // ((MapActivity) getActivity()).moveToUserLocation();
+    }
     public void initView() {
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
