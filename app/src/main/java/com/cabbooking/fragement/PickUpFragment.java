@@ -76,9 +76,9 @@ int vechicle_pos;
         initView();
         allClick();
 
-
         return binding.getRoot();
     }
+
     public void updateText(String text) {
         if (binding.tvAddress != null) {
             binding.tvAddress.setText(text);

@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
@@ -158,6 +159,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     String apiKey;
     private Polyline currentPolyline;
     LatLng pickUpFinalLat;
+    private boolean pickupPlacesAllReadySelected = false;
+    String currentFragment = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
 
         initView();
-         apiKey = getString(R.string.google_maps_key);
+        apiKey = getString(R.string.google_maps_key);
         storeDataSession();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
         getMenuList();
@@ -188,7 +191,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
 
                 if (fragment != null && fragment.getClass() != null) {
+                    Log.e("log_fragment_backstack",getCurrentFragmentName());//srtfyuhij
                     String frgmentName = fragment.getClass().getSimpleName();
+                    Log.e("log_fragment_backstack_two",frgmentName);//srtfyuhij
 
                     if (frgmentName.equalsIgnoreCase("VechileFragment")) {
                         if (riderMarket != null) {
@@ -199,10 +204,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             .position(pickUpFinalLat)
                                 .title("You")
                                 .icon(bitmapDescriptorFromVector(MapActivity.this, R.drawable.ic_pickup_location)));
+
+                    }else if (frgmentName.equalsIgnoreCase("PickUpFragment") || frgmentName.contains("HomeFragment")){
+
+                        clearRouteIfInHome();
+
+                        if (pickUpFinalLat != null) {
+                            getPickUpLatLng(pickUpFinalLat.latitude, pickUpFinalLat.longitude, tvpick.getText().toString(), pickUpFinalLat);
+
+                            if (riderMarket != null) {
+                                riderMarket.remove();
+                                riderMarket = null;
+                            }
+
+                            riderMarket = mMap.addMarker(new MarkerOptions()
+                                    .position(pickUpFinalLat)
+                                    .title("You")
+                                    .icon(bitmapDescriptorFromVector(MapActivity.this, R.drawable.ic_blue_loc)));
+                        }
+
+
                     }
 
-
                     if (frgmentName.contains("HomeFragment")) {
+//                        clearRouteIfInHome();
                         binding.mytoolbar.setVisibility(View.VISIBLE);
                         binding.linToolbar.setVisibility(View.VISIBLE);
                         binding.linBackMain.setVisibility(View.GONE);
@@ -548,20 +573,49 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
 
-    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue,LatLng latLng) {
-        pickupLat = Lat;
-        pickupLng = Lng;
-        pickAddres = pickAddressValue;
-        tvpick.setText(pickAddressValue);
-        pickLatLng=latLng;
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof PickUpFragment) {
-                ((PickUpFragment) fragment).updateText(pickAddressValue);
-            }
-        }
-        showPickupMarker(latLng);
+//    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue,LatLng latLng) {
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            pickupLat = Lat;
+//            pickupLng = Lng;
+//            pickAddres = pickAddressValue;
+//            tvpick.setText(pickAddressValue);
+//            pickLatLng=latLng;
+//            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+//            for (Fragment fragment : fragments) {
+//                if (fragment instanceof PickUpFragment) {
+//                    ((PickUpFragment) fragment).updateText(pickAddressValue);
+//                }
+//            }
+//            showPickupMarker(latLng);
+//
+//        }, 200);  // 200ms delay gives enough time for fragment to settle
+//    }
 
+    public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue, LatLng latLng) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            pickupLat = Lat;
+            pickupLng = Lng;
+            pickAddres = pickAddressValue;
+//            tvpick.setText(pickAddressValue);
+            pickLatLng = latLng;
+
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    String fragmentName = fragment.getClass().getSimpleName();
+                    Log.e("FragmentCheck", "Found fragment: " + fragmentName);
+
+                    if (fragment instanceof PickUpFragment && fragment.isVisible()) {
+                        Log.e("FragmentCheck", "Updating PickUpFragment");
+                        ((PickUpFragment) fragment).updateText(pickAddressValue);
+                        break;
+                    }
+                }
+            }
+
+            showPickupMarker(latLng);
+
+        }, 200); // 200ms delay to ensure fragment is ready
     }
 
     private void showPickupMarker(LatLng latLng) {
@@ -577,7 +631,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Determine fragment name
         String fragmentName = getCurrentFragmentName(); // We'll define this function below
-
         int markerIconResId;
 
         // Decide icon based on current fragment
@@ -666,14 +719,44 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.fromBitmap(smallMarker);
     }
 
-    private void drawRoute(LatLng origin, LatLng dest) {
-        if (origin != null && dest != null) {
-            Log.d("draww", "drawRoute: " + origin + "==" + dest);
-            String url = getDirectionsUrl(origin, dest);
-            new DownloadTask().execute(url);
-        }else {
-            Log.e("MapActivity", "Pickup  Destination location null");
+//    private void drawRoute(LatLng origin, LatLng dest) {
+//        if (origin != null && dest != null) {
+//            Log.d("draww", "drawRoute: " + origin + "==" + dest);
+//            String url = getDirectionsUrl(origin, dest);
+//            new DownloadTask().execute(url);
+//        }else {
+//            Log.e("MapActivity", "Pickup  Destination location null");
+//        }
+//    }
+
+    private void clearRouteIfInHome() {
+        if (("HomeFragment".equals(getCurrentFragmentName())||"PickUpFragment".equals(getCurrentFragmentName())) && mMap != null) {
+            mMap.clear();
+            showPickupMarker(Common.currenLocation);
         }
+    }
+
+    private void drawRoute(LatLng origin, LatLng dest) {
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+            String currentFragment = getCurrentFragmentName();
+            Log.e("log_fragment_drawRoute",currentFragment);//srtfyuhij
+            Log.e("origin----dest", String.valueOf(origin) +"----"+String.valueOf(dest));
+            if (origin != null && dest != null) {
+                if (!"HomeFragment".equals(currentFragment) && !"PickUpFragment".equals(currentFragment)) {
+                    Log.d("drawRoute", "Drawing route from " + origin + " to " + dest);
+                    String url = getDirectionsUrl(origin, dest);
+                    new DownloadTask().execute(url);
+                } else {
+                    Log.d("drawRoute", "In HomeFragment, skipping route drawing.");
+                }
+            } else {
+                Log.e("MapActivity", "Pickup or Destination location is null.");
+            }
+
+        }, 200);  // 200ms delay gives enough time for fragment to settle
+
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
@@ -859,7 +942,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Common.currenLocation = new LatLng(currentLat, currentLng);
                 Log.e("sxdcfgvbhjnk", String.valueOf(currentLat));
                 displayLocation();
-                getPickUpLatLng(currentLat, currentLng, tvpick.getText().toString(),Common.currenLocation);
+                if (!pickupPlacesSelected) {
+                    getPickUpLatLng(currentLat, currentLng, tvpick.getText().toString(),Common.currenLocation);
+                }
 
             }
         });
@@ -947,6 +1032,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void setTitle(String title) {
         binding.tvTitle.setText(title);
     }
+
 //    public void setTitleWithSize(String title,int size){
 //         binding.tvTitle.setText(title);
 //
@@ -1023,8 +1109,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-
-
     public void showLogoutDialog() {
         Dialog dialog;
 
@@ -1053,6 +1137,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 sessionManagment.logout(MapActivity.this);
             }
         });
+
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
@@ -1142,7 +1227,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private boolean isMapClicked = false;
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -1153,7 +1237,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             public void onMapClick(@NonNull LatLng latLng) {
                 String fragmentName = getCurrentFragmentName();
                 if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
+                    pickupPlacesSelected = true; // ✅ Stop auto-updating pickup
                     isMapClicked = true; // ✅ Set flag
+
+                    getPickUpLatLng(latLng.latitude, latLng.longitude, tvpick.getText().toString(), latLng);
+
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(latLng);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
@@ -1184,6 +1272,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     LatLng center = mMap.getCameraPosition().target;
 
+//                    Common.currenLocation = new LatLng(latLng.latitude, latLng.longitude);
+                    getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
+
+
                     String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
                     binding.tvAddress.setText(address);
                     if (tvpick != null)
@@ -1205,6 +1297,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         return null;
     }
+
+//    private String getCurrentFragmentName() {
+//        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+//        if (navHostFragment instanceof NavHostFragment) {
+//            Fragment currentFragment = ((NavHostFragment) navHostFragment)
+//                    .getChildFragmentManager()
+//                    .getPrimaryNavigationFragment();
+//
+//            if (currentFragment != null) {
+//                return currentFragment.getClass().getSimpleName();
+//            }
+//        }
+//        return null;
+//    }
+
 
 
     //    @Override
@@ -1363,6 +1470,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
+
     public void disbaleMap(LatLng pickLatLng,LatLng destinationLatLng)
     {
         // 1. Add markers
@@ -1406,6 +1514,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
     }
+
     public void enableMap(){
         {
             // 1. Add markers
@@ -1443,8 +1552,5 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         }
     }
-
-
-
 
 }

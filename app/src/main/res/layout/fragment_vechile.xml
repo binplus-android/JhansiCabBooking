@@ -19,7 +19,6 @@
             android:layout_height="wrap_content">
             <!--            <include layout="@layout/common_map"/>-->
 
-
             <LinearLayout
                 android:visibility="gone"
                 android:id="@+id/lin_outstation_data"
