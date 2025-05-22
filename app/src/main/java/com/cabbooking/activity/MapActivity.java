@@ -290,9 +290,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 binding.main.findViewById(R.id.lin_search));
 
                     } else {
-                        if (frgmentName.equalsIgnoreCase("VechileFragment")) {
-                            disbaleMap();
-                        }
+
 
                         common.setMap(false, true, 160, binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
@@ -631,8 +629,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 }
             }
-
+            tvpick.setText(pickAddressValue);
             showPickupMarker(latLng);
+
 
         }, 200); // 200ms delay to ensure fragment is ready
     }
@@ -659,6 +658,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             markerIconResId = R.drawable.ic_blue_loc;
         }else {
             markerIconResId = R.drawable.ic_pickup_location; // fallback
+
         }
 
         riderMarket = mMap.addMarker(new MarkerOptions()
@@ -852,7 +852,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
 
                 lineOptions.addAll(points);
-                lineOptions.width(10);
+                lineOptions.width(4);
                 lineOptions.color(Color.BLUE);
                 lineOptions.geodesic(true); // optional: smoother lines
             }
@@ -1063,37 +1063,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding.main.findViewById(R.id.lin_search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                common.switchFragment(new PickUpAddressFragment());
+                common.switchFragment(new PickUpFragment());
             }
         });
         tvpick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                common.switchFragment(new PickUpFragment());
+                common.switchFragment(new PickUpAddressFragment());
             }
         });
-        tvDestination.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
-                if (fragment != null && fragment.getClass() != null) {
-                    String frgmentName = fragment.getClass().getSimpleName();
-                    if (!frgmentName.contains("DestinationFragment")) {
-                       common.switchFragment(new DestinationFragment());
-                    }
-                }
-            }
-        });
-
-
-
-        tvDestination.addTextChangedListener(new TextWatcher() {
+        tvpick.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().isEmpty()) {
                     try {
                         // Find your fragment instance
-                        DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+                        PickUpAddressFragment fragment = (PickUpAddressFragment) getSupportFragmentManager()
                                 .findFragmentById(R.id.main_framelayout);
 
                         if (fragment != null) {
@@ -1104,7 +1089,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 } else {
                     // You can clear list too, by calling method in fragment or via interface
-                    DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+                    PickUpAddressFragment fragment = (PickUpAddressFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.main_framelayout);
 
                     if (fragment != null) {
@@ -1116,6 +1101,47 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
         });
+        tvDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+                if (fragment == null || !(fragment instanceof DestinationFragment)) {
+                    common.switchFragment(new DestinationFragment());
+                }
+            }
+        });
+
+
+//        tvDestination.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (!s.toString().isEmpty()) {
+//                    try {
+//                        // Find your fragment instance
+//                        DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+//                                .findFragmentById(R.id.main_framelayout);
+//
+//                        if (fragment != null) {
+//                            fragment.fetchAutocompleteSuggestions(s.toString());
+//                        }
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    // You can clear list too, by calling method in fragment or via interface
+//                    DestinationFragment fragment = (DestinationFragment) getSupportFragmentManager()
+//                            .findFragmentById(R.id.main_framelayout);
+//
+//                    if (fragment != null) {
+//                        fragment.clearList();
+//                    }
+//                }
+//            }
+//
+//            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+//            @Override public void afterTextChanged(Editable s) {}
+//        });
+
 
         binding.commonAddress.findViewById(R.id.iv_pick).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1355,6 +1381,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     public void setHomeAddress(String address){
         binding.tvAddress.setText(address);
+
     }
 
     private String getCurrentFragmentName() {
@@ -1491,87 +1518,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //public void disbaleMap(LatLng pickLatLng,LatLng destinationLatLng)
-    public void disbaleMap()
-    {
-        // 1. Add markers
-        mMap.addMarker(new MarkerOptions().position(pickLatLng).title("Pickup Location"));
-        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination Location"));
 
-        // 2. Draw polyline between pickup and destination
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .add(pickLatLng)
-                .add(destinationLatLng)
-                .width(8)               // लाइन की मोटाई
-                .color(Color.BLUE)      // लाइन का रंग
-                .geodesic(true);        // वास्तविक धरती की सतह के हिसाब से लाइन
-
-        mMap.addPolyline(polylineOptions);
-
-        // 3. Disable all gestures and UI controls
-        mMap.getUiSettings().setAllGesturesEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(false);
-        mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-
-        // 4. Disable marker clicks by consuming click events
-        mMap.setOnMarkerClickListener(marker -> true);
-
-        // 5. Camera को दोनों locations के बीच सेट करें ताकि दोनों markers और polyline दिखें
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(pickLatLng);
-        builder.include(destinationLatLng);
-        LatLngBounds bounds = builder.build();
-
-        int padding = 100; // padding around the edges of the map in pixels
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-
-        // 6. Prevent user from moving camera away from these bounds
-        mMap.setOnCameraMoveStartedListener(reason -> {
-            if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-            }
-        });
-    }
-
-    public void enableMap(){
-        {
-            // 1. Add markers
-            mMap.addMarker(new MarkerOptions().position(pickLatLng).title("Pickup Location"));
-            mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination Location"));
-
-            // 2. Draw polyline between pickup and destination
-            PolylineOptions polylineOptions = new PolylineOptions()
-                    .add(pickLatLng)
-                    .add(destinationLatLng)
-                    .width(8)
-                    .color(Color.BLUE)
-                    .geodesic(true);
-
-            mMap.addPolyline(polylineOptions);
-
-            // 3. Enable all gestures (default is enabled, लेकिन explicitly कर सकते हैं)
-            mMap.getUiSettings().setAllGesturesEnabled(true);
-            mMap.getUiSettings().setZoomControlsEnabled(true);        // Zoom buttons दिखाएं
-            mMap.getUiSettings().setCompassEnabled(true);             // Compass दिखाएं
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);    // My Location button दिखाएं
-            mMap.getUiSettings().setMapToolbarEnabled(true);          // Map toolbar दिखाएं
-
-            // 4. Allow marker clicks with default behaviour (optional)
-            mMap.setOnMarkerClickListener(null);
-
-            // 5. Camera को दोनों locations के बीच सेट करें ताकि दोनों markers और polyline दिखें
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(pickLatLng);
-            builder.include(destinationLatLng);
-            LatLngBounds bounds = builder.build();
-
-            int padding = 100; // padding around the edges of the map in pixels
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-        }
-    }
 
 }

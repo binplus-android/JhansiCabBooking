@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
 import com.cabbooking.activity.MapActivity;
-import com.cabbooking.adapter.DestinationAdapter;
+import com.cabbooking.adapter.PickUpAddressAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
@@ -45,7 +45,7 @@ public class PickUpAddressFragment extends Fragment {
     FragmentDestinationBinding binding;
     //ArrayList<DestinationModel> list;
     ArrayList<nearAreaNameModel>list1;
-    DestinationAdapter adapter;
+    PickUpAddressAdapter adapter;
     Common common;
     PlacesClient placesClient ;
 
@@ -100,7 +100,7 @@ public class PickUpAddressFragment extends Fragment {
     }
     public void clearList(){
         list1.clear();
-        list1=areaList;
+        //list1=areaList;
         adapter.notifyDataSetChanged();
     }
     public void fetchAutocompleteSuggestions(String query) {
@@ -182,7 +182,7 @@ public class PickUpAddressFragment extends Fragment {
     public void getDestinatioList() {
         Log.d("hjhfjy", "getDestinatioList: "+list1.size());
         // ArrayList<nearAreaNameModel>list1=list1;
-        adapter=new DestinationAdapter(getActivity(), list1, new DestinationAdapter.onTouchMethod() {
+        adapter=new PickUpAddressAdapter(getActivity(), list1, new PickUpAddressAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
                 LatLng latLng = new LatLng(list1.get(pos).getLat(),  list1.get(pos).getLng());
