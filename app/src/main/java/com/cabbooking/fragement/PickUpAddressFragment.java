@@ -1,7 +1,7 @@
 package com.cabbooking.fragement;
 
 
-import static com.cabbooking.activity.MapActivity.areaList;
+
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -21,7 +21,7 @@ import com.cabbooking.R;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.PickUpAddressAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
-import com.cabbooking.model.nearAreaNameModel;
+import com.cabbooking.model.PickupAdressModel;
 import com.cabbooking.utils.Common;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
@@ -46,8 +46,7 @@ import java.util.Locale;
  */
 public class PickUpAddressFragment extends Fragment {
     FragmentDestinationBinding binding;
-    //ArrayList<DestinationModel> list;
-    ArrayList<nearAreaNameModel>list1;
+    ArrayList<PickupAdressModel>list1;
     PickUpAddressAdapter adapter;
     Common common;
     PlacesClient placesClient ;
@@ -91,7 +90,11 @@ public class PickUpAddressFragment extends Fragment {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!s.toString().isEmpty()) {
+                        binding.recDestination.setVisibility(View.VISIBLE);
                         fetchAutocompleteSuggestions(s.toString());
+                    }
+                    else{
+                        binding.recDestination.setVisibility(View.GONE);
                     }
 //                    else {
 //                        clearList();
@@ -111,11 +114,7 @@ public class PickUpAddressFragment extends Fragment {
 
         return  binding.getRoot();
     }
-    public void clearList(){
-        list1.clear();
-        //list1=areaList;
-        adapter.notifyDataSetChanged();
-    }
+
     public void fetchAutocompleteSuggestions(String query) {
 //        Double pickLat=((MapActivity)getActivity()).getPickupLat();
 //        Double pickLng=((MapActivity)getActivity()).getPickupLng();
@@ -154,7 +153,7 @@ public class PickUpAddressFragment extends Fragment {
                         // prediction.getFullText(null).toString()
                         fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
 
-                       // list1.add(new nearAreaNameModel(mainAddress, 0, 0, fullAddress));
+                       // list1.add(new PickupAdressModel(mainAddress, 0, 0, fullAddress));
                     }
                     adapter.notifyDataSetChanged();
                 })
@@ -166,39 +165,43 @@ public class PickUpAddressFragment extends Fragment {
         );
 
         FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
+        try {
+            placesClient.fetchPlace(request)
+                    .addOnSuccessListener(response -> {
 
-        placesClient.fetchPlace(request)
-                .addOnSuccessListener(response -> {
 
-                    Place place = response.getPlace();
-                    LatLng latLng = place.getLatLng();
-                    if (latLng != null) {
-                        double lat = latLng.latitude;
-                        double lng = latLng.longitude;
-                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                        try {
-                            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                            if (addresses != null && !addresses.isEmpty()) {
-                                String postalCode = addresses.get(0).getPostalCode();
+                        Place place = response.getPlace();
+                        LatLng latLng = place.getLatLng();
+                        if (latLng != null) {
+                            double lat = latLng.latitude;
+                            double lng = latLng.longitude;
+                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                                if (addresses != null && !addresses.isEmpty()) {
+                                    String postalCode = addresses.get(0).getPostalCode();
 
-                                // Step 3: Add to model
-                                list1.add(new nearAreaNameModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
-                                adapter.notifyDataSetChanged();
+                                    // Step 3: Add to model
+                                    list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
+                                    adapter.notifyDataSetChanged();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-//                        list1.add(new nearAreaNameModel(mainAddress, lat, lng, fullAddress));
+//                        list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress));
 //                        adapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Places", "Place details error", e));
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Places", "Place details error", e));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
     public void getPIckUpList() {
         Log.d("hjhfjy", "getPIckUpList: "+list1.size());
-        // ArrayList<nearAreaNameModel>list1=list1;
+        // ArrayList<PickupAdressModel>list1=list1;
         adapter=new PickUpAddressAdapter(getActivity(), list1, new PickUpAddressAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {

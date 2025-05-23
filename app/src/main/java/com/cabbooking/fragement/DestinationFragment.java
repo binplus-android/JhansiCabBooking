@@ -1,7 +1,7 @@
 package com.cabbooking.fragement;
 
 
-import static com.cabbooking.activity.MapActivity.areaList;
+
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -17,19 +17,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
+
 
 import com.cabbooking.R;
-import com.cabbooking.Response.LoginResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.DestinationModel;
-import com.cabbooking.model.nearAreaNameModel;
 import com.cabbooking.utils.Common;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AddressComponent;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
@@ -51,8 +48,7 @@ import java.util.Locale;
  */
 public class DestinationFragment extends Fragment {
     FragmentDestinationBinding binding;
-    //ArrayList<DestinationModel> list;
-    ArrayList<nearAreaNameModel>list1;
+    ArrayList<DestinationModel> list;
     DestinationAdapter adapter;
     Common common;
     PlacesClient placesClient ;
@@ -90,15 +86,17 @@ public class DestinationFragment extends Fragment {
         getDestinatioList();
 
         EditText tvDestination = getActivity().findViewById(R.id.tv_desctination);
-        Toast.makeText(getActivity(), "dest", Toast.LENGTH_SHORT).show();
         if (tvDestination != null) {
-            Toast.makeText(getActivity(), "checkdest", Toast.LENGTH_SHORT).show();
+
             tvDestination.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!s.toString().isEmpty()) {
-                        Toast.makeText(getActivity(), ""+s.toString(), Toast.LENGTH_SHORT).show();
+                        binding.recDestination.setVisibility(View.VISIBLE);
                         fetchAutocompleteSuggestions(s.toString());
+                    }
+                    else{
+                        binding.recDestination.setVisibility(View.GONE);
                     }
 //                    else {
 //                        clearList();
@@ -117,13 +115,9 @@ public class DestinationFragment extends Fragment {
         }
         return  binding.getRoot();
     }
-    public void clearList(){
-        list1.clear();
-        list1=areaList;
-        adapter.notifyDataSetChanged();
-    }
+
     public void fetchAutocompleteSuggestions(String query) {
-        list1.clear();
+        list.clear();
         if (!query.isEmpty()) {
 //            Double pickLat = ((MapActivity) getActivity()).getPickupLat();
 //            Double pickLng = ((MapActivity) getActivity()).getPickupLng();
@@ -161,9 +155,10 @@ public class DestinationFragment extends Fragment {
                             // prediction.getFullText(null).toString()
                             fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
 
-                            // list1.add(new nearAreaNameModel(mainAddress, 0, 0, fullAddress));
+                            // list.add(new nearAreaNameModel(mainAddress, 0, 0, fullAddress));
                         }
                         adapter.notifyDataSetChanged();
+
                     })
                     .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
         }
@@ -194,15 +189,12 @@ public class DestinationFragment extends Fragment {
                                 String postalCode = addresses.get(0).getPostalCode();
 
                                 // Step 3: Add to model
-                                list1.add(new nearAreaNameModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
+                                list.add(new DestinationModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
                                 adapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), ""+list1.size(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-//                        list1.add(new nearAreaNameModel(mainAddress, lat, lng, fullAddress));
-//                        adapter.notifyDataSetChanged();
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Places", "Place details error", e));
@@ -210,19 +202,21 @@ public class DestinationFragment extends Fragment {
 
 
     public void getDestinatioList() {
-        Log.d("hjhfjy", "getDestinatioList: "+list1.size());
-        // ArrayList<nearAreaNameModel>list1=list1;
-        adapter=new DestinationAdapter(getActivity(), list1, new DestinationAdapter.onTouchMethod() {
+        Log.d("hjhfjy", "getDestinatioList: "+list.size());
+        // ArrayList<nearAreaNameModel>list=list;
+        //if(list.size()>1){
+        adapter=new DestinationAdapter(getActivity(), list, new DestinationAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
-                LatLng latLng = new LatLng(list1.get(pos).getLat(),  list1.get(pos).getLng());
-                ((MapActivity)getActivity()).getDestinationLatLng(list1.get(pos).getLat(),
-                        list1.get(pos).getLng(),list1.get(pos).getFormatted_address(), latLng);
+                LatLng latLng = new LatLng(list.get(pos).getLat(),  list.get(pos).getLng());
+                ((MapActivity)getActivity()).getDestinationLatLng(list.get(pos).getLat(),
+                        list.get(pos).getLng(),list.get(pos).getFormatted_address(), latLng);
                 common.switchFragment(new VechileFragment());
             }
         });
         binding.recDestination.setAdapter(adapter);
 
+  //}
 
     }
 
@@ -230,7 +224,7 @@ public class DestinationFragment extends Fragment {
         common=new Common(getActivity());
         ((MapActivity)getActivity()).setTitle("Destination");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,true);
-        list1=new ArrayList<>();
+        list=new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 

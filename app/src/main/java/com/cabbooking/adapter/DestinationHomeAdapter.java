@@ -11,18 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
-import com.cabbooking.model.nearAreaNameModel;
+import com.cabbooking.model.NearAreaNameModel;
 
 import java.util.ArrayList;
 
 public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHomeAdapter.ViewHolder> {
     Context context;
-    ArrayList<nearAreaNameModel> list;
+    ArrayList<NearAreaNameModel> list;
     onTouchMethod listener;
     public interface onTouchMethod{
         void onSelection(int pos);
     }
-    public DestinationHomeAdapter(Context context, ArrayList<nearAreaNameModel> list, onTouchMethod listener) {
+    public DestinationHomeAdapter(Context context, ArrayList<NearAreaNameModel> list, onTouchMethod listener) {
         this.context = context;
         this.list = list;
         this.listener=listener;
@@ -38,7 +38,7 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        nearAreaNameModel model = list.get(position);
+        NearAreaNameModel model = list.get(position);
         if(list.size()-1==position){
             holder.vline.setVisibility(View.GONE);
         }

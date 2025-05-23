@@ -34,7 +34,7 @@ import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
 import com.cabbooking.model.DestinationModel;
-import com.cabbooking.model.nearAreaNameModel;
+import com.cabbooking.model.NearAreaNameModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
@@ -190,7 +190,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void getDestinatioList() {
         Log.d("hjhfjy", "getDestinatioList: "+areaList.size());
-        ArrayList<nearAreaNameModel>list1=areaList;
+        ArrayList<NearAreaNameModel>list1=areaList;
         adapter = new DestinationHomeAdapter(getActivity(), list1, new DestinationHomeAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {

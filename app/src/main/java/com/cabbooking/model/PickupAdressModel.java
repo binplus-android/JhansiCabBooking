@@ -1,13 +1,11 @@
 package com.cabbooking.model;
 
-import org.json.JSONObject;
-
-public class nearAreaNameModel {
+public class PickupAdressModel {
     String name ,formatted_address;
     double lat;
     double lng;
 
-    public nearAreaNameModel(String name, double lat, double lng,String formatted_address) {
+    public PickupAdressModel(String name, double lat, double lng, String formatted_address) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
