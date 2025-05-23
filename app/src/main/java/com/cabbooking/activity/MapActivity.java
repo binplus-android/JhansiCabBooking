@@ -606,13 +606,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             for (Fragment fragment : fragments) {
                 if (fragment != null) {
-                    String fragmentName = fragment.getClass().getSimpleName();
-                    Log.e("FragmentCheck", "Found fragment: " + fragmentName);
+                    //String fragmentName = fragment.getClass().getSimpleName();
+                    //Log.e("FragmentCheck", "Found fragment: " + fragmentName);
 
                     if (fragment instanceof PickUpFragment && fragment.isVisible()) {
                         Log.e("FragmentCheck", "Updating PickUpFragment");
                         tvpick.setText(pickAddressValue);
                         ((PickUpFragment) fragment).updateText(pickAddressValue);
+                        break;
+                    }else if (fragment instanceof PickUpAddressFragment && fragment.isVisible()) {
+                        tvpick.setText(pickAddressValue);
                         break;
                     }
                 }
@@ -1374,6 +1377,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     public void setHomeAddress(String address){
         binding.tvAddress.setText(address);
+        tvpick.setText(address);
 
     }
 

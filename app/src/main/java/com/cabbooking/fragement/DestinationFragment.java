@@ -182,7 +182,7 @@ public class DestinationFragment extends Fragment {
                     if (latLng != null) {
                         double lat = latLng.latitude;
                         double lng = latLng.longitude;
-                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
                         try {
                             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
                             if (addresses != null && !addresses.isEmpty()) {

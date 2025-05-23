@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -207,6 +208,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        hideKeyboard();
        // ((MapActivity) getActivity()).moveToUserLocation();
     }
     public void initView() {
@@ -218,7 +220,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         list = new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
-
+    private void hideKeyboard() {
+        if (getActivity() != null && getView() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        }
+    }
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {

@@ -3,6 +3,7 @@ package com.cabbooking.fragement;
 
 
 
+import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -175,18 +176,21 @@ public class PickUpAddressFragment extends Fragment {
                         if (latLng != null) {
                             double lat = latLng.latitude;
                             double lng = latLng.longitude;
-                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                            try {
-                                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                                if (addresses != null && !addresses.isEmpty()) {
-                                    String postalCode = addresses.get(0).getPostalCode();
+                            Activity activity = getActivity();
+                            if (activity != null) {
+                                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                                try {
+                                    List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                                    if (addresses != null && !addresses.isEmpty()) {
+                                        String postalCode = addresses.get(0).getPostalCode();
 
-                                    // Step 3: Add to model
-                                    list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
-                                    adapter.notifyDataSetChanged();
+                                        // Step 3: Add to model
+                                        list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
 //                        list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress));
 //                        adapter.notifyDataSetChanged();
@@ -206,10 +210,11 @@ public class PickUpAddressFragment extends Fragment {
             @Override
             public void onSelection(int pos) {
                 LatLng latLng = new LatLng(list1.get(pos).getLat(),  list1.get(pos).getLng());
+                Log.d("gfgjj", "onSelection: "+list1.get(pos).getFormatted_address());
                 ((MapActivity)getActivity()).getPickUpLatLng(list1.get(pos).getLat(),
                         list1.get(pos).getLng(),list1.get(pos).getFormatted_address(), latLng);
                 ((MapActivity)getActivity()).setHomeAddress(list1.get(pos).getFormatted_address());
-                common.switchFragment(new VechileFragment());
+                common.switchFragment(new HomeFragment());
             }
         });
         binding.recDestination.setAdapter(adapter);
