@@ -92,6 +92,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -99,6 +100,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -331,7 +333,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //            point.y -= 250; // pt height fix hai → marker ko 300px upar shift karo
 //
 //            LatLng adjustedLatLng = projection.fromScreenLocation(point);
-           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 15.0f));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        LatLngBounds bounds = builder.build();
+        int padding = 100; // pixels (you can increase/decrease)
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMap.moveCamera(cu);
+           //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 15.0f));
         //});
 //        mMap.setPadding(0, 250, 0, 0); // Top padding for fixed height map
 //        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetLatLng, 15f);
@@ -998,8 +1005,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 riderMarket.remove();
 
 
-          //  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
-            animateCameraWithOffset(location);
+           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
             binding.tvAddress.setText(address);
 
@@ -1331,8 +1338,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(latLng);
-                    //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-                    animateCameraWithOffset(latLng);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                   // animateCameraWithOffset(latLng);
                      binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
@@ -1377,8 +1384,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
-
+       showPickupAndDropMarkers();
     }
+    private void showPickupAndDropMarkers() {
+        if (pickupLng != null && pickupLat != null && destinationLat != null && destinationLng != null) {
+            LatLng pickupLatLng = new LatLng(pickupLat, pickupLng);
+            LatLng dropLatLng = new LatLng(destinationLat, destinationLng);
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(pickupLatLng);
+            builder.include(dropLatLng);
+            LatLngBounds bounds = builder.build();
+
+            int padding = 150;
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
+        }
+    }
+
     public void setHomeAddress(String address){
         binding.tvAddress.setText(address);
         tvpick.setText(address);
