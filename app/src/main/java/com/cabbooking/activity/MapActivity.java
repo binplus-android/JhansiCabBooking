@@ -230,15 +230,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (frgmentName.contains("HomeFragment")) {
 //                        clearRouteIfInHome();
-                        binding.mytoolbar.setVisibility(View.VISIBLE);
-                        binding.linToolbar.setVisibility(View.VISIBLE);
-                        binding.linBackMain.setVisibility(View.GONE);
-                        binding.linOnlyBack.setVisibility(View.GONE);
-                        toggle.syncState();
-                        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
-                        common.setMap(true, true, 140, binding.mapContainer,
-                                binding.main.findViewById(R.id.lin_search));
-                        binding.main.setVisibility(View.VISIBLE);
+                      homeToolBar();
 
                     }
 //                    else if(frgmentName.equalsIgnoreCase("BookingDetailFragment")){
@@ -317,6 +309,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    private void homeToolBar() {
+        binding.mytoolbar.setVisibility(View.VISIBLE);
+        binding.linToolbar.setVisibility(View.VISIBLE);
+        binding.linBackMain.setVisibility(View.GONE);
+        binding.linOnlyBack.setVisibility(View.GONE);
+        toggle.syncState();
+        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+        common.setMap(true, true, 140, binding.mapContainer,
+                binding.main.findViewById(R.id.lin_search));
+        binding.main.setVisibility(View.VISIBLE);
     }
 
     private void animateCameraWithOffset(final LatLng targetLatLng) {
