@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.LoginResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
@@ -89,16 +90,19 @@ public class DestinationFragment extends Fragment {
         getDestinatioList();
 
         EditText tvDestination = getActivity().findViewById(R.id.tv_desctination);
-
+        Toast.makeText(getActivity(), "dest", Toast.LENGTH_SHORT).show();
         if (tvDestination != null) {
+            Toast.makeText(getActivity(), "checkdest", Toast.LENGTH_SHORT).show();
             tvDestination.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!s.toString().isEmpty()) {
+                        Toast.makeText(getActivity(), ""+s.toString(), Toast.LENGTH_SHORT).show();
                         fetchAutocompleteSuggestions(s.toString());
-                    } else {
-                        clearList();
                     }
+//                    else {
+//                        clearList();
+//                    }
                 }
 
                 @Override
@@ -119,44 +123,54 @@ public class DestinationFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
     public void fetchAutocompleteSuggestions(String query) {
-        Double pickLat=((MapActivity)getActivity()).getPickupLat();
-        Double pickLng=((MapActivity)getActivity()).getPickupLng();
-        LatLng myLocation = new LatLng(pickLat, pickLng);
+        list1.clear();
+        if (!query.isEmpty()) {
+//            Double pickLat = ((MapActivity) getActivity()).getPickupLat();
+//            Double pickLng = ((MapActivity) getActivity()).getPickupLng();
+//            LatLng myLocation = new LatLng(pickLat, pickLng);
+//
+//            double lat = myLocation.latitude;
+//            double lng = myLocation.longitude;
+//            double delta = 0.3; // Approx. 30–40 km
+//
+//            RectangularBounds bounds = RectangularBounds.newInstance(
+//                    new LatLng(lat - delta, lng - delta),
+//                    new LatLng(lat + delta, lng + delta)
+//            );
+            RectangularBounds bounds = RectangularBounds.newInstance(
+                    new LatLng(8.0, 68.0),    // Southwest corner of India
+                    new LatLng(37.0, 97.0)    // Northeast corner of India
+            );
+            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                    .setLocationRestriction(bounds)  // ✅ strict restriction, not bias
+                    .setTypeFilter(TypeFilter.ADDRESS) // optional: only show addresses
+                    .setCountry("IN")
+                    .setQuery(query)
+                    .build();
 
-        double lat = myLocation.latitude;
-        double lng = myLocation.longitude;
-        double delta = 0.3; // Approx. 30–40 km
 
-        RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(lat - delta, lng - delta),
-                new LatLng(lat + delta, lng + delta)
-        );
-
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                .setLocationRestriction(bounds)  // ✅ strict restriction, not bias
-                .setTypeFilter(TypeFilter.ADDRESS) // optional: only show addresses
-                .setCountry("IN")
-                .setQuery(query)
-                .build();
+            placesClient.findAutocompletePredictions(request)
+                    .addOnSuccessListener(response -> {
 
 
-        placesClient.findAutocompletePredictions(request)
-                .addOnSuccessListener(response -> {
-                    list1.clear();
+                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                            String placeId = prediction.getPlaceId();
+                            String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
+                            String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
 
-                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                        String placeId = prediction.getPlaceId();
-                        String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
-                        String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
+                            // prediction.getFullText(null).toString()
+                            fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
 
-                        // prediction.getFullText(null).toString()
-                        fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
-
-                       // list1.add(new nearAreaNameModel(mainAddress, 0, 0, fullAddress));
-                    }
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e)); }
+                            // list1.add(new nearAreaNameModel(mainAddress, 0, 0, fullAddress));
+                        }
+                        adapter.notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
+        }
+        else {
+           // clearList();
+        }
+    }
 
     private void fetchPlaceDetails(String placeId, String mainAddress, String fullAddress) {
         List<Place.Field> placeFields = Arrays.asList(
@@ -182,6 +196,7 @@ public class DestinationFragment extends Fragment {
                                 // Step 3: Add to model
                                 list1.add(new nearAreaNameModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
                                 adapter.notifyDataSetChanged();
+                                Toast.makeText(getActivity(), ""+list1.size(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

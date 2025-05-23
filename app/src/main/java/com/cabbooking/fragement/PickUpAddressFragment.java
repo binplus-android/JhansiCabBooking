@@ -6,10 +6,13 @@ import static com.cabbooking.activity.MapActivity.areaList;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -79,22 +82,32 @@ public class PickUpAddressFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key), Locale.getDefault());
         }
         placesClient = Places.createClient(getActivity());
-        getDestinatioList();
+        getPIckUpList();
 
-//        binding.etloc.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                if (!s.toString().isEmpty()) {
-//                    fetchAutocompleteSuggestions(s.toString());
-//                } else {
-//                    list1.clear();
-//                    adapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-//            @Override public void afterTextChanged(Editable s) {}
-//        });
+        EditText tv_pick = getActivity().findViewById(R.id.tv_pick);
+
+        if (tv_pick != null) {
+            tv_pick.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!s.toString().isEmpty()) {
+                        fetchAutocompleteSuggestions(s.toString());
+                    }
+//                    else {
+//                        clearList();
+//                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+
+            });
+        }
 
         return  binding.getRoot();
     }
@@ -104,17 +117,21 @@ public class PickUpAddressFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
     public void fetchAutocompleteSuggestions(String query) {
-        Double pickLat=((MapActivity)getActivity()).getPickupLat();
-        Double pickLng=((MapActivity)getActivity()).getPickupLng();
-        LatLng myLocation = new LatLng(pickLat, pickLng);
-
-        double lat = myLocation.latitude;
-        double lng = myLocation.longitude;
-        double delta = 0.3; // Approx. 30–40 km
-
+//        Double pickLat=((MapActivity)getActivity()).getPickupLat();
+//        Double pickLng=((MapActivity)getActivity()).getPickupLng();
+//        LatLng myLocation = new LatLng(pickLat, pickLng);
+//
+//        double lat = myLocation.latitude;
+//        double lng = myLocation.longitude;
+//        double delta = 0.3; // Approx. 30–40 km
+//
+//        RectangularBounds bounds = RectangularBounds.newInstance(
+//                new LatLng(lat - delta, lng - delta),
+//                new LatLng(lat + delta, lng + delta)
+//        );
         RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(lat - delta, lng - delta),
-                new LatLng(lat + delta, lng + delta)
+                new LatLng(8.0, 68.0),    // Southwest corner of India
+                new LatLng(37.0, 97.0)    // Northeast corner of India
         );
 
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
@@ -179,8 +196,8 @@ public class PickUpAddressFragment extends Fragment {
     }
 
 
-    public void getDestinatioList() {
-        Log.d("hjhfjy", "getDestinatioList: "+list1.size());
+    public void getPIckUpList() {
+        Log.d("hjhfjy", "getPIckUpList: "+list1.size());
         // ArrayList<nearAreaNameModel>list1=list1;
         adapter=new PickUpAddressAdapter(getActivity(), list1, new PickUpAddressAdapter.onTouchMethod() {
             @Override
