@@ -3,6 +3,7 @@ package com.cabbooking.fragement;
 
 
 
+import android.app.Activity;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -52,6 +53,9 @@ public class DestinationFragment extends Fragment {
     DestinationAdapter adapter;
     Common common;
     PlacesClient placesClient ;
+    EditText tvDestination;
+    private String lastValidAddress = "";
+    private boolean userSelectedFromList = false;
 
     public DestinationFragment() {
         // Required empty public constructor
@@ -83,14 +87,17 @@ public class DestinationFragment extends Fragment {
             Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key), Locale.getDefault());
         }
         placesClient = Places.createClient(getActivity());
+        tvDestination = getActivity().findViewById(R.id.tv_desctination);
         getDestinatioList();
+        lastValidAddress=tvDestination.getText().toString();
 
-        EditText tvDestination = getActivity().findViewById(R.id.tv_desctination);
+
         if (tvDestination != null) {
 
             tvDestination.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    userSelectedFromList = false;
                     if (!s.toString().isEmpty()) {
                         binding.recDestination.setVisibility(View.VISIBLE);
                         fetchAutocompleteSuggestions(s.toString());
@@ -115,7 +122,16 @@ public class DestinationFragment extends Fragment {
         }
         return  binding.getRoot();
     }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        tvDestination = getActivity().findViewById(R.id.tv_desctination);
+        // Restore last valid address if user didn't select from list
+        if (!userSelectedFromList) {
+            tvDestination.setText(lastValidAddress);
+            tvDestination.setSelection(lastValidAddress.length());
+        }
+    }
     public void fetchAutocompleteSuggestions(String query) {
         list.clear();
         if (!query.isEmpty()) {
@@ -182,18 +198,22 @@ public class DestinationFragment extends Fragment {
                     if (latLng != null) {
                         double lat = latLng.latitude;
                         double lng = latLng.longitude;
-                        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                        try {
-                            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                            if (addresses != null && !addresses.isEmpty()) {
-                                String postalCode = addresses.get(0).getPostalCode();
+                        Activity activity = getActivity();
+                        if (activity != null) {
+                            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                                if (addresses != null && !addresses.isEmpty()) {
+                                    String postalCode = addresses.get(0).getPostalCode();
 
-                                // Step 3: Add to model
-                                list.add(new DestinationModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
-                                adapter.notifyDataSetChanged();
+                                    // Step 3: Add to model
+                                    list.add(new DestinationModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                     }
                 })
@@ -208,10 +228,17 @@ public class DestinationFragment extends Fragment {
         adapter=new DestinationAdapter(getActivity(), list, new DestinationAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
+                String selected = list.get(pos).getFormatted_address();
+                userSelectedFromList = true;
+
+                lastValidAddress = selected;
                 LatLng latLng = new LatLng(list.get(pos).getLat(),  list.get(pos).getLng());
                 ((MapActivity)getActivity()).getDestinationLatLng(list.get(pos).getLat(),
                         list.get(pos).getLng(),list.get(pos).getFormatted_address(), latLng);
+                tvDestination = getActivity().findViewById(R.id.tv_desctination);
+                tvDestination.setText(selected);
                 common.switchFragment(new VechileFragment());
+
             }
         });
         binding.recDestination.setAdapter(adapter);

@@ -1404,7 +1404,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void setHomeAddress(String address){
         binding.tvAddress.setText(address);
-        tvpick.setText(address);
 
     }
 
