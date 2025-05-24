@@ -88,8 +88,6 @@ public class PickUpAddressFragment extends Fragment {
         tv_pick = getActivity().findViewById(R.id.tv_pick);
         getPIckUpList();
         lastValidAddress=tv_pick.getText().toString();
-
-
         if (tv_pick != null) {
             tv_pick.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -117,7 +115,6 @@ public class PickUpAddressFragment extends Fragment {
 
             });
         }
-
         return  binding.getRoot();
     }
     @Override
