@@ -439,7 +439,7 @@ public class Common {
         }if(is_map){
             img.setVisibility(View.VISIBLE);
         }else{
-            img.setVisibility(View.GONE);
+            img.setVisibility(View.INVISIBLE);
         }
 
         img.setLayoutParams(params);

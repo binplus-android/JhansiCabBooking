@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageView;
@@ -540,7 +541,17 @@ public class VechileFragment extends Fragment {
         dialog.show();
         dialog.setCancelable(false);
     }
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        hideKeyboard();
+        // ((MapActivity) getActivity()).moveToUserLocation();
+    }
+    private void hideKeyboard() {
+        if (getActivity() != null && getView() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        }
+    }
 
 }

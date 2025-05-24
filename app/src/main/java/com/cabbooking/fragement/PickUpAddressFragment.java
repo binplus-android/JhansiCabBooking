@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -81,6 +84,7 @@ public class PickUpAddressFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_destination, container, false);
         binding = FragmentDestinationBinding.inflate(inflater, container, false);
         initView();
+
         if (!Places.isInitialized()) {
             Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key), Locale.getDefault());
         }

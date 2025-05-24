@@ -34,10 +34,9 @@
 
         <activity
             android:name=".activity.MapActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.PolicyActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity
             android:name=".activity.SignUpActivity"
             android:exported="false" />
