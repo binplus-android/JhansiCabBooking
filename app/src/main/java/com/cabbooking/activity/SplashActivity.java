@@ -149,29 +149,29 @@ public class SplashActivity extends AppCompatActivity {
             }, false);
 //notification
 
-        repository.getNotification(object, new ResponseService() {
-            @Override
-            public void onResponse(Object data) {
-                try {
-                    NotificationResp resp = (NotificationResp) data;
-                    Log.e("getNotificationResp ",data.toString());
-                    if (resp.getStatus()==200) {
-                        Gson gson = new Gson();
-                        String jsonList = gson.toJson(resp.getRecordList());
-                        sessionManagment.setValue(KEY_NOTIFICATION, jsonList);
-                    }
-                    else{
-                        sessionManagment.setValue(KEY_NOTIFICATION, "");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onServerError(String errorMsg) {
-                Log.e("errorMsg",errorMsg);
-            }
-        }, false);
+//        repository.getNotification(object, new ResponseService() {
+//            @Override
+//            public void onResponse(Object data) {
+//                try {
+//                    NotificationResp resp = (NotificationResp) data;
+//                    Log.e("getNotificationResp ",data.toString());
+//                    if (resp.getStatus()==200) {
+//                        Gson gson = new Gson();
+//                        String jsonList = gson.toJson(resp.getRecordList());
+//                        sessionManagment.setValue(KEY_NOTIFICATION, jsonList);
+//                    }
+//                    else{
+//                        sessionManagment.setValue(KEY_NOTIFICATION, "");
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            @Override
+//            public void onServerError(String errorMsg) {
+//                Log.e("errorMsg",errorMsg);
+//            }
+//        }, false);
 
 
     }
