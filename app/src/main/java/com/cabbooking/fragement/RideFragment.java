@@ -230,7 +230,7 @@ public class RideFragment extends Fragment {
             public void onServerError(String errorMsg) {
                 Log.e("errorMsg",errorMsg);
             }
-        }, true);
+        }, false);
     }
 
 
