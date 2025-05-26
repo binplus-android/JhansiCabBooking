@@ -385,6 +385,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
     }
 
     private void initView() {
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
         book_id=getArguments().getString("book_id");

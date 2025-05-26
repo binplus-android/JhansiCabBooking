@@ -67,6 +67,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.cabbooking.R;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
+import com.cabbooking.fragement.AfterPaymentDoneFragment;
 import com.cabbooking.fragement.BookingHistoryFragment;
 import com.cabbooking.fragement.ContactUsFragment;
 import com.cabbooking.fragement.DestinationFragment;
@@ -75,6 +76,7 @@ import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.fragement.PickUpAddressFragment;
 import com.cabbooking.fragement.PickUpFragment;
 import com.cabbooking.fragement.ProfileFragment;
+import com.cabbooking.fragement.RideFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.interfaces.AddressCallback;
 import com.cabbooking.model.AppSettingModel;
@@ -267,6 +269,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")
 
                     ) {
+                        showCommonPickDestinationArea(false,false);
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -1080,6 +1083,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+
+                // If current fragment is RideFragment then ignore the click
+                if (fragment instanceof RideFragment || fragment instanceof AfterPaymentDoneFragment) {
+                    return; // Disable click
+                }
+
+                // If not already in PickUpAddressFragment, then switch to it
                 if (fragment == null || !(fragment instanceof PickUpAddressFragment)) {
                     common.switchFragment(new PickUpAddressFragment());
                 }

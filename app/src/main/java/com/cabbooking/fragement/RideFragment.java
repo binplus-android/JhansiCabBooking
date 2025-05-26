@@ -117,7 +117,7 @@ public class RideFragment extends Fragment {
                         if (resp.getStatus()==200) {
                         int tripStatus=resp.getRecordList().getTripStatus();
                             onStatusReceivedFromApi(tripStatus);
-                       if(tripStatus==1){
+                       if(tripStatus==2){
 
                          binding.linSearch.setVisibility(View.GONE); 
                          binding.linRide.setVisibility(View.VISIBLE);
@@ -182,7 +182,7 @@ public class RideFragment extends Fragment {
     // Call this inside your API response
     private void onStatusReceivedFromApi(int status) {
         currentStatus = status;
-        if (currentStatus == 1) {
+        if (currentStatus == 2) {
             stopApiRefresh();
         }
     }

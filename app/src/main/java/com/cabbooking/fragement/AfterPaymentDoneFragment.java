@@ -550,7 +550,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
     private void initView() {
         binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
         binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
-       // ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
         repository=new Repository(getActivity());
