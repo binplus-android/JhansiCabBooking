@@ -33,13 +33,43 @@ public class DriverDetailResp {
         public String amount;
         public int isOutStation;
         public int isRound;
-        public Object returnDate;
+        public String returnDate;
         public String name;
         public String profileImage;
         public String vehicleImage;
-        public String vehicleModelName;
+        public String vehicleTypeImage;
         public String vehicleColor;
-        public String seat;
+        public String vehicleNumber;
+        public String vehicleModelName;
+        public int seats;
+
+        public String getVehicleTypeImage() {
+            return vehicleTypeImage;
+        }
+
+        public int getSeats() {
+            return seats;
+        }
+
+        public String getVehicleNumber() {
+            return vehicleNumber;
+        }
+
+        public void setVehicleTypeImage(String vehicleTypeImage) {
+            this.vehicleTypeImage = vehicleTypeImage;
+        }
+
+        public void setReturnDate(String returnDate) {
+            this.returnDate = returnDate;
+        }
+
+        public void setVehicleNumber(String vehicleNumber) {
+            this.vehicleNumber = vehicleNumber;
+        }
+
+        public void setSeats(int seats) {
+            this.seats = seats;
+        }
 
         public String getAmount() {
             return amount;
@@ -65,13 +95,10 @@ public class DriverDetailResp {
             this.isRound = isRound;
         }
 
-        public Object getReturnDate() {
+        public String getReturnDate() {
             return returnDate;
         }
 
-        public void setReturnDate(Object returnDate) {
-            this.returnDate = returnDate;
-        }
 
         public String getVehicleImage() {
             return vehicleImage;
@@ -89,13 +116,6 @@ public class DriverDetailResp {
             this.vehicleModelName = vehicleModelName;
         }
 
-        public String getseat() {
-            return seat;
-        }
-
-        public void setseat(String seat) {
-            this.seat = seat;
-        }
 
         public String getName() {
             return name;

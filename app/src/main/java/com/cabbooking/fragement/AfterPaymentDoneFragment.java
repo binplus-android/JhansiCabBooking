@@ -412,11 +412,12 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                         binding.tvRidername.setText(resp.getRecordList().getName());
                         binding.tvNum.setText(resp.getRecordList().getContactNo());
                         driver_Number=resp.getRecordList().getContactNo();
-                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleTypeImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
                         binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
-                        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
-                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+//                        binding.tvVnum.setText(resp.getRecordList().getv());
+                        if(!common.checkNullString(String.valueOf(resp.getRecordList().getSeats())).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+String.valueOf(resp.getRecordList().getSeats())+" Seater ) ");
                         }
                         else{
                             binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");

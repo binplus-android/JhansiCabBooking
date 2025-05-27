@@ -79,14 +79,14 @@ public class WalletHistoryFragment extends Fragment {
         allClick();
         callViewlineClick ( binding.vReferral,binding.vWinning);
         callCommonClick (binding.tvReferral,binding.tvWinning);
-        iniList ("referral");
+        iniList ("");
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 binding.swipeRefresh.setRefreshing(false);
                 callViewlineClick ( binding.vReferral,binding.vWinning);
                 callCommonClick (binding.tvReferral,binding.tvWinning);
-                iniList ("referral");
+                iniList ("");
             }
         });
         return binding.getRoot();
@@ -98,7 +98,7 @@ public class WalletHistoryFragment extends Fragment {
             public void onClick(View v) {
                 callViewlineClick ( binding.vReferral,binding.vWinning);
                 callCommonClick (binding.tvReferral,binding.tvWinning);
-                iniList ("referral");
+                iniList ("");
             }
         });
         binding.relRefund.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class WalletHistoryFragment extends Fragment {
             public void onClick(View v) {
                 callViewlineClick ( binding.vWinning,binding.vReferral);
                 callCommonClick (binding.tvWinning,binding.tvReferral);
-                iniList ("refund");
+                iniList ("Settlement");
             }
         });
     }
