@@ -45,13 +45,10 @@ public interface Apis {
     Call<DriverDetailResp> driverDetail(@Body  JsonObject jsonObject);
     @POST("cancelTrip")
     Call<CancleRideResp> cancleRide(@Body  JsonObject jsonObject);
-
     @POST("tripDetail")
     Call<TripDetailRes> tripDetail(@Body  JsonObject jsonObject);
-
     @POST("payment")
     Call<PaymentResp> paymentApi(@Body  JsonObject jsonObject);
-
     @POST("driverLiveLocation")
     Call<DriverLocationResp> driverLocation(@Body  JsonObject jsonObject);
   @POST("appSettings")

@@ -53,7 +53,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -63,6 +67,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.cabbooking.R;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
+import com.cabbooking.fragement.AfterPaymentDoneFragment;
 import com.cabbooking.fragement.BookingHistoryFragment;
 import com.cabbooking.fragement.ContactUsFragment;
 import com.cabbooking.fragement.DestinationFragment;
@@ -71,6 +76,7 @@ import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.fragement.PickUpAddressFragment;
 import com.cabbooking.fragement.PickUpFragment;
 import com.cabbooking.fragement.ProfileFragment;
+import com.cabbooking.fragement.RideFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.interfaces.AddressCallback;
 import com.cabbooking.model.AppSettingModel;
@@ -92,6 +98,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -99,6 +106,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -171,6 +179,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
 
         initView();
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         apiKey = getString(R.string.google_maps_key);
         storeDataSession();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
@@ -230,15 +240,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (frgmentName.contains("HomeFragment")) {
 //                        clearRouteIfInHome();
-                        binding.mytoolbar.setVisibility(View.VISIBLE);
-                        binding.linToolbar.setVisibility(View.VISIBLE);
-                        binding.linBackMain.setVisibility(View.GONE);
-                        binding.linOnlyBack.setVisibility(View.GONE);
-                        toggle.syncState();
-                        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
-                        common.setMap(true, true, 140, binding.mapContainer,
-                                binding.main.findViewById(R.id.lin_search));
-                        binding.main.setVisibility(View.VISIBLE);
+                      homeToolBar();
 
                     }
 //                    else if(frgmentName.equalsIgnoreCase("BookingDetailFragment")){
@@ -267,6 +269,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")
 
                     ) {
+                        showCommonPickDestinationArea(false,false);
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
@@ -319,6 +322,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    private void homeToolBar() {
+        binding.mytoolbar.setVisibility(View.VISIBLE);
+        binding.linToolbar.setVisibility(View.VISIBLE);
+        binding.linBackMain.setVisibility(View.GONE);
+        binding.linOnlyBack.setVisibility(View.GONE);
+        toggle.syncState();
+        binding.mytoolbar.setNavigationIcon(R.drawable.menu);
+        common.setMap(true, true, 140, binding.mapContainer,
+                binding.main.findViewById(R.id.lin_search));
+        binding.main.setVisibility(View.VISIBLE);
+    }
+
     private void animateCameraWithOffset(final LatLng targetLatLng) {
 //        mMap.setOnMapLoadedCallback(() -> {
 //            Projection projection = mMap.getProjection();
@@ -327,7 +342,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //            point.y -= 250; // pt height fix hai → marker ko 300px upar shift karo
 //
 //            LatLng adjustedLatLng = projection.fromScreenLocation(point);
-           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 15.0f));
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        LatLngBounds bounds = builder.build();
+        int padding = 100; // pixels (you can increase/decrease)
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mMap.moveCamera(cu);
+           //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 15.0f));
         //});
 //        mMap.setPadding(0, 250, 0, 0); // Top padding for fixed height map
 //        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetLatLng, 15f);
@@ -994,8 +1014,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 riderMarket.remove();
 
 
-          //  mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
-            animateCameraWithOffset(location);
+           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
             binding.tvAddress.setText(address);
 
@@ -1063,6 +1083,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_framelayout);
+
+                // If current fragment is RideFragment then ignore the click
+                if (fragment instanceof RideFragment || fragment instanceof AfterPaymentDoneFragment) {
+                    return; // Disable click
+                }
+
+                // If not already in PickUpAddressFragment, then switch to it
                 if (fragment == null || !(fragment instanceof PickUpAddressFragment)) {
                     common.switchFragment(new PickUpAddressFragment());
                 }
@@ -1327,8 +1354,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     if (riderMarket != null) riderMarket.remove();
                     showPickupMarker(latLng);
-                    //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-                    animateCameraWithOffset(latLng);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                   // animateCameraWithOffset(latLng);
                      binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
@@ -1373,11 +1400,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             }
         });
-
+       showPickupAndDropMarkers();
     }
+    private void showPickupAndDropMarkers() {
+        if (pickupLng != null && pickupLat != null && destinationLat != null && destinationLng != null) {
+            LatLng pickupLatLng = new LatLng(pickupLat, pickupLng);
+            LatLng dropLatLng = new LatLng(destinationLat, destinationLng);
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(pickupLatLng);
+            builder.include(dropLatLng);
+            LatLngBounds bounds = builder.build();
+
+            int padding = 150;
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
+        }
+    }
+
     public void setHomeAddress(String address){
         binding.tvAddress.setText(address);
-        tvpick.setText(address);
 
     }
 

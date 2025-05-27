@@ -142,6 +142,7 @@ public class BookingHistoryFragment extends Fragment {
     }
 
     private void initView() {
+        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Booking History");
 //        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));

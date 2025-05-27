@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -51,6 +54,9 @@ public class PickUpAddressFragment extends Fragment {
     PickUpAddressAdapter adapter;
     Common common;
     PlacesClient placesClient ;
+    EditText tv_pick ;
+     String lastValidAddress = "";
+     boolean userSelectedFromList = false;
 
     public PickUpAddressFragment() {
         // Required empty public constructor
@@ -78,18 +84,19 @@ public class PickUpAddressFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_destination, container, false);
         binding = FragmentDestinationBinding.inflate(inflater, container, false);
         initView();
+
         if (!Places.isInitialized()) {
             Places.initialize(getActivity().getApplicationContext(), getString(R.string.google_maps_key), Locale.getDefault());
         }
         placesClient = Places.createClient(getActivity());
+        tv_pick = getActivity().findViewById(R.id.tv_pick);
         getPIckUpList();
-
-        EditText tv_pick = getActivity().findViewById(R.id.tv_pick);
-
+        lastValidAddress=tv_pick.getText().toString();
         if (tv_pick != null) {
             tv_pick.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    userSelectedFromList = false;
                     if (!s.toString().isEmpty()) {
                         binding.recDestination.setVisibility(View.VISIBLE);
                         fetchAutocompleteSuggestions(s.toString());
@@ -112,8 +119,17 @@ public class PickUpAddressFragment extends Fragment {
 
             });
         }
-
         return  binding.getRoot();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        tv_pick = getActivity().findViewById(R.id.tv_pick);
+        // Restore last valid address if user didn't select from list
+        if (!userSelectedFromList) {
+            tv_pick.setText(lastValidAddress);
+            tv_pick.setSelection(lastValidAddress.length());
+        }
     }
 
     public void fetchAutocompleteSuggestions(String query) {
@@ -209,11 +225,17 @@ public class PickUpAddressFragment extends Fragment {
         adapter=new PickUpAddressAdapter(getActivity(), list1, new PickUpAddressAdapter.onTouchMethod() {
             @Override
             public void onSelection(int pos) {
+                String selected = list1.get(pos).getFormatted_address();
+                userSelectedFromList = true;
+
+                lastValidAddress = selected;
                 LatLng latLng = new LatLng(list1.get(pos).getLat(),  list1.get(pos).getLng());
                 Log.d("gfgjj", "onSelection: "+list1.get(pos).getFormatted_address());
                 ((MapActivity)getActivity()).getPickUpLatLng(list1.get(pos).getLat(),
                         list1.get(pos).getLng(),list1.get(pos).getFormatted_address(), latLng);
                 ((MapActivity)getActivity()).setHomeAddress(list1.get(pos).getFormatted_address());
+                tv_pick = getActivity().findViewById(R.id.tv_pick);
+                tv_pick.setText(selected);
                 common.switchFragment(new HomeFragment());
             }
         });

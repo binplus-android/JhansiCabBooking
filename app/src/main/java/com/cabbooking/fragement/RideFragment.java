@@ -65,7 +65,7 @@ public class RideFragment extends Fragment {
 
     private Handler handler;
     private Runnable apiRunnable;
-    private boolean isFragmentVisible = false;
+    private boolean isFragmentVisible = true;
     private int currentStatus = 0; // 0 = keep refreshing, 1 = stop refreshing
 
     private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
@@ -117,7 +117,7 @@ public class RideFragment extends Fragment {
                         if (resp.getStatus()==200) {
                         int tripStatus=resp.getRecordList().getTripStatus();
                             onStatusReceivedFromApi(tripStatus);
-                       if(tripStatus==1){
+                       if(tripStatus>=2){
 
                          binding.linSearch.setVisibility(View.GONE); 
                          binding.linRide.setVisibility(View.VISIBLE);
@@ -164,7 +164,8 @@ public class RideFragment extends Fragment {
             apiRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    if (isFragmentVisible && currentStatus == 0) {
+                    //if (isFragmentVisible && currentStatus == 0) { if (currentStatus>2)
+                        if (isFragmentVisible) {
                         getRiderStatus();
                         handler.postDelayed(this, API_REFRESH_INTERVAL);
                     }
@@ -182,7 +183,7 @@ public class RideFragment extends Fragment {
     // Call this inside your API response
     private void onStatusReceivedFromApi(int status) {
         currentStatus = status;
-        if (currentStatus == 1) {
+        if (currentStatus>2) {
             stopApiRefresh();
         }
     }
@@ -229,7 +230,7 @@ public class RideFragment extends Fragment {
             public void onServerError(String errorMsg) {
                 Log.e("errorMsg",errorMsg);
             }
-        }, true);
+        }, false);
     }
 
 

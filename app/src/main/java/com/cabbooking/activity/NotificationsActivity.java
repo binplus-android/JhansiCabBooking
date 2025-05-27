@@ -66,8 +66,8 @@ public class NotificationsActivity extends AppCompatActivity {
                 setNotificationList();
             }
         });
-        setData();
-
+       // setData();
+        setNotificationList();
     }
 
     private void setData() {

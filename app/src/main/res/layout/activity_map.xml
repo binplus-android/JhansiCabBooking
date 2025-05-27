@@ -243,6 +243,7 @@
                         </LinearLayout>
 
                         <FrameLayout
+                            android:fitsSystemWindows="true"
                             android:layout_below="@id/lin"
                             android:id="@+id/main_framelayout"
                             android:layout_width="match_parent"

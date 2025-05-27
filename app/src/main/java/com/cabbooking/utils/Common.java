@@ -55,6 +55,7 @@ import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
+import com.cabbooking.fragement.HomeFragment;
 import com.cabbooking.interfaces.SuccessCallBack;
 import com.cabbooking.interfaces.WalletCallBack;
 import com.cabbooking.model.AppSettingModel;
@@ -218,7 +219,7 @@ public class Common {
         JsonObject object=new JsonObject();
         object.addProperty("userId",userId);
         object.addProperty("tripId",tripId);
-        object.addProperty("cancelReason","My Reason here");
+        object.addProperty("cancelReason",reason);
         repository.cancleRide(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
@@ -229,12 +230,9 @@ public class Common {
                     if (resp.getStatus()==200) {
                         dialog.dismiss();
                         successToast(resp.getMessage());
-                        Intent intent = new Intent(activity ,MapActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        activity.startActivity(intent);
-                        activity.finish();
+                        FragmentManager fragmentManager =((AppCompatActivity) context).getSupportFragmentManager();
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        switchFragment(new HomeFragment());
 
                     }else{
                         errorToast(resp.getError());
@@ -441,7 +439,7 @@ public class Common {
         }if(is_map){
             img.setVisibility(View.VISIBLE);
         }else{
-            img.setVisibility(View.GONE);
+            img.setVisibility(View.INVISIBLE);
         }
 
         img.setLayoutParams(params);

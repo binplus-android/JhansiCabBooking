@@ -155,42 +155,47 @@ public class PaymentFragment extends Fragment {
 
     public void callPayment(String paymentTypeVal,String payment_status)
         {
-            JsonObject object=new JsonObject();
-            object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
-            object.addProperty("tripId",tripId);
-            object.addProperty("paymentMode",paymentTypeVal);
-            object.addProperty("amount", amount_pay);
-            object.addProperty("gst","");
-            object.addProperty("paymentReference","");
-             object.addProperty("paymentStatus",payment_status);
+            if(paymentTypeVal.equalsIgnoreCase("cash")){
+                callDetail(tripId);
+            }
+            else {
+                JsonObject object = new JsonObject();
+                object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
+                object.addProperty("tripId", tripId);
+                object.addProperty("paymentMode", paymentTypeVal);
+                object.addProperty("amount", amount_pay);
+                object.addProperty("gst", "");
+                object.addProperty("paymentReference", "");
+                object.addProperty("paymentStatus", payment_status);
 
-            object.addProperty("signature","");
-            object.addProperty("description","");
-            repository.paymentApi(object, new ResponseService() {
-                @Override
-                public void onResponse(Object data) {
-                    try {
-                        PaymentResp resp = (PaymentResp) data;
-                        Log.e("paymentApi ",data.toString());
-                        if (resp.getStatus()==200) {
-                            common.successToast(resp.getMessage());
+                object.addProperty("signature", "");
+                object.addProperty("description", "");
+                repository.paymentApi(object, new ResponseService() {
+                    @Override
+                    public void onResponse(Object data) {
+                        try {
+                            PaymentResp resp = (PaymentResp) data;
+                            Log.e("paymentApi ", data.toString());
+                            if (resp.getStatus() == 200) {
+                                common.successToast(resp.getMessage());
 //                            infoDialog(tripId);
-                            callDetail(tripId);
+                                callDetail(tripId);
 
 
-                        }else{
-                            common.errorToast(resp.getError());
+                            } else {
+                                common.errorToast(resp.getError());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, false);
 
+                    @Override
+                    public void onServerError(String errorMsg) {
+                        Log.e("errorMsg", errorMsg);
+                    }
+                }, false);
+            }
         }
 
     private void callDetail(String tripId_val) {
