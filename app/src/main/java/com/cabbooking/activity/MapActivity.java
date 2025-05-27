@@ -3,6 +3,7 @@ package com.cabbooking.activity;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG1;
 import static com.cabbooking.utils.SessionManagment.KEY_HOME_IMG2;
+import static com.cabbooking.utils.SessionManagment.KEY_LAST_SAVED_LOCATION;
 import static com.cabbooking.utils.SessionManagment.KEY_PRIVACY;
 import static com.cabbooking.utils.SessionManagment.KEY_SHARE_LINK;
 import static com.cabbooking.utils.SessionManagment.KEY_SUPPORT_EMAIL;
@@ -184,6 +185,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         apiKey = getString(R.string.google_maps_key);
         storeDataSession();
         setImage(sessionManagment.getUserDetails().get(KEY_USER_IMAGE));
+
+        if (!common.checkNullString(sessionManagment.getValue(KEY_LAST_SAVED_LOCATION)).isEmpty()) {
+            binding.tvAddress.setText(sessionManagment.getValue(KEY_LAST_SAVED_LOCATION));
+        }
+
         getMenuList();
         verifyGoogleAccount();
 
@@ -1014,11 +1020,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 riderMarket.remove();
 
 
-           mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
 
             String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
-            binding.tvAddress.setText(address);
-
+            setHomeAddress(address);
 
             tvpick.setText(address);
             getPickUpLatLng(currentLat, currentLng, address,location);
@@ -1037,7 +1042,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "Address not found";
+
+        if (!common.checkNullString(sessionManagment.getValue(KEY_LAST_SAVED_LOCATION)).isEmpty()) {
+            return  sessionManagment.getValue(KEY_LAST_SAVED_LOCATION);
+        }else {
+            return "Address not found";
+        }
     }
 
     public void verifyGoogleAccount() {
@@ -1283,6 +1293,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getSupportFragmentManager().beginTransaction().
                 addToBackStack(null).add(R.id.main_framelayout, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+
     }
 
     public void initView() {
@@ -1358,7 +1369,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     showPickupMarker(latLng);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
                    // animateCameraWithOffset(latLng);
-                     binding.tvAddress.setText(address);
+                    setHomeAddress(address);
                     if (tvpick != null)
                         tvpick.setText(address);
                     drawRoute(latLng, destinationLatLng);
@@ -1387,9 +1398,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                   //  getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
                     getPickUpLatLng(center.latitude, center.longitude, address,center);
 
+                    setHomeAddress(address);
 
-
-                    binding.tvAddress.setText(address);
                     if (tvpick != null)
                         tvpick.setText(address);
 
@@ -1421,7 +1431,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void setHomeAddress(String address){
+        Log.e("HomeAddress",address);
         binding.tvAddress.setText(address);
+        sessionManagment.setValue(KEY_LAST_SAVED_LOCATION, address);
 
     }
 
