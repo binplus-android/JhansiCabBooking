@@ -79,6 +79,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (v.getId() == R.id.lin_login) {
             Intent i = new Intent(SignUpActivity.this, LoginActivity.class);
             startActivity(i);
+
         }else if (v.getId() == R.id.btn_otp) {
             if (ConnectivityReceiver.isConnected()) {
 
