@@ -201,14 +201,14 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 //                    6 => 'On Going',
 //                    7 => 'Completed',
 //                    9 => 'Cancelled'
-                        String status = common.getStatusText(resp.getRecordList().getTripStatus());
+                        String status = common.getStatusText(String.valueOf(resp.getRecordList().getTripStatus()));
                         binding.tvStatus.setText(status);
                         setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
                                 Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
-                        if (Integer.parseInt(resp.getRecordList().getTripStatus()) > 1&&Integer.parseInt(resp.getRecordList().getTripStatus())<7) {
+                        if (resp.getRecordList().getTripStatus() > 1&&resp.getRecordList().getTripStatus()<7) {
                             binding.linTrack.setVisibility(View.VISIBLE);
                         }
-                        else if (Integer.parseInt(resp.getRecordList().getTripStatus()) > 6) {
+                        else if (resp.getRecordList().getTripStatus() > 6) {
                             binding.linInvoice.setVisibility(View.VISIBLE);
                             binding.linTrack.setVisibility(View.GONE);
                             binding.linData.setVisibility(View.GONE);
@@ -228,7 +228,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 
                         tripId = String.valueOf(resp.getRecordList().getId());
 
-                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleImage()).placeholder(R.drawable.logo).
+                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleTypeImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(binding.vImg);
                         Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(binding.dImg);

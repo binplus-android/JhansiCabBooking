@@ -19,9 +19,6 @@ public class BookingDetailResp {
     public class RecordList{
         public int id;
         public int userId;
-
-
-
         public int driverId;
         public String pickup;
         public String pickupLat;
@@ -35,8 +32,9 @@ public class BookingDetailResp {
         public int vehicleType;
         public String distance;
         public String amount;
+        public int adminShare;
         public String pickupOtp;
-        public String tripStatus;
+        public int tripStatus;
         public String status;
         public String cancelledBy;
         public String cancelReason;
@@ -48,9 +46,11 @@ public class BookingDetailResp {
         public String contactNo;
         public String profileImage;
         public String vehicleImage;
+        public String vehicleTypeImage;
         public String vehicleNumber;
         public String vehicleColor;
         public String vehicleModelName;
+        public String tripStatusName;
         public String paymentMode;
         public String userFeedback;
 
@@ -182,20 +182,16 @@ public class BookingDetailResp {
             this.pickupOtp = pickupOtp;
         }
 
-        public String getTripStatus() {
+        public int getTripStatus() {
             return tripStatus;
         }
 
-        public void setTripStatus(String tripStatus) {
-            this.tripStatus = tripStatus;
+        public int getAdminShare() {
+            return adminShare;
         }
 
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
+        public void setAdminShare(int adminShare) {
+            this.adminShare = adminShare;
         }
 
         public String getCancelledBy() {
@@ -213,6 +209,38 @@ public class BookingDetailResp {
         public void setCancelReason(String cancelReason) {
             this.cancelReason = cancelReason;
         }
+
+        public void setVehicleTypeImage(String vehicleTypeImage) {
+            this.vehicleTypeImage = vehicleTypeImage;
+        }
+
+        public String getTripStatusName() {
+            return tripStatusName;
+        }
+
+        public void setTripStatusName(String tripStatusName) {
+            this.tripStatusName = tripStatusName;
+        }
+
+        public void setTripStatus(int tripStatus) {
+            this.tripStatus = tripStatus;
+        }
+
+        public String getVehicleTypeImage() {
+            return vehicleTypeImage;
+        }
+        
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+    
+
 
         public int getIsActive() {
             return isActive;

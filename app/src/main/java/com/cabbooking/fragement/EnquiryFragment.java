@@ -77,7 +77,8 @@ public class EnquiryFragment extends Fragment {
         //return inflater.inflate(R.layout.fragment_enquiry, container, false);
         binding = FragmentEnquiryBinding.inflate(inflater, container, false);
         initView();
-        setSessionData();
+        //setSessionData();
+        getList();
         allClick();
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

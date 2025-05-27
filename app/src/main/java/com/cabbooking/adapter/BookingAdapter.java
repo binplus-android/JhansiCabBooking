@@ -63,7 +63,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 //                    7 => 'Completed',
 //                    9 => 'Cancelled'
         BookingHistoryModel.RecordList model=list.get(position);
-        String status=common.getStatusText(model.getTripStatus());
+        //String status=common.getStatusText(model.getTripStatus());
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,17 +75,17 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         holder.tv_id.setText("ID:#"+model.getTripId());
         String[] date=model.getCreatedAt().split(" ");
         holder.tv_date.setText(date[0]+" | "+common.convertToAmPm(date[1]));
-       // holder.tv_date.setText(common.convertToAmPm(model.getCreatedAt()));
+        // holder.tv_date.setText(common.convertToAmPm(model.getCreatedAt()));
         holder.tv_vname.setText("By "+model.getVehicleModelName());
         holder.tv_amt.setText("-Rs."+String.valueOf(model.getAmount()));
-        holder.tv_status.setText(status);
-        Picasso.get().load(IMAGE_BASE_URL + model.getVehicleImage()).placeholder(R.drawable.logo).
+        holder.tv_status.setText(model.getTripStatusName());
+        Picasso.get().load(IMAGE_BASE_URL + model.getVehicleTypeImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_vimg);
         Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_dimg);
-        if(Integer.parseInt(model.getTripStatus())>1)
+        if(!model.getTripStatusName().equalsIgnoreCase("pending")||!model.getTripStatusName().equalsIgnoreCase("Completed"))
         {
-         holder.tv_track.setVisibility(View.VISIBLE);
+            holder.tv_track.setVisibility(View.VISIBLE);
         }else {
             holder.tv_track.setVisibility(View.GONE);
         }
@@ -107,12 +107,12 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-LinearLayout lin_main;
-ImageView iv_detail;
-TextView tv_id,tv_date,tv_vname,tv_amt,tv_status;
-ImageView iv_vimg;
-CircleImageView iv_dimg;
-Button tv_track;
+        LinearLayout lin_main;
+        ImageView iv_detail;
+        TextView tv_id,tv_date,tv_vname,tv_amt,tv_status;
+        ImageView iv_vimg;
+        CircleImageView iv_dimg;
+        Button tv_track;
 
 
         public ViewHolder(@NonNull View itemView) {
