@@ -54,7 +54,16 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//         1 => 'Pending',
+//                    2 => 'Accepted',
+//                    3 => 'On the Way',
+//                    4 => 'Arrived',
+//                    5 => 'Picked Up',
+//                    6 => 'On Going',
+//                    7 => 'Completed',
+//                    9 => 'Cancelled'
         BookingHistoryModel.RecordList model=list.get(position);
+        String status=common.getStatusText(model.getTripStatus());
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,13 +78,12 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
        // holder.tv_date.setText(common.convertToAmPm(model.getCreatedAt()));
         holder.tv_vname.setText("By "+model.getVehicleModelName());
         holder.tv_amt.setText("-Rs."+String.valueOf(model.getAmount()));
-        holder.tv_status.setText(model.getTripStatus());
+        holder.tv_status.setText(status);
         Picasso.get().load(IMAGE_BASE_URL + model.getVehicleImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_vimg);
         Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(holder.iv_dimg);
-        if(model.getTripStatus().equalsIgnoreCase("scheduled")||
-           model.getTripStatus().equalsIgnoreCase("running"))
+        if(Integer.parseInt(model.getTripStatus())>1)
         {
          holder.tv_track.setVisibility(View.VISIBLE);
         }else {

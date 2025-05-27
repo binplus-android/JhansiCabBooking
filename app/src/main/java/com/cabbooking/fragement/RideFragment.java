@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +100,16 @@ public class RideFragment extends Fragment {
         allClick();
         getRiderStatus();
         startApiRefresh();
+        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
 
+                return false;
+            }
+        });
+
+        binding.getRoot().setFocusableInTouchMode(true);
+        binding.getRoot().requestFocus();
         return binding.getRoot();
     }
 

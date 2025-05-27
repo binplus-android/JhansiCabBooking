@@ -36,6 +36,7 @@ import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentBookingDetailBinding;
 import com.cabbooking.databinding.FragmentBookingHistoryBinding;
+import com.cabbooking.model.BookingHistoryModel;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
@@ -190,37 +191,42 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
             public void onResponse(Object data) {
                 try {
                     BookingDetailResp resp = (BookingDetailResp) data;
-                    Log.e("BookingDetail ",data.toString());
-                    if (resp.getStatus()==200) {
-                        setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()),Double.parseDouble( resp.getRecordList().getPickupLng()),
+                    Log.e("BookingDetail ", data.toString());
+                    if (resp.getStatus() == 200) {
+
+//         1 => 'Pending',2 => 'Accepted',
+//                    3 => 'On the Way',
+//                    4 => 'Arrived',
+//                    5 => 'Picked Up',
+//                    6 => 'On Going',
+//                    7 => 'Completed',
+//                    9 => 'Cancelled'
+                        String status = common.getStatusText(resp.getRecordList().getTripStatus());
+                        binding.tvStatus.setText(status);
+                        setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
                                 Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
-                        if(resp.getRecordList().getTripStatus().equalsIgnoreCase("scheduled")||
-                           resp.getRecordList().getTripStatus().equalsIgnoreCase("running")){
-                           binding.linTrack.setVisibility(View.VISIBLE);
-                           binding.relPay.setVisibility(View.GONE);
-                           binding.linData.setVisibility(View.GONE);
-                           binding.linFill.setVisibility(View.GONE);
-                         //  binding.linInvoice.setVisibility(View.GONE);
-
+                        if (Integer.parseInt(resp.getRecordList().getTripStatus()) > 1&&Integer.parseInt(resp.getRecordList().getTripStatus())<7) {
+                            binding.linTrack.setVisibility(View.VISIBLE);
                         }
-                        else{
-
+                        else if (Integer.parseInt(resp.getRecordList().getTripStatus()) > 6) {
                             binding.linInvoice.setVisibility(View.VISIBLE);
                             binding.linTrack.setVisibility(View.GONE);
-                            binding.relPay.setVisibility(View.VISIBLE);
-                            if(common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")){
-                                binding.linFill.setVisibility(View.VISIBLE);
-                                binding.etFeed.setText("");
-                                binding.etAfterfeed.setText("");
-                                binding.linData.setVisibility(View.GONE);
-                            } else {
-                                binding.etFeed.setText(resp.getRecordList().getUserFeedback());
-                                binding.etAfterfeed.setText(resp.getRecordList().getUserFeedback());
-                                binding.linFill.setVisibility(View.GONE);
-                                binding.linData.setVisibility(View.VISIBLE);
-                            }
+                            binding.linData.setVisibility(View.GONE);
+                            binding.linFill.setVisibility(View.GONE);
                         }
-                        tripId= String.valueOf(resp.getRecordList().getId());
+                        if (common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")) {
+                            binding.linFill.setVisibility(View.VISIBLE);
+                            binding.etFeed.setText("");
+                            binding.etAfterfeed.setText("");
+                            binding.linData.setVisibility(View.GONE);
+                        } else {
+                            binding.etFeed.setText(resp.getRecordList().getUserFeedback());
+                            binding.etAfterfeed.setText(resp.getRecordList().getUserFeedback());
+                            binding.linFill.setVisibility(View.GONE);
+                            binding.linData.setVisibility(View.VISIBLE);
+                        }
+
+                        tripId = String.valueOf(resp.getRecordList().getId());
 
                         Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(binding.vImg);
@@ -229,22 +235,22 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 
                         binding.tvVnum.setText(resp.getRecordList().getVehicleNumber());
                         binding.tvDname.setText(resp.getRecordList().getName());
-                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName()+"("+
-                                resp.getRecordList().getVehicleColor()+")");
-                        binding.tvStatus.setText(resp.getRecordList().getTripStatus());
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName() + "(" +
+                                resp.getRecordList().getVehicleColor() + ")");
 
-                        binding.tvAmt.setText("-Rs."+resp.getRecordList().getAmount());
-                        binding.tvDist.setText("Distance: "+resp.getRecordList().getDistance()+"KM");
-                        binding.tvPayment.setText("Payment by "+resp.getRecordList().getPaymentMode());
+
+                        binding.tvAmt.setText("-Rs." + resp.getRecordList().getAmount());
+                        binding.tvDist.setText("Distance: " + resp.getRecordList().getDistance() + "KM");
+                        binding.tvPayment.setText("Payment by " + resp.getRecordList().getPaymentMode());
 
                         binding.tvPick.setText(resp.getRecordList().getPickup());
                         binding.tvDesctination.setText(resp.getRecordList().getDestination());
 
 
-
-                    }else{
+                    } else {
                         common.errorToast(resp.getError());
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

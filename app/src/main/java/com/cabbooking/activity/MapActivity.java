@@ -243,22 +243,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                       homeToolBar();
 
                     }
-//                    else if(frgmentName.equalsIgnoreCase("BookingDetailFragment")){
-//                        binding.linToolbar.setVisibility(View.GONE);
-//                        binding.mytoolbar.setNavigationIcon(null);
-//                        binding.mytoolbar.setVisibility(View.VISIBLE);
-//                        binding.linBackMain.setVisibility(View.VISIBLE);
-//                        binding.linOnlyBack.setVisibility(View.GONE);
-//                        // setMap(false);
-//                        binding.main.setVisibility(View.VISIBLE);
-//                        common.setMap(false, true, 160, binding.mapContainer,
-//                                binding.main.findViewById(R.id.lin_search));
-//                        LatLng pickupLatLng = new LatLng(28.6139, 77.2090);        // Pickup Location
-//                        LatLng destinationLatLng = new LatLng(28.7041, 77.1025);   // Destination Location
-//                        disbaleMap(pickupLatLng,destinationLatLng);
-//                    }
-                    else if (frgmentName.contains("DestinationFragment") ||frgmentName.contains("PickUpAddressFragment") ||
-                            frgmentName.contains("EnquiryFragment") ||
+
+                   else if (frgmentName.contains("EnquiryFragment") ||
                             frgmentName.equalsIgnoreCase("WalletHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
                             frgmentName.equalsIgnoreCase("ContactUsFragment") ||
@@ -269,20 +255,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")
 
                     ) {
-                        showCommonPickDestinationArea(false,false);
+                        common.setMap(false, false, 0, binding.mapContainer,
+                                binding.main.findViewById(R.id.lin_search));
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
                         binding.linBackMain.setVisibility(View.VISIBLE);
                         binding.linOnlyBack.setVisibility(View.GONE);
-                        // setMap(false);
                         binding.main.setVisibility(View.GONE);
+                        // setMap(false);
+
+                            showCommonPickDestinationArea(false,false);
+
+
+
+                    }
+                    else if (frgmentName.contains("DestinationFragment") ||
+                            frgmentName.contains("PickUpAddressFragment")) {
+                        showCommonPickDestinationArea(true,true);
                         common.setMap(false, false, 0, binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
-
-                    } else {
-
-
+                        binding.linToolbar.setVisibility(View.GONE);
+                        binding.mytoolbar.setNavigationIcon(null);
+                        binding.mytoolbar.setVisibility(View.VISIBLE);
+                        binding.linBackMain.setVisibility(View.VISIBLE);
+                        binding.linOnlyBack.setVisibility(View.GONE);
+                        binding.main.setVisibility(View.GONE);
+                    }
+                    else {
                         common.setMap(false, true, 160, binding.mapContainer,
                                 binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
@@ -1264,6 +1264,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
+            } else  if (frgmentName.contains("RideFragment")) {
+
             } else {
                 super.onBackPressed();
             }
