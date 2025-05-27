@@ -1429,6 +1429,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void setHomeAddress(String address){
+        Log.e("HomeAddress",address);
         binding.tvAddress.setText(address);
         sessionManagment.setValue(KEY_LAST_SAVED_LOCATION, address);
 
