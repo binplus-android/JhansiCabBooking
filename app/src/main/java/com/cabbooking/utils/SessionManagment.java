@@ -16,31 +16,32 @@ public class SessionManagment {
     Context context;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
-    String PREFS_NAME="CabBooking";
+    String PREFS_NAME = "CabBooking";
     int PRIVATE_MODE = 0;
-    public static String KEY_NAME="user_name";
-    public static String KEY_ID="user_id";
-    public static String KEY_MOBILE="user_number";
-    public static String KEY_TYPE="type";
-    public static String KEY_OUTSTATION_TYPE="outstation_type";
+    public static String KEY_NAME = "user_name";
+    public static String KEY_ID = "user_id";
+    public static String KEY_MOBILE = "user_number";
+    public static String KEY_TYPE = "type";
+    public static String KEY_OUTSTATION_TYPE = "outstation_type";
     String LOGIN = "login";
     private static final String DEVICE_TOKEN = "device_token";
-    public static final String IS_LOGIN_SUCCESS="is_login_success";
-    public static final String KEY_TOKEN="token";
-    public static final String KEY_REFERCODE="refercode";
-    public static final String KEY_SHARE_LINK="shareLink";
-    public static final String KEY_TOKEN_TYPE="tokenType";
-    public static final String KEY_USER_IMAGE="IMAGE";
-    public static final String KEY_TERMS="TERMS";
-    public static final String KEY_PRIVACY="PRIVACY";
-    public static final String KEY_SUPPORT_EMAIL="KEY_SUPPORT_EMAIL";
-    public static final String KEY_WHATSPP="KEY_WHATSPP";
-    public static final String KEY_SUPPORT_SUBJ="KEY_SUPPORT_SUBJ";
-    public static final String KEY_SUPPORT_MOBILE="KEY_SUPPORT_MOBILE";
-    public static final String KEY_HOME_IMG1="KEY_HOME_IMG1";
-    public static final String KEY_HOME_IMG2="KEY_HOME_IMG2";
-    public static final String KEY_ENQUIRY="KEY_ENQUIRY";
-    public static final String KEY_NOTIFICATION="KEY_NOTIFICATION";
+    public static final String IS_LOGIN_SUCCESS = "is_login_success";
+    public static final String KEY_TOKEN = "token";
+    public static final String KEY_REFERCODE = "refercode";
+    public static final String KEY_SHARE_LINK = "shareLink";
+    public static final String KEY_TOKEN_TYPE = "tokenType";
+    public static final String KEY_USER_IMAGE = "IMAGE";
+    public static final String KEY_TERMS = "TERMS";
+    public static final String KEY_PRIVACY = "PRIVACY";
+    public static final String KEY_SUPPORT_EMAIL = "KEY_SUPPORT_EMAIL";
+    public static final String KEY_WHATSPP = "KEY_WHATSPP";
+    public static final String KEY_SUPPORT_SUBJ = "KEY_SUPPORT_SUBJ";
+    public static final String KEY_SUPPORT_MOBILE = "KEY_SUPPORT_MOBILE";
+    public static final String KEY_HOME_IMG1 = "KEY_HOME_IMG1";
+    public static final String KEY_HOME_IMG2 = "KEY_HOME_IMG2";
+    public static final String KEY_ENQUIRY = "KEY_ENQUIRY";
+    public static final String KEY_NOTIFICATION = "KEY_NOTIFICATION";
+    public static final String KEY_LAST_SAVED_LOCATION = "last_saved_location";
 
     public SessionManagment(Context context) {
         this.context = context;
@@ -80,13 +81,17 @@ public class SessionManagment {
     public void setLoginValue() {
         editor.putBoolean(LOGIN, true);
         editor.apply();
+
     }
+
     public boolean isLogin() {
        return  prefs.getBoolean(LOGIN, false);
     }
+
     public String getValue(String key){
         return prefs.getString(key,"");
     }
+
     public  void logout(Activity activity){
         editor.clear();
         editor.commit();
@@ -105,10 +110,12 @@ public class SessionManagment {
     public void addToken(String token) {
         editor.putString(DEVICE_TOKEN,token);
         editor.commit();
+
     }
 
     public String getToken() {
         return prefs.getString(DEVICE_TOKEN,"");
+
     }
 
 }
