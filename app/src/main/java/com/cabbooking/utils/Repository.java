@@ -508,8 +508,8 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
                 showErrorMsg(responseService, t);
             }
         });
-
     }
+
     public void getWalletHistory(JsonObject postData, ResponseService responseService, boolean showProgress) {
         showHideProgressBar(showProgress);
         common=new Common(context);

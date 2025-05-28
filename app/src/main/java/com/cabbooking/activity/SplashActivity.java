@@ -109,44 +109,45 @@ public class SplashActivity extends AppCompatActivity {
     private void sessionStoring() {
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
+
         //common data
         common.getAppSettingData(new OnConfig() {
             @Override
             public void getAppSettingData(AppSettingModel model) {
-                sessionManagment.setValue(KEY_TERMS,model.getTerms_conditions());
-                sessionManagment.setValue(KEY_PRIVACY,model.getPrivacy_policy());
-                sessionManagment.setValue(KEY_SUPPORT_EMAIL,model.getSupport_email());
-                sessionManagment.setValue(KEY_SUPPORT_MOBILE,model.getSupport_mobile());
-                sessionManagment.setValue(KEY_WHATSPP,model.getSupport_whatsapp());
-                sessionManagment.setValue(KEY_SUPPORT_SUBJ,model.getSupport_message());
-                sessionManagment.setValue(KEY_HOME_IMG1,model.getHomeImage1());
-                sessionManagment.setValue(KEY_HOME_IMG2,model.getHomeImage2());
+                sessionManagment.setValue(KEY_TERMS, model.getTerms_conditions());
+                sessionManagment.setValue(KEY_PRIVACY, model.getPrivacy_policy());
+                sessionManagment.setValue(KEY_SUPPORT_EMAIL, model.getSupport_email());
+                sessionManagment.setValue(KEY_SUPPORT_MOBILE, model.getSupport_mobile());
+                sessionManagment.setValue(KEY_WHATSPP, model.getSupport_whatsapp());
+                sessionManagment.setValue(KEY_SUPPORT_SUBJ, model.getSupport_message());
+                sessionManagment.setValue(KEY_HOME_IMG1, model.getHomeImage1());
+                sessionManagment.setValue(KEY_HOME_IMG2, model.getHomeImage2());
             }
         });
+
         //enquiry
-            repository.getEnquiryList(object, new ResponseService() {
-                @Override
-                public void onResponse(Object data) {
-                    try {
-                        EnquiryModel resp = (EnquiryModel) data;
-                        Log.e("getEnquiryresp ",data.toString());
-                        if (resp.getStatus()==200) {
-                            Gson gson = new Gson();
-                            String jsonList = gson.toJson(resp.getRecordList());
-                            sessionManagment.setValue(KEY_ENQUIRY, jsonList);
-                        }
-                        else{
-                            sessionManagment.setValue(KEY_ENQUIRY, "");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, false);
+//            repository.getEnquiryList(object, new ResponseService() {
+//                @Override
+//                public void onResponse(Object data) {
+//                    try {
+//                        EnquiryModel resp = (EnquiryModel) data;
+//                        Log.e("getEnquiryresp ",data.toString());
+//                        if (resp.getStatus()==200) {
+//                            Gson gson = new Gson();
+//                            String jsonList = gson.toJson(resp.getRecordList());
+//                            sessionManagment.setValue(KEY_ENQUIRY, jsonList);
+//                        } else{
+//                            sessionManagment.setValue(KEY_ENQUIRY, "");
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                @Override
+//                public void onServerError(String errorMsg) {
+//                    Log.e("errorMsg",errorMsg);
+//                }
+//            }, false);
 //notification
 
 //        repository.getNotification(object, new ResponseService() {

@@ -109,9 +109,6 @@
                                 android:layout_height="10pt"
                                android:src="@drawable/notification"/>
                         </LinearLayout>
-
-
-
                     </RelativeLayout>
                     <LinearLayout
                         android:visibility="gone"
@@ -247,17 +244,11 @@
                             android:layout_below="@id/lin"
                             android:id="@+id/main_framelayout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            >
+                            android:layout_height="match_parent">
                         </FrameLayout>
                     </RelativeLayout>
-
-
                 </RelativeLayout>
-
             </RelativeLayout>
-
-
         </com.google.android.material.appbar.AppBarLayout>
         <RelativeLayout
             android:layout_width="140pt"

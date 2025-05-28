@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -91,21 +93,35 @@ public class SessionManagment {
     public String getValue(String key){
         return prefs.getString(key,"");
     }
-
-    public  void logout(Activity activity){
+//    public  void logout(Activity activity){
+//        editor.clear();
+//        editor.commit();
+//        Intent logout = new Intent (activity, LoginActivity.class);
+//        logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//        if (activity!=null) {
+//            activity.startActivity(logout);
+//            activity.finish();
+//        }
+//        android.os.Process.killProcess(android.os.Process.myPid());
+//        System.exit(2);
+//
+//    }
+    public void logout(Activity activity){
         editor.clear();
         editor.commit();
-        Intent logout = new Intent (activity, LoginActivity.class);
-        logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        logout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        if (activity!=null) {
-            activity.startActivity(logout);
-            activity.finish();
-        }
+        Intent logout = new Intent(activity, LoginActivity.class);
+        logout.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(logout);
+        activity.finish();
 
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
     }
+
 
     public void addToken(String token) {
         editor.putString(DEVICE_TOKEN,token);

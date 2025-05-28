@@ -149,7 +149,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getProfileImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(iv_dimg);
 
-
                     }else{
                        // common.errorToast(resp.getError());
                         binding.layBooking.setVisibility(View.GONE);
@@ -163,11 +162,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Log.e("errorMsg",errorMsg);
             }
         }, false);
-
-
     }
-
-
 
     private void allClicks() {
         binding.linDestination.setOnClickListener(this);
