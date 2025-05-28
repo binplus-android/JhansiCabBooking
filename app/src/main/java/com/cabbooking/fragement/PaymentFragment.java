@@ -242,7 +242,7 @@ public class PaymentFragment extends Fragment {
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
                         binding.tvRidername.setText(resp.getRecordList().getName());
-                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleTypeImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
                         binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
                         if(!common.checkNullString(String.valueOf(resp.getRecordList().getSeats())).equalsIgnoreCase("")){
