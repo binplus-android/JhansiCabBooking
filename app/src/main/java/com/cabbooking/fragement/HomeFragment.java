@@ -144,7 +144,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         tv_vnum.setText(resp.getRecordList().get(0).getVehicleNumber());
                         tv_vname.setText(resp.getRecordList().get(0).getVehicleModelName());
                         tv_dname.setText(resp.getRecordList().get(0).getName());
-                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getVehicleImage()).
+                        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getVehicleTypeImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_vimg);
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().get(0).getProfileImage()).placeholder(R.drawable.logo).
                                 error(R.drawable.logo).into(iv_dimg);

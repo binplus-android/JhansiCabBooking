@@ -209,13 +209,21 @@
                                 android:orientation="vertical"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
+<!--                                <TextView-->
+<!--                                    android:id="@+id/tv_vnum"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:textStyle="bold"-->
+<!--                                    android:gravity="center_vertical"-->
+<!--                                    android:text=""-->
+<!--                                    />-->
                                 <TextView
+                                    android:textStyle="bold"
                                     android:id="@+id/tv_vname"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textStyle="bold"
                                     android:gravity="center_vertical"
-                                    android:text="Mini"
+                                    android:text=""
                                     />
                                 <TextView
                                     android:id="@+id/tv_vdesc"
@@ -223,7 +231,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:gravity="center_vertical"
-                                    android:text="(White| 5 Seater)"
+                                    android:text=""
                                     android:textSize="@dimen/space_4" />
                             </LinearLayout>
 

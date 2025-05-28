@@ -51,12 +51,34 @@ public class BookingHistoryModel {
     public class RecordList{
         public int tripId;
         public String amount;
-        public String tripStatus;
+        public int tripStatus;
+        public String tripStatusName;
         public String name;
         public String profileImage;
         public String vehicleImage;
+        public String vehicleTypeImage;
         public String vehicleModelName;
         public String createdAt;
+
+        public String getVehicleTypeImage() {
+            return vehicleTypeImage;
+        }
+
+        public void setTripStatus(int tripStatus) {
+            this.tripStatus = tripStatus;
+        }
+
+        public String getTripStatusName() {
+            return tripStatusName;
+        }
+
+        public void setTripStatusName(String tripStatusName) {
+            this.tripStatusName = tripStatusName;
+        }
+
+        public void setVehicleTypeImage(String vehicleTypeImage) {
+            this.vehicleTypeImage = vehicleTypeImage;
+        }
 
         public int getTripId() {
             return tripId;
@@ -74,13 +96,7 @@ public class BookingHistoryModel {
             this.amount = amount;
         }
 
-        public String getTripStatus() {
-            return tripStatus;
-        }
 
-        public void setTripStatus(String tripStatus) {
-            this.tripStatus = tripStatus;
-        }
 
         public String getName() {
             return name;

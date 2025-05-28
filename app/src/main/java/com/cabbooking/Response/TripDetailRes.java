@@ -45,9 +45,12 @@ public class TripDetailRes {
         public int vehicleType;
         public String distance;
         public String amount;
+        public int adminShare;
         public String pickupOtp;
         public int tripStatus;
         public String status;
+        public Object cancelledBy;
+        public Object cancelReason;
         public int isActive;
         public int isDelete;
         public String created_at;
@@ -56,9 +59,11 @@ public class TripDetailRes {
         public String contactNo;
         public String profileImage;
         public String vehicleImage;
-        public String vehicleModelName;
+        public String vehicleTypeImage;
         public String vehicleColor;
-        public String seat;
+        public String vehicleModelName;
+        public int seats;
+        public String tripStatusName;
         
         
 
@@ -286,12 +291,52 @@ public class TripDetailRes {
             this.vehicleColor = vehicleColor;
         }
 
-        public String getSeat() {
-            return seat;
+        public String getVehicleTypeImage() {
+            return vehicleTypeImage;
         }
 
-        public void setSeat(String seat) {
-            this.seat = seat;
+        public int getAdminShare() {
+            return adminShare;
+        }
+
+        public void setAdminShare(int adminShare) {
+            this.adminShare = adminShare;
+        }
+
+        public Object getCancelledBy() {
+            return cancelledBy;
+        }
+
+        public void setCancelledBy(Object cancelledBy) {
+            this.cancelledBy = cancelledBy;
+        }
+
+        public Object getCancelReason() {
+            return cancelReason;
+        }
+
+        public void setCancelReason(Object cancelReason) {
+            this.cancelReason = cancelReason;
+        }
+
+        public void setVehicleTypeImage(String vehicleTypeImage) {
+            this.vehicleTypeImage = vehicleTypeImage;
+        }
+
+        public int getSeats() {
+            return seats;
+        }
+
+        public void setSeats(int seats) {
+            this.seats = seats;
+        }
+
+        public String getTripStatusName() {
+            return tripStatusName;
+        }
+
+        public void setTripStatusName(String tripStatusName) {
+            this.tripStatusName = tripStatusName;
         }
     }
 }

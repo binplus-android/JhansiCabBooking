@@ -28,7 +28,16 @@ public class HomeBookingResp {
         public String profileImage;
         public String vehicleNumber;
         public String vehicleImage;
+        public String vehicleTypeImage;
         public String vehicleModelName;
+
+        public String getVehicleTypeImage() {
+            return vehicleTypeImage;
+        }
+
+        public void setVehicleTypeImage(String vehicleTypeImage) {
+            this.vehicleTypeImage = vehicleTypeImage;
+        }
 
         public int getTripId() {
             return tripId;
