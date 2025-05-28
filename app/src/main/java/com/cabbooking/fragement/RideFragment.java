@@ -5,6 +5,7 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -70,7 +72,7 @@ public class RideFragment extends Fragment {
     private int currentStatus = 0; // 0 = keep refreshing, 1 = stop refreshing
 
     private static final long API_REFRESH_INTERVAL = 5000; // example 5 seconds
-
+    private Dialog exitDialog;
     public RideFragment() {
         // Required empty public constructor
     }
@@ -89,7 +91,13 @@ public class RideFragment extends Fragment {
         if (getArguments() != null) {
         }
     }
-
+    public boolean onBackPressed() {
+        if (tripId > 0) {
+            showExitCancelDialog(getActivity(), String.valueOf(tripId));
+            return true;
+        }
+        return false;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,7 +111,7 @@ public class RideFragment extends Fragment {
         binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-
+                showExitCancelDialog(getActivity(), String.valueOf(tripId));
                 return false;
             }
         });
@@ -113,6 +121,33 @@ public class RideFragment extends Fragment {
         return binding.getRoot();
     }
 
+    public void showExitCancelDialog(Activity activity, String tripId) {
+        if (exitDialog != null && exitDialog.isShowing()) return;
+
+        exitDialog = new Dialog(activity);
+        exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        exitDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        exitDialog.getWindow().setGravity(Gravity.CENTER);
+        exitDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        exitDialog.setContentView(R.layout.dilalog_exit);
+
+        TextView tvCancel = exitDialog.findViewById(R.id.tv_cancel);
+        TextView tvMessage = exitDialog.findViewById(R.id.tv_message);
+        Button btnYes = exitDialog.findViewById(R.id.btn_yes);
+        Button btnNo = exitDialog.findViewById(R.id.btn_no);
+
+        tvCancel.setText(getString(R.string.goback));
+        tvMessage.setText(getString(R.string.goback_cancle));
+
+        btnNo.setOnClickListener(v -> exitDialog.dismiss());
+        btnYes.setOnClickListener(v -> {
+            exitDialog.dismiss();
+            common.callCancleDialog(activity, tripId);
+        });
+
+        exitDialog.setCanceledOnTouchOutside(false);
+        exitDialog.show();
+    }
     public void getRiderStatus()
         {
             JsonObject object=new JsonObject();
@@ -129,7 +164,7 @@ public class RideFragment extends Fragment {
                             onStatusReceivedFromApi(tripStatus);
                        if(tripStatus>=2){
 
-                         binding.linSearch.setVisibility(View.GONE); 
+                         binding.linSearch.setVisibility(View.GONE);
                          binding.linRide.setVisibility(View.VISIBLE);
                           callGetRiderDetail(resp.getRecordList().getTripId());
                            tripId=resp.getRecordList().getTripId();
@@ -139,7 +174,7 @@ public class RideFragment extends Fragment {
                            binding.linRide.setVisibility(View.GONE);
 
                        }
-                       
+
                     }else{
                         common.errorToast(resp.getError());
                     }

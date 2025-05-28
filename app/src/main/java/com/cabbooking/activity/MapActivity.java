@@ -80,6 +80,7 @@ import com.cabbooking.fragement.ProfileFragment;
 import com.cabbooking.fragement.RideFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.interfaces.AddressCallback;
+import com.cabbooking.interfaces.OnBackPressedListener;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
 import com.cabbooking.model.NearAreaNameModel;
@@ -1275,8 +1276,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 startActivity(intent);
                 finish();
             } else  if (frgmentName.contains("RideFragment")) {
-
-            } else {
+                if (fragment instanceof OnBackPressedListener) {
+                    boolean handled = ((OnBackPressedListener) fragment).onBackPressed();
+                    if (handled) return;
+                }
+                }
+            else {
                 super.onBackPressed();
             }
         } else {

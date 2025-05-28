@@ -137,6 +137,7 @@
             </androidx.appcompat.widget.Toolbar>
 
             <RelativeLayout
+                android:elevation="@dimen/space_2"
                 android:background="@color/white"
                 android:layout_below="@id/mytoolbar"
                 android:layout_width="match_parent"
@@ -158,6 +159,7 @@
                         android:layout_height="match_parent">
 
                         <ImageView
+                            android:elevation="@dimen/space_5"
                             android:backgroundTint="@color/black"
                             android:background="@drawable/active_dot"
                             android:padding="@dimen/space_2"

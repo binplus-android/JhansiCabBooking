@@ -64,6 +64,8 @@
     <string name="vechicle_recommendation">Vechicle Recommendation</string>
     <string name="confirm_your_pickup">Confirm your pickup</string>
     <string name="confirmation">Confirmation</string>
+    <string name="goback">Are You Sure You Want to Go Back</string>
+    <string name="goback_cancle">Going back now will cancel your current trip permanently.</string>
     <string name="confirm_loc">Confirm Location</string>
     <string name="searching_nearby_vechicle">Searching for nearby available vechicle</string>
     <string name="searching">Searching...</string>

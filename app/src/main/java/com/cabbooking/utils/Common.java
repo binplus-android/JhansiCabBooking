@@ -245,7 +245,7 @@ public class Common {
             public void onServerError(String errorMsg) {
                 Log.e("errorMsg",errorMsg);
             }
-        }, false);
+        }, true);
 
     }
     public String changeDateFormate(String inputTime) {
@@ -962,6 +962,7 @@ public class Common {
         }
 
     }
+
 }
 
 

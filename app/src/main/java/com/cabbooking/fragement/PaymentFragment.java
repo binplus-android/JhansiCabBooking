@@ -245,8 +245,8 @@ public class PaymentFragment extends Fragment {
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
                         binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
-                        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
-                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+                        if(!common.checkNullString(String.valueOf(resp.getRecordList().getSeats())).equalsIgnoreCase("")){
+                            binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+String.valueOf(resp.getRecordList().getSeats())+" Seater ) ");
                         }
                         else{
                             binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
@@ -343,8 +343,8 @@ public class PaymentFragment extends Fragment {
 
         tv_vname.setText(resp.getRecordList().getVehicleModelName());
         tv_bookdate.setText(getActivity().getString(R.string.booking_date)+common.changeDateFormate(resp.getRecordList().getCreated_at()));
-        if(!common.checkNullString(resp.getRecordList().getSeat()).equalsIgnoreCase("")){
-            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+resp.getRecordList().getSeat()+" Seater ) ");
+        if(!common.checkNullString(String.valueOf(resp.getRecordList().getSeats())).equalsIgnoreCase("")){
+            tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+String.valueOf(resp.getRecordList().getSeats())+" Seater ) ");
         }
         else{
             tv_vdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
