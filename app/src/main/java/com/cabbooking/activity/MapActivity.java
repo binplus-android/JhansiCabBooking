@@ -54,11 +54,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -96,8 +93,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -112,7 +107,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -143,13 +137,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Location location;
     public Marker riderMarket, destinationMarker;
     public Double currentLat, currentLng;
-    public String mPlaceLocation, mPlaceDestination;
     public SupportMapFragment mapFragment;
-    public DatabaseReference driversAvailable;
     public ArrayList<Marker> driverMarkers = new ArrayList<>();
     public boolean pickupPlacesSelected = false;
-    public int radius = 1, distance = 1; // km
-    public static final int LIMIT = 3;
     public String URL_BASE_API_PLACES = "https://maps.googleapis.com/maps/api/place/textsearch/json?";
     ActionBarDrawerToggle toggle;
     TextView tvpick, tvDestination;
@@ -159,6 +149,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Double pickupLat = 0.0, destinationLat = 0.0;
     Double pickupLng = 0.0, destinationLng = 0.0;
     String pickAddres = "", destinationAddress = "";
+//    public static boolean isAddressFetched = false; // Add this field
     public static boolean isAddressFetched = false; // Add this field
     ArrayList<MenuModel> mlist;
     MenuAdapter menuAdapter;
@@ -167,19 +158,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     LatLng pickLatLng, destinationLatLng;
     String apiKey;
     private Polyline currentPolyline;
-    FusedLocationProviderClient fusedLocationClient;
-    LocationRequest locationRequest;
     LatLng pickUpFinalLat;
-    private boolean pickupPlacesAllReadySelected = false;
-    String currentFragment = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_map);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
-
+        isAddressFetched = false;
         initView();
+
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         apiKey = getString(R.string.google_maps_key);
@@ -338,6 +326,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         common.setMap(true, true, 140, binding.mapContainer,
                 binding.main.findViewById(R.id.lin_search));
         binding.main.setVisibility(View.VISIBLE);
+
     }
 
     private void animateCameraWithOffset(final LatLng targetLatLng) {
@@ -654,39 +643,67 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void showPickupMarker(LatLng latLng) {
-        if(latLng!=null) {
+        if (latLng != null && mMap != null) {
             pickUpFinalLat = latLng;
-//        riderMarket = mMap.addMarker(new MarkerOptions()
-//                .position(latLng)
-//                .title("You")
-//                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+
             if (riderMarket != null) {
                 riderMarket.remove();
                 riderMarket = null;
             }
 
-            // Determine fragment name
-            String fragmentName = getCurrentFragmentName(); // We'll define this function below
+            String fragmentName = getCurrentFragmentName();
             int markerIconResId;
 
-            // Decide icon based on current fragment
             if ("HomeFragment".equals(fragmentName)) {
-                markerIconResId = R.drawable.ic_blue_loc; // example icon
+                markerIconResId = R.drawable.ic_blue_loc;
             } else if ("PickUpFragment".equals(fragmentName)) {
                 markerIconResId = R.drawable.ic_blue_loc;
             } else {
-                markerIconResId = R.drawable.ic_pickup_location; // fallback
-
+                markerIconResId = R.drawable.ic_pickup_location;
             }
 
             riderMarket = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("You")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                     .icon(bitmapDescriptorFromVector(this, markerIconResId)));
-
         }
     }
+
+
+//    private void showPickupMarker(LatLng latLng) {
+//        if(latLng!=null) {
+//            pickUpFinalLat = latLng;
+////        riderMarket = mMap.addMarker(new MarkerOptions()
+////                .position(latLng)
+////                .title("You")
+////                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+//            if (riderMarket != null) {
+//                riderMarket.remove();
+//                riderMarket = null;
+//            }
+//
+//            // Determine fragment name
+//            String fragmentName = getCurrentFragmentName(); // We'll define this function below
+//            int markerIconResId;
+//
+//            // Decide icon based on current fragment
+//            if ("HomeFragment".equals(fragmentName)) {
+//                markerIconResId = R.drawable.ic_blue_loc; // example icon
+//            } else if ("PickUpFragment".equals(fragmentName)) {
+//                markerIconResId = R.drawable.ic_blue_loc;
+//            } else {
+//                markerIconResId = R.drawable.ic_pickup_location; // fallback
+//
+//            }
+//
+//            riderMarket = mMap.addMarker(new MarkerOptions()
+//                    .position(latLng)
+//                    .title("You")
+////                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//                    .icon(bitmapDescriptorFromVector(this, markerIconResId)));
+//
+//        }
+//    }
 
     public void setDriverLocation(String Lat, String Lng) {
 
@@ -808,6 +825,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKeyval;
     }
+
     private class DownloadTask extends AsyncTask<String, Void, String> {
         protected String doInBackground(String... url) {
             String data = "";
@@ -1001,6 +1019,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (currentLat != null && currentLng != null) {
             Log.d("Tag", "displayLocation: " + currentLat + "--" + currentLng);
 
+            Log.e("gbhnjh78yu", String.valueOf(isAddressFetched));
             if (!isAddressFetched) {
                 loadAllAvailableDriver(new LatLng(currentLat, currentLng));
                 fetchNearbyLocations(currentLat, currentLng); // Call to fetch 3 nearby places
@@ -1008,6 +1027,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
+
+//    public void loadAllAvailableDriver(final LatLng location) {
+//        for (Marker driverMarker : driverMarkers) {
+//            driverMarker.remove();
+//        }
+//
+//        driverMarkers.clear();
+//        if (!pickupPlacesSelected) {
+//            if (riderMarket != null)
+//                riderMarket.remove();
+//
+//
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+//
+//            String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
+//            setHomeAddress(address);
+//
+//            tvpick.setText(address);
+//            getPickUpLatLng(currentLat, currentLng, address,location);
+//
+//        }
+//    }
 
     public void loadAllAvailableDriver(final LatLng location) {
         for (Marker driverMarker : driverMarkers) {
@@ -1019,17 +1060,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (riderMarket != null)
                 riderMarket.remove();
 
+            if (mMap != null) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+                String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
+                setHomeAddress(address);
 
-            String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
-            setHomeAddress(address);
-
-            tvpick.setText(address);
-            getPickUpLatLng(currentLat, currentLng, address,location);
-
+                tvpick.setText(address);
+                getPickUpLatLng(currentLat, currentLng, address, location);
+            } else {
+                Log.e("MapActivity", "GoogleMap (mMap) is null. Cannot animate camera.");
+            }
         }
     }
+
 
     public String getAddressFromLatLng(Activity context, double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
@@ -1046,7 +1090,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (!common.checkNullString(sessionManagment.getValue(KEY_LAST_SAVED_LOCATION)).isEmpty()) {
             return  sessionManagment.getValue(KEY_LAST_SAVED_LOCATION);
         }else {
-            return "Address not found";
+//            return "Address not found";
+            return "Loading...";
         }
     }
 
@@ -1215,8 +1260,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-
-
         binding.navHeader.linMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1224,8 +1267,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 binding.drawer.closeDrawer(GravityCompat.START);
             }
         });
-
-
     }
 
     public void showLogoutDialog() {
@@ -1253,7 +1294,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                isAddressFetched = false;
                 sessionManagment.logout(MapActivity.this);
+
             }
         });
 
@@ -1280,8 +1323,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         } else {
             super.onBackPressed();
         }
-
-
     }
 
     public void loadFragment(Fragment fragment) {
@@ -1568,6 +1609,49 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//
+//        if (mMap != null) {
+//            // Remove listeners
+//            mMap.setOnMapClickListener(null);
+//            mMap.setOnCameraIdleListener(null);
+//
+//            // Clear map elements (markers, polylines, etc.)
+//            mMap.clear();
+//
+//            // Nullify mMap to release reference
+//            mMap = null;
+//        }
+//
+//        if (riderMarket != null) {
+//            riderMarket.remove();
+//            riderMarket = null;
+//        }
+//
+//        if (driverMarkers != null) {
+//            for (Marker marker : driverMarkers) {
+//                marker.remove();
+//            }
+//            driverMarkers.clear();
+//        }
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Nullify listeners to stop callbacks
+        if (mMap != null) {
+            mMap.setOnMapClickListener(null);
+            mMap.setOnCameraIdleListener(null);
+        }
+
+        Log.d("MapActivity", "onDestroy called, listeners removed.");
+    }
+
 
 
 
