@@ -6,7 +6,9 @@ import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
 import static com.cabbooking.utils.SessionManagment.KEY_TYPE;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -118,6 +120,10 @@ public class RideFragment extends Fragment {
 
         binding.getRoot().setFocusableInTouchMode(true);
         binding.getRoot().requestFocus();
+//        ActivityManager am = (ActivityManager) requireContext().getSystemService(Context.ACTIVITY_SERVICE);
+//        if (am.getLockTaskModeState() == ActivityManager.LOCK_TASK_MODE_NONE) {
+//            requireActivity().startLockTask();
+//        }
         return binding.getRoot();
     }
 
