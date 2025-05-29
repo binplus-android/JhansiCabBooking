@@ -226,15 +226,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.lin_destination) {
             common.switchFragment(new DestinationFragment());
         } else if (v.getId() == R.id.lin_local) {
-            sessionManagment.setValue(KEY_TYPE,"0");
-            changeBackground(binding.linLocal, binding.linOutstation);
-            //commonDestination();
-            commonVisibleAds();
+            ((MapActivity)getActivity()).displayLocation();
+            if (((MapActivity) getActivity()).getPickupLng() == 0.0 && ((MapActivity) getActivity()).getPickupLat() == 0.0) {
+                common.successToast("Location not tracked yet, please wait...");
+            } else {
+                sessionManagment.setValue(KEY_TYPE, "0");
+                changeBackground(binding.linLocal, binding.linOutstation);
+                //commonDestination();
+                commonVisibleAds();
+            }
         } else if (v.getId() == R.id.lin_outstation) {
-            sessionManagment.setValue(KEY_TYPE,"1");
-            changeBackground(binding.linOutstation, binding.linLocal);
-           // commonDestination();
-            commonVisibleAds();
+            ((MapActivity)getActivity()).displayLocation();
+            if (((MapActivity) getActivity()).getPickupLng() == 0.0 && ((MapActivity) getActivity()).getPickupLat() == 0.0) {
+                common.successToast("Location not tracked yet, please wait...");
+            } else {
+                sessionManagment.setValue(KEY_TYPE, "1");
+                changeBackground(binding.linOutstation, binding.linLocal);
+                // commonDestination();
+                commonVisibleAds();
+            }
         }
     }
 
