@@ -61,11 +61,18 @@ public class TripDetailRes {
         public String vehicleImage;
         public String vehicleTypeImage;
         public String vehicleColor;
-        public String vehicleModelName;
+        public String vehicleModelName,vehicleNumber;
         public int seats;
         public String tripStatusName;
-        
-        
+
+
+        public String getVehicleNumber() {
+            return vehicleNumber;
+        }
+
+        public void setVehicleNumber(String vehicleNumber) {
+            this.vehicleNumber = vehicleNumber;
+        }
 
         public int getId() {
             return id;

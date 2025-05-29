@@ -11,10 +11,13 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -320,6 +323,23 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
         }
 
         mapFragment.getMapAsync(this);
+        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    FragmentManager fragmentManager = ((AppCompatActivity) getActivity()).getSupportFragmentManager();
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    common.switchFragment(new HomeFragment());
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Ensure focusable behavior
+        binding.getRoot().setFocusableInTouchMode(true);
+        binding.getRoot().requestFocus();
+
         return binding.getRoot();
     }
     @Override
@@ -403,8 +423,12 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
 
                         String payment_mode="cash";
                         showPaymentMode(payment_mode);
-
-                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
+                        if(!common.checkNullString(resp.getRecordList().getPickupOtp()).equalsIgnoreCase("")){
+                            binding.tvStatus.setText(resp.getRecordList().getTripStatus()+" OTP :"+resp.getRecordList().getPickupOtp());
+                        }else{
+                            binding.tvStatus.setText(resp.getRecordList().getTripStatus());
+                        }
+                         binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
                         binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
@@ -414,8 +438,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                         driver_Number=resp.getRecordList().getContactNo();
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleTypeImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivVimg);
-                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName());
-//                        binding.tvVnum.setText(resp.getRecordList().getv());
+                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName()+"("+resp.getRecordList().getVehicleNumber()+")");
                         if(!common.checkNullString(String.valueOf(resp.getRecordList().getSeats())).equalsIgnoreCase("")){
                             binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+" | "+String.valueOf(resp.getRecordList().getSeats())+" Seater ) ");
                         }

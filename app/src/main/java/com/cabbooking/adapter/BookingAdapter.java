@@ -64,6 +64,13 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 //                    9 => 'Cancelled'
         BookingHistoryModel.RecordList model=list.get(position);
         //String status=common.getStatusText(model.getTripStatus());
+          if (model.getTripStatus() < 7) {
+              holder.tv_track.setVisibility(View.VISIBLE);
+          }
+          else{
+              holder.tv_track.setVisibility(View.GONE);
+          }
+
         holder.lin_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,19 +83,21 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         String[] date=model.getCreatedAt().split(" ");
         holder.tv_date.setText(date[0]+" | "+common.convertToAmPm(date[1]));
         // holder.tv_date.setText(common.convertToAmPm(model.getCreatedAt()));
-        holder.tv_vname.setText("By "+model.getVehicleModelName());
+        if(!common.checkNullString(model.getVehicleModelName()).equalsIgnoreCase("")){
+            holder.tv_vname.setText("By "+model.getVehicleModelName());
+        }
+
         holder.tv_amt.setText("-Rs."+String.valueOf(model.getAmount()));
         holder.tv_status.setText(model.getTripStatusName());
-        Picasso.get().load(IMAGE_BASE_URL + model.getVehicleTypeImage()).placeholder(R.drawable.logo).
-                error(R.drawable.logo).into(holder.iv_vimg);
-        Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).
-                error(R.drawable.logo).into(holder.iv_dimg);
-        if(!model.getTripStatusName().equalsIgnoreCase("pending")||!model.getTripStatusName().equalsIgnoreCase("Completed"))
-        {
-            holder.tv_track.setVisibility(View.VISIBLE);
-        }else {
-            holder.tv_track.setVisibility(View.GONE);
+        if(!common.checkNullString(model.getVehicleTypeImage()).equalsIgnoreCase("")){
+            Picasso.get().load(IMAGE_BASE_URL + model.getVehicleTypeImage()).placeholder(R.drawable.logo).into(holder.iv_vimg);
         }
+        if(!common.checkNullString(model.getProfileImage()).equalsIgnoreCase("")){
+            Picasso.get().load(IMAGE_BASE_URL + model.getProfileImage()).placeholder(R.drawable.logo).into(holder.iv_dimg);
+        }
+
+
+
         holder.tv_track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +113,15 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
     @Override
     public int getItemCount() {
         return list.size();
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -57,7 +57,15 @@ public class DestinationHomeAdapter extends RecyclerView.Adapter<DestinationHome
     public int getItemCount() {
         return list.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
        TextView tv_title;
        RelativeLayout rel_main;

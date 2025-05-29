@@ -38,7 +38,6 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
                         android:layout_alignParentStart="true"
-                        android:src="@drawable/ic_local"
                         android:layout_width="@dimen/space_21"
                         android:layout_height="@dimen/space_21"/>
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -47,7 +46,6 @@
                         android:id="@+id/d_img"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/logo"
                         android:layout_width="@dimen/space_21"
                         android:layout_height="@dimen/space_21"/>
                     <LinearLayout

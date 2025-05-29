@@ -213,8 +213,8 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 //                    6 => 'On Going',
 //                    7 => 'Completed',
 //                    9 => 'Cancelled'
-                        String status = common.getStatusText(String.valueOf(resp.getRecordList().getTripStatus()));
-                        binding.tvStatus.setText(status);
+
+                        binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
                         setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
                                 Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
                         if (resp.getRecordList().getTripStatus() > 1&&resp.getRecordList().getTripStatus()<7) {
@@ -223,9 +223,8 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                         else if (resp.getRecordList().getTripStatus() > 6) {
                             binding.linInvoice.setVisibility(View.VISIBLE);
                             binding.linTrack.setVisibility(View.GONE);
-                            binding.linData.setVisibility(View.GONE);
-                            binding.linFill.setVisibility(View.GONE);
                         }
+
                         if (common.checkNullString(resp.getRecordList().getUserFeedback()).equalsIgnoreCase("")) {
                             binding.linFill.setVisibility(View.VISIBLE);
                             binding.etFeed.setText("");
@@ -237,23 +236,38 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                             binding.linFill.setVisibility(View.GONE);
                             binding.linData.setVisibility(View.VISIBLE);
                         }
+                        if(resp.getRecordList().getTripStatus()==9){
+                            binding.linData.setVisibility(View.GONE);
+                            binding.linFill.setVisibility(View.GONE);
+                            binding.linInvoice.setVisibility(View.GONE);
+                            binding.linTrack.setVisibility(View.GONE);
+                        }
 
                         tripId = String.valueOf(resp.getRecordList().getId());
-
-                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleTypeImage()).placeholder(R.drawable.logo).
-                                error(R.drawable.logo).into(binding.vImg);
-                        Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
-                                error(R.drawable.logo).into(binding.dImg);
-
-                        binding.tvVnum.setText(resp.getRecordList().getVehicleNumber());
-                        binding.tvDname.setText(resp.getRecordList().getName());
-                        binding.tvVname.setText(resp.getRecordList().getVehicleModelName() + "(" +
-                                resp.getRecordList().getVehicleColor() + ")");
-
-
+                        if(!common.checkNullString(resp.getRecordList().getVehicleTypeImage()).equalsIgnoreCase("")){
+                            Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getVehicleTypeImage()).placeholder(R.drawable.logo).
+                                    into(binding.vImg);
+                        }
+                        if(!common.checkNullString(resp.getRecordList().getProfileImage()).equalsIgnoreCase("")){
+                            Picasso.get().load(IMAGE_BASE_URL + resp.getRecordList().getProfileImage()).placeholder(R.drawable.logo).
+                                   into(binding.dImg);
+                        }
+                        if(!common.checkNullString(resp.getRecordList().getVehicleNumber()).equalsIgnoreCase("")){
+                            binding.tvVnum.setText(resp.getRecordList().getVehicleNumber());}
+                        if(!common.checkNullString(resp.getRecordList().getName()).equalsIgnoreCase("")){
+                            binding.tvDname.setText(resp.getRecordList().getName());
+                        }
+                        if(!common.checkNullString(resp.getRecordList().getVehicleModelName()).equalsIgnoreCase("")){
+                            binding.tvVname.setText(resp.getRecordList().getVehicleModelName() + "(" +
+                                    resp.getRecordList().getVehicleColor() + ")");
+                        }
                         binding.tvAmt.setText("-Rs." + resp.getRecordList().getAmount());
                         binding.tvDist.setText("Distance: " + resp.getRecordList().getDistance() + "KM");
-                        binding.tvPayment.setText("Payment by " + resp.getRecordList().getPaymentMode());
+                        if(resp.getRecordList().getTripStatus()==9){
+                            binding.tvPayment.setText("");
+                        }
+                        else{
+                        binding.tvPayment.setText("Payment by " + resp.getRecordList().getPaymentMode());}
 
                         binding.tvPick.setText(resp.getRecordList().getPickup());
                         binding.tvDesctination.setText(resp.getRecordList().getDestination());
@@ -413,7 +427,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         String[] date=book_date.split(" ");
         String date_val=date[0]+" | "+common.convertToAmPm(date[1]);
         repository=new Repository(getActivity());
-        ((MapActivity)getActivity()).setTitle("#ID "+book_id+"\n"+date_val);
+        ((MapActivity)getActivity()).setTitle("#ID "+book_id+"  "+date_val);
         //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
     }
 

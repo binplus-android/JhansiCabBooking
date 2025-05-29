@@ -937,32 +937,10 @@ public class Common {
             }
         }, false);
     }
-    public String getStatusText(String statusCode) {
-        switch (Integer.parseInt(statusCode)) {
-                case 1:
-                    return "Pending";
-                case 2:
-                    return "Accepted";
-                case 3:
-                    return "On the Way";
-                case 4:
-                    return "Arrived";
-                case 5:
-                    return "Picked Up";
-                case 6:
-                    return "On Going";
-                case 7:
-                    return "Completed";
-                case 9:
-                    return "Cancelled";
-                default:
-                    return "";
 
-
-        }
 
     }
 
-}
+
 
 

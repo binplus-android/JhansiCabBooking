@@ -76,6 +76,10 @@ public class BookingHistoryModel {
             this.tripStatusName = tripStatusName;
         }
 
+        public int getTripStatus() {
+            return tripStatus;
+        }
+
         public void setVehicleTypeImage(String vehicleTypeImage) {
             this.vehicleTypeImage = vehicleTypeImage;
         }

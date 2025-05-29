@@ -246,8 +246,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                             frgmentName.equalsIgnoreCase("ProfileFragment") ||
                             frgmentName.equalsIgnoreCase("UpdateProfileFragment") ||
                             frgmentName.equalsIgnoreCase("BookingHistoryFragment") ||
-                            frgmentName.equalsIgnoreCase("BookingDetailFragment")||
-                            frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")
+                            frgmentName.equalsIgnoreCase("BookingDetailFragment")
 
                     ) {
                         common.setMap(false, false, 0, binding.mapContainer,
@@ -264,6 +263,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
 
+                    }
+                   else if (
+                           frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")) {
+                        common.setMap(false, false, 0, binding.mapContainer,
+                                binding.main.findViewById(R.id.lin_search));
+                        binding.mytoolbar.setVisibility(View.GONE);
+                        binding.linToolbar.setVisibility(View.GONE);
+                        binding.mytoolbar.setNavigationIcon(null);
+                        binding.linBackMain.setVisibility(View.GONE);
+                        binding.linOnlyBack.setVisibility(View.VISIBLE);
+                        // setMap(false);
+                        binding.main.setVisibility(View.VISIBLE);
+                        showCommonPickDestinationArea(false,false);
                     }
                     else if (frgmentName.contains("DestinationFragment") ||
                             frgmentName.contains("PickUpAddressFragment")) {
@@ -1313,16 +1325,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             String frgmentName = fragment.getClass().getSimpleName();
 
             if (frgmentName.contains("AfterPaymentDoneFragment")) {
-                Intent intent = new Intent(this, MapActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                FragmentManager fragmentManager =getSupportFragmentManager();
+                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                common.switchFragment(new HomeFragment());
             } else  if (frgmentName.contains("RideFragment")) {
-                if (fragment instanceof OnBackPressedListener) {
-                    boolean handled = ((OnBackPressedListener) fragment).onBackPressed();
-                    if (handled) return;
-                }
+               //
                 }
             else {
                 super.onBackPressed();

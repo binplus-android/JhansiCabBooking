@@ -60,7 +60,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public int getItemCount() {
         return list.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView  iv_delete;
         TextView tv_title, tv_desc, tv_date;

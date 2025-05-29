@@ -71,7 +71,15 @@ public class EnquiryAdapter extends RecyclerView.Adapter<EnquiryAdapter.ViewHold
     public int getItemCount() {
         return list.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_title,tv_desctination,tv_sol,tv_dateTime;
         LinearLayout lin_main,lin_des;

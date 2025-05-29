@@ -87,14 +87,14 @@
                 <ImageView
                     android:id="@+id/iv_vimg"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_local"
+
                     android:layout_width="@dimen/space_21"
                     android:layout_height="@dimen/space_21"/>
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_dimg"
                     android:layout_marginLeft="@dimen/space_4"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/logo"
+
                     android:layout_width="@dimen/space_21"
                     android:layout_height="@dimen/space_21"/>
             </LinearLayout>

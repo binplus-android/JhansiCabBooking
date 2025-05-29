@@ -47,7 +47,15 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
         holder.tv_id.setText("#ID:"+String.valueOf(model.getId()));
         holder.tv_amt.setText("+Rs."+String.valueOf(model.getAmount()));
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override
     public int getItemCount() {
         return list.size();
