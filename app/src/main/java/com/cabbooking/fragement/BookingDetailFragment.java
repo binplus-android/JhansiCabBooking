@@ -75,7 +75,7 @@ import java.util.List;
 public class BookingDetailFragment extends Fragment implements OnMapReadyCallback  {
     FragmentBookingDetailBinding binding;
     private String pendingFileUrl;
-
+    String trip_type="",outstation_type="";
     Common common;
     SessionManagment sessionManagment;
     String book_id="",book_date="",tripId="";
@@ -215,6 +215,43 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 //                    9 => 'Cancelled'
 
                         binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
+                        if(resp.getRecordList().getIsOutstation()==1){
+                            trip_type="1";
+                            if(resp.getRecordList().getIsRound()==1){
+                                outstation_type="1";
+                            }
+                            else {
+                                outstation_type="0";
+                            }
+                        }
+                        else{
+                            trip_type="0";
+                            outstation_type="0";
+                        }
+
+
+                        if(trip_type.equalsIgnoreCase("1")){
+                            binding.tvTrip.setVisibility(View.VISIBLE);
+                            if(outstation_type.equalsIgnoreCase("0")){
+                                binding.tvTrip.setText(getActivity().getString(R.string.one_way_trip));
+                            }
+                            else {
+                                binding.tvTrip.setText(getActivity().getString(R.string.round_trip));
+                                binding.tvReturndata.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+                        else{
+                            binding.tvReturndata.setVisibility(View.GONE);
+                            binding.tvTrip.setVisibility(View.VISIBLE);
+                        }
+
+                        if(common.checkNullString(resp.getRecordList().getReturnDate()).equalsIgnoreCase("")){
+                            binding.tvReturndata.setVisibility(View.GONE);
+                        }else{
+                            binding.tvReturndata.setVisibility(View.VISIBLE);
+                            binding.tvReturndata.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
+                        }
                         setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
                                 Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
                         if (resp.getRecordList().getTripStatus() > 1&&resp.getRecordList().getTripStatus()<7) {
