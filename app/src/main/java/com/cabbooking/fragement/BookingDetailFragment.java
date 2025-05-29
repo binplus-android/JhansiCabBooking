@@ -4,21 +4,28 @@ import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Environment;
 import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,8 +33,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.BookingDetailResp;
@@ -56,6 +65,7 @@ import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +74,8 @@ import java.util.ArrayList;
  */
 public class BookingDetailFragment extends Fragment implements OnMapReadyCallback  {
     FragmentBookingDetailBinding binding;
+    private String pendingFileUrl;
+
     Common common;
     SessionManagment sessionManagment;
     String book_id="",book_date="",tripId="";
@@ -285,8 +297,10 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                 try {
                   //  String pdfUrl = BASE_URL+model.getReceipt_url() ;
                     String pdfUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" ;
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl));
-                    getActivity().startActivity(browserIntent);
+//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl));
+//                    getActivity().startActivity(browserIntent);
+                    pendingFileUrl = pdfUrl;
+                    checkPermissionsAndDownload(pdfUrl);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -433,4 +447,88 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         }, true);
 
     }
+
+    private void checkPermissionsAndDownload(String fileUrl) {
+        pendingFileUrl = fileUrl;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // API 33
+            // For Android 13+, ask media permissions
+            List<String> permissionsToRequest = new ArrayList<>();
+            permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES);
+            permissionsToRequest.add(Manifest.permission.READ_MEDIA_VIDEO);
+
+            List<String> notGranted = new ArrayList<>();
+            for (String perm : permissionsToRequest) {
+                if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED) {
+                    notGranted.add(perm);
+                }
+            }
+
+            if (!notGranted.isEmpty()) {
+                requestPermissions(notGranted.toArray(new String[0]), 101);
+            } else {
+                startDownload(fileUrl);
+            }
+
+        } else {
+            // For Android 12 and below
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+            } else {
+                startDownload(fileUrl);
+            }
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            boolean allGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+            if (allGranted && pendingFileUrl != null) {
+                startDownload(pendingFileUrl);
+            } else {
+                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startDownload(String fileUrl) {
+        String fileName = getFileNameFromUrl(fileUrl);
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fileUrl));
+        request.setTitle("Saving file");
+        request.setDescription(fileName);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        request.allowScanningByMediaScanner();
+
+        DownloadManager manager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+
+        Toast.makeText(requireContext(), "Download started", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getFileNameFromUrl(String url) {
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+
+        if (mimeType != null && mimeType.startsWith("image")) {
+            return "downloaded_image_" + System.currentTimeMillis() + "." + extension;
+        } else if ("pdf".equalsIgnoreCase(extension)) {
+            return "downloaded_pdf_" + System.currentTimeMillis() + ".pdf";
+        } else {
+            return "downloaded_file_" + System.currentTimeMillis() + "." + extension;
+        }
+    }
+
+
 }
