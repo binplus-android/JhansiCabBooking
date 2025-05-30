@@ -88,7 +88,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
     private Runnable apiRunnable;
     private boolean isFragmentVisible = false;
 
-    private static final long API_REFRESH_INTERVAL = 8000; //  8 seconds
+    private static final long API_REFRESH_INTERVAL = 60000; // 1 minute in milliseconds
     String amount_pay="0";
     int wallet_amount=0;
     private GoogleMap mMap;
@@ -297,9 +297,10 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
         // Inflate the layout for this fragment
         binding = FragmentAfterPaymentDoneBinding.inflate(inflater, container, false);
         initView();
-        driverLocation();
-        startApiRefresh();
         getDetailApi();
+
+        startApiRefresh();
+
         allClick();
         common.getWalletAmount(getActivity(), new WalletCallBack() {
             @Override
@@ -424,14 +425,15 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
 
                         String payment_mode="cash";
                         showPaymentMode(payment_mode);
-                        if(!common.checkNullString(resp.getRecordList().getPickupOtp()).equalsIgnoreCase("")){
-                            binding.tvStatus.setText(resp.getRecordList().getTripStatus()+" OTP :"+resp.getRecordList().getPickupOtp());
-                        }else{
-                            binding.tvStatus.setText(resp.getRecordList().getTripStatus());
-                        }
+
+
+                            binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
+
                          binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
-                        binding.tvOtp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
+                    if(!common.checkNullString(resp.getRecordList().getPickupOtp()).equalsIgnoreCase("")) {
+                        binding.tvOtp.setText(getActivity().getString(R.string.otp) + " " + resp.getRecordList().getPickupOtp());
+                    }
                         Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getProfileImage()).
                                 placeholder(R.drawable.logo).error(R.drawable.logo).into(binding.ivRimg);
                         binding.tvRidername.setText(resp.getRecordList().getName());
@@ -450,7 +452,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                         amount_pay=resp.getRecordList().getAmount();
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
 
-
+                        driverLocation();
                     }else{
                         common.errorToast(resp.getError());
                     }
@@ -619,7 +621,8 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                 @Override
                 public void run() {
                     if (isFragmentVisible) {
-                        driverLocation();
+                        //driverLocation();
+                        getDetailApi();
                         handler.postDelayed(this, API_REFRESH_INTERVAL);
                     }
                 }
@@ -663,7 +666,6 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                     if (resp.getStatus()==200) {
 //                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
 //                                resp.getRecordList().getLng());
-                        getDetailApi();
                         if(tripStatus<5) {
                             //car-pickup,user -destination(trip not started)
                             setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
