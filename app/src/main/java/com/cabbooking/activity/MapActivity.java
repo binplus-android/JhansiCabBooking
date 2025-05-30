@@ -262,7 +262,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                    else if (
                         frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")){
-                        common.setMap(false, false, 0, binding.mapContainer,binding.main.findViewById(R.id.lin_search));
+                        common.setMap(false, false, 0,binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
@@ -275,7 +275,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     else if (frgmentName.contains("DestinationFragment") ||
                             frgmentName.contains("PickUpAddressFragment")){
                         showCommonPickDestinationArea(true,true);
-                        common.setMap(false, false, 0, binding.mapContainer,binding.main.findViewById(R.id.lin_search));
+                        common.setMap(false, false, 0,binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
