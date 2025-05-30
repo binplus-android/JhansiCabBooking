@@ -130,7 +130,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     HomeBookingResp resp = (HomeBookingResp) data;
                     Log.e("homebook ",data.toString());
                     if (resp.getStatus()==200) {
-                        homrTripId=String.valueOf(resp.getRecordList().get(0).getTripId());
+
+                        if (resp != null && resp.getRecordList() != null && !resp.getRecordList().isEmpty()) {
+
+                            homrTripId=String.valueOf(resp.getRecordList().get(0).getTripId());
                             binding.layBooking.setVisibility(View.VISIBLE);
                         TextView tv_vnum,tv_vname,tv_dname;
                         ImageView iv_vimg;
@@ -153,7 +156,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                        // common.errorToast(resp.getError());
                         binding.layBooking.setVisibility(View.GONE);
                     }
-                } catch (Exception e) {
+                }} catch (Exception e) {
                     e.printStackTrace();
                 }
             }

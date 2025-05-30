@@ -1324,7 +1324,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (fragment != null && fragment.getClass() != null) {
             String frgmentName = fragment.getClass().getSimpleName();
 
-            if (frgmentName.contains("AfterPaymentDoneFragment")) {
+            if (frgmentName.contains("AfterPaymentDoneFragment")||
+            frgmentName.contains("VechileFragment")) {
                 FragmentManager fragmentManager =getSupportFragmentManager();
                 fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 common.switchFragment(new HomeFragment());

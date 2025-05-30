@@ -236,7 +236,12 @@ public class PickUpAddressFragment extends Fragment {
                 ((MapActivity)getActivity()).setHomeAddress(list1.get(pos).getFormatted_address());
                 tv_pick = getActivity().findViewById(R.id.tv_pick);
                 tv_pick.setText(selected);
-                common.switchFragment(new HomeFragment());
+                if(((MapActivity)getActivity()).getDestinationLat()==0.0||((MapActivity)getActivity()).getDestinationLng()==0.0){
+                    common.switchFragment(new HomeFragment());
+                }
+                else{
+                    common.switchFragment(new VechileFragment());
+              }
             }
         });
         binding.recDestination.setAdapter(adapter);

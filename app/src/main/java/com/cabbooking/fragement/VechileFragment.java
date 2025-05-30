@@ -123,7 +123,22 @@ public class VechileFragment extends Fragment {
         getList();
         allClick();
         manageTripTypeClick();
+        binding.getRoot().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    FragmentManager fragmentManager = ((AppCompatActivity) getActivity()).getSupportFragmentManager();
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    common.switchFragment(new HomeFragment());
+                    return true;
+                }
+                return false;
+            }
+        });
 
+        // Ensure focusable behavior
+        binding.getRoot().setFocusableInTouchMode(true);
+        binding.getRoot().requestFocus();
 
         return binding.getRoot();
     }
