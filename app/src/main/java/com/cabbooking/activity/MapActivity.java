@@ -258,30 +258,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linOnlyBack.setVisibility(View.GONE);
                         binding.main.setVisibility(View.GONE);
                         // setMap(false);
-
-                            showCommonPickDestinationArea(false,false);
-
-
-
+                        showCommonPickDestinationArea(false,false);
                     }
                    else if (
-                           frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")) {
-                        common.setMap(false, false, 0, binding.mapContainer,
-                                binding.main.findViewById(R.id.lin_search));
+                        frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")){
+                        common.setMap(false, false, 0, binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.linBackMain.setVisibility(View.GONE);
                         binding.linOnlyBack.setVisibility(View.VISIBLE);
-                        // setMap(false);
+                        //setMap(false);
                         binding.main.setVisibility(View.VISIBLE);
                         showCommonPickDestinationArea(false,false);
                     }
                     else if (frgmentName.contains("DestinationFragment") ||
-                            frgmentName.contains("PickUpAddressFragment")) {
+                            frgmentName.contains("PickUpAddressFragment")){
                         showCommonPickDestinationArea(true,true);
-                        common.setMap(false, false, 0, binding.mapContainer,
-                                binding.main.findViewById(R.id.lin_search));
+                        common.setMap(false, false, 0, binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
                         binding.mytoolbar.setVisibility(View.VISIBLE);
