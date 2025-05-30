@@ -260,8 +260,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         // setMap(false);
                         showCommonPickDestinationArea(false,false);
                     }
-                   else if (
-                        frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")){
+                   else if(frgmentName.equalsIgnoreCase("AfterPaymentDoneFragment")){
                         common.setMap(false, false, 0,binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
                         binding.linToolbar.setVisibility(View.GONE);
@@ -272,8 +271,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.main.setVisibility(View.VISIBLE);
                         showCommonPickDestinationArea(false,false);
                     }
-                    else if (frgmentName.contains("DestinationFragment") ||
-                            frgmentName.contains("PickUpAddressFragment")){
+                    else if(frgmentName.contains("DestinationFragment")||frgmentName.contains("PickUpAddressFragment")){
                         showCommonPickDestinationArea(true,true);
                         common.setMap(false, false, 0,binding.mapContainer,binding.main.findViewById(R.id.lin_search));
                         binding.linToolbar.setVisibility(View.GONE);
@@ -285,7 +283,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                     else {
                         common.setMap(false, true, 160, binding.mapContainer,
-                                binding.main.findViewById(R.id.lin_search));
+                        binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
                         binding.linToolbar.setVisibility(View.GONE);
                         binding.mytoolbar.setNavigationIcon(null);
@@ -644,6 +642,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
             tvpick.setText(pickAddressValue);
             showPickupMarker(latLng);
+            drawRoute(pickLatLng,destinationLatLng);
 
 
         }, 200); // 200ms delay to ensure fragment is ready
@@ -673,6 +672,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     .position(latLng)
                     .title("You")
                     .icon(bitmapDescriptorFromVector(this, markerIconResId)));
+
         }
     }
 

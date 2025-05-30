@@ -54,14 +54,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//         1 => 'Pending',
-//                    2 => 'Accepted',
-//                    3 => 'On the Way',
-//                    4 => 'Arrived',
-//                    5 => 'Picked Up',
-//                    6 => 'On Going',
-//                    7 => 'Completed',
-//                    9 => 'Cancelled'
+
         BookingHistoryModel.RecordList model=list.get(position);
         //String status=common.getStatusText(model.getTripStatus());
           if (model.getTripStatus() < 7) {
