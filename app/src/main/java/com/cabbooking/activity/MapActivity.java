@@ -613,6 +613,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Picasso.get().load(IMAGE_BASE_URL + val).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
+    public boolean isWithinJhansiArea(double selectedLat, double selectedLng) {
+        android.location.Location jhansi = new  android.location.Location("");
+        jhansi.setLatitude(25.4484);
+        jhansi.setLongitude(78.5685);
+
+        android.location.Location selected = new  android.location.Location("");
+        selected.setLatitude(selectedLat);
+        selected.setLongitude(selectedLng);
+
+        float distanceInMeters = jhansi.distanceTo(selected);
+        float distanceInKm = distanceInMeters / 1000f;
+
+        return distanceInKm <= 100;
+    }
 
 
     public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue, LatLng latLng) {
@@ -1435,32 +1449,45 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                if (isMapClicked) return; // ✅ Ignore if just clicked
+                LatLng centerj = googleMap.getCameraPosition().target;
 
-                String fragmentName = getCurrentFragmentName();
-                if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
+//                if (!isWithinJhansiArea(centerj.latitude, centerj.longitude)) {
+//                    Toast.makeText(MapActivity.this, "Sorry, service is only available within 100 km of Jhansi.", Toast.LENGTH_LONG).show();
+//                    // Optionally reset the map to Jhansi
+//                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.4484, 78.5685), 12));
+//                } else
+                {
+                    // Continue normal flow
 
-                    LatLng center = mMap.getCameraPosition().target;
-                    String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
-                 //  Common.currenLocation = new LatLng(center.latitude, center.longitude);
-                  //  getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
-                    getPickUpLatLng(center.latitude, center.longitude, address,center);
+                    if (isMapClicked) return; // ✅ Ignore if just clicked
 
-                    setHomeAddress(address);
+                    String fragmentName = getCurrentFragmentName();
+                    if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
 
-                    if (tvpick != null)
-                        tvpick.setText(address);
+                        LatLng center = mMap.getCameraPosition().target;
+                        String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+                        //  Common.currenLocation = new LatLng(center.latitude, center.longitude);
+                        //  getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
+                        getPickUpLatLng(center.latitude, center.longitude, address, center);
 
-                    if (riderMarket != null) riderMarket.remove();
-                    showPickupMarker(center);
-                    drawRoute(center, destinationLatLng);
+                        setHomeAddress(address);
+
+                        if (tvpick != null)
+                            tvpick.setText(address);
+
+                        if (riderMarket != null) riderMarket.remove();
+                        showPickupMarker(center);
+                        drawRoute(center, destinationLatLng);
 //                    if(fragmentName.equalsIgnoreCase("HomeFragment")){
 //                        common.switchFragment(new PickUpFragment());
 //                    }
+                    }
                 }
             }
         });
        showPickupAndDropMarkers();
+
+
     }
     private void showPickupAndDropMarkers() {
         if (pickupLng != null && pickupLat != null && destinationLat != null && destinationLng != null) {
