@@ -88,7 +88,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
     private Runnable apiRunnable;
     private boolean isFragmentVisible = false;
 
-    private static final long API_REFRESH_INTERVAL = 60000; // 1 minute in milliseconds
+    private static final long API_REFRESH_INTERVAL = 30000; // 30 seconds in milliseconds
     String amount_pay="0";
     int wallet_amount=0;
     private GoogleMap mMap;
@@ -367,7 +367,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
         mMap.addMarker(new MarkerOptions()
                 .position(pickupLatLng)
                 .title("Pickup")
-                .icon(resizeMapIcon(R.drawable.ic_local, 120, 110)));
+                .icon(resizeMapIcon(R.drawable.car, 120, 110)));
 
         // Add destination marker with custom icon
         mMap.addMarker(new MarkerOptions()
@@ -427,9 +427,9 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                         showPaymentMode(payment_mode);
 
 
-                            binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
+                        binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
 
-                         binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
+                        binding.tvBookinhgDate.setText(getActivity().getString(R.string.booking_date)+" "+common.changeDateFormate(resp.getRecordList().getCreated_at()));
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+" "+resp.getRecordList().getReturnDate());
                     if(!common.checkNullString(resp.getRecordList().getPickupOtp()).equalsIgnoreCase("")) {
                         binding.tvOtp.setText(getActivity().getString(R.string.otp) + " " + resp.getRecordList().getPickupOtp());
@@ -666,7 +666,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                     if (resp.getStatus()==200) {
 //                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
 //                                resp.getRecordList().getLng());
-                        if(tripStatus<5) {
+                        if(tripStatus<5||tripStatus==5) {
                             //car-pickup,user -destination(trip not started)
                             setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
                                     pickupLatLng.latitude,pickupLatLng.longitude );
