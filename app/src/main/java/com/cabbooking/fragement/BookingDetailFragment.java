@@ -273,7 +273,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                             binding.linFill.setVisibility(View.GONE);
                             binding.linData.setVisibility(View.VISIBLE);
                         }
-                        if(resp.getRecordList().getTripStatus()==9){
+                        if(resp.getRecordList().getTripStatus()==9||resp.getRecordList().getTripStatus()<7){
                             binding.linData.setVisibility(View.GONE);
                             binding.linFill.setVisibility(View.GONE);
                             binding.linInvoice.setVisibility(View.GONE);
