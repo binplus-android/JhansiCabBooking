@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_5"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardBackgroundColor="@color/white">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingVertical="@dimen/cell_padding_vertical"
+            android:paddingHorizontal="@dimen/space_10">
+
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_6"
+                android:layout_marginBottom="@dimen/space_3"
+                style="@style/MyTextview_semibold"
+                android:text="@string/not_serve"
+                android:textSize="@dimen/space_7"
+                android:textAlignment="center"  />
+
+                <Button
+                    android:id="@+id/btn_yes"
+                    android:text="@string/change_location"
+                    android:layout_marginVertical="@dimen/space_5"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="@dimen/space_10"
+                    android:layout_height="@dimen/space_19"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/custom_progress_color"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

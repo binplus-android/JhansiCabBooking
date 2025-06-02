@@ -133,48 +133,42 @@ public class PickUpAddressFragment extends Fragment {
     }
 
     public void fetchAutocompleteSuggestions(String query) {
-//        Double pickLat=((MapActivity)getActivity()).getPickupLat();
-//        Double pickLng=((MapActivity)getActivity()).getPickupLng();
-//        LatLng myLocation = new LatLng(pickLat, pickLng);
-//
-//        double lat = myLocation.latitude;
-//        double lng = myLocation.longitude;
-//        double delta = 0.3; // Approx. 30–40 km
-//
-//        RectangularBounds bounds = RectangularBounds.newInstance(
-//                new LatLng(lat - delta, lng - delta),
-//                new LatLng(lat + delta, lng + delta)
-//        );
-        RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(8.0, 68.0),    // Southwest corner of India
-                new LatLng(37.0, 97.0)    // Northeast corner of India
-        );
+        if (!query.isEmpty()) {
+            LatLng jhansiCenter = new LatLng(25.4484, 78.5685);
 
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                .setLocationRestriction(bounds)  // ✅ strict restriction, not bias
-                .setTypeFilter(TypeFilter.ADDRESS) // optional: only show addresses
-                .setCountry("IN")
-                .setQuery(query)
-                .build();
+// 50 km radius bounds (approx 0.45 degrees)
+            RectangularBounds bounds = RectangularBounds.newInstance(
+                    new LatLng(jhansiCenter.latitude - 0.45, jhansiCenter.longitude - 0.45),
+                    new LatLng(jhansiCenter.latitude + 0.45, jhansiCenter.longitude + 0.45)
+            );
+
+            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 50 km box
+                    .setTypeFilter(TypeFilter.ADDRESS)
+                    .setCountry("IN")
+                    .setQuery(query)
+                    .build();
 
 
-        placesClient.findAutocompletePredictions(request)
-                .addOnSuccessListener(response -> {
-                    list1.clear();
+            placesClient.findAutocompletePredictions(request)
+                    .addOnSuccessListener(response -> {
+                        list1.clear();
 
-                    for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                        String placeId = prediction.getPlaceId();
-                        String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
-                        String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
+                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                            String placeId = prediction.getPlaceId();
+                            String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
+                            String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
 
-                        // prediction.getFullText(null).toString()
-                        fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
+                            // prediction.getFullText(null).toString()
+                            fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
 
-                       // list1.add(new PickupAdressModel(mainAddress, 0, 0, fullAddress));
-                    }
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e)); }
+                            // list1.add(new PickupAdressModel(mainAddress, 0, 0, fullAddress));
+                        }
+                        adapter.notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
+        }
+    }
 
     private void fetchPlaceDetails(String placeId, String mainAddress, String fullAddress) {
         List<Place.Field> placeFields = Arrays.asList(

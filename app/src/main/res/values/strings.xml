@@ -95,10 +95,13 @@
     <string name="permission_denied_location">Permission is required to obtain location</string>
 
     <string name="pickup_here">Pickup here</string>
+    <string name="not_serve">Sorry, we currently serve only in Jhansi and nearby areas. Your current live location is outside our service range.</string>
+
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBHSCfIxqJMxTsVjox61dk4eKDL7tuxRfA</string>
     <string name="cannot_get_location">Cannot get your location</string>
 
     <string name="channel_arrived">Arrived</string>
+    <string name="change_location">Change Location</string>
     <string name="your_QuestionsMatter_to_Us">Your Questions Matter to Us</string>
     <string name="MyEnquiry">My Enquiry</string>
     <string name="transactions">Transactions</string>

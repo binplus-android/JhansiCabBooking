@@ -139,25 +139,17 @@ public class DestinationFragment extends Fragment {
     public void fetchAutocompleteSuggestions(String query) {
         list.clear();
         if (!query.isEmpty()) {
-//            Double pickLat = ((MapActivity) getActivity()).getPickupLat();
-//            Double pickLng = ((MapActivity) getActivity()).getPickupLng();
-//            LatLng myLocation = new LatLng(pickLat, pickLng);
-//
-//            double lat = myLocation.latitude;
-//            double lng = myLocation.longitude;
-//            double delta = 0.3; // Approx. 30–40 km
-//
-//            RectangularBounds bounds = RectangularBounds.newInstance(
-//                    new LatLng(lat - delta, lng - delta),
-//                    new LatLng(lat + delta, lng + delta)
-//            );
+            LatLng jhansiCenter = new LatLng(25.4484, 78.5685);
+
+// 50 km radius bounds (approx 0.45 degrees)
             RectangularBounds bounds = RectangularBounds.newInstance(
-                    new LatLng(8.0, 68.0),    // Southwest corner of India
-                    new LatLng(37.0, 97.0)    // Northeast corner of India
+                    new LatLng(jhansiCenter.latitude - 0.45, jhansiCenter.longitude - 0.45),
+                    new LatLng(jhansiCenter.latitude + 0.45, jhansiCenter.longitude + 0.45)
             );
+
             FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                    .setLocationRestriction(bounds)  // ✅ strict restriction, not bias
-                    .setTypeFilter(TypeFilter.ADDRESS) // optional: only show addresses
+                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 50 km box
+                    .setTypeFilter(TypeFilter.ADDRESS)
                     .setCountry("IN")
                     .setQuery(query)
                     .build();

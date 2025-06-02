@@ -130,6 +130,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener {
     Common common;
+    private boolean isDialogShown = false;
     ActivityMapBinding binding;
     public static ArrayList<NearAreaNameModel> areaList = new ArrayList<>();
     SessionManagment sessionManagment;
@@ -160,6 +161,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     String apiKey;
     private Polyline currentPolyline;
     LatLng pickUpFinalLat;
+    LatLng jhansiLatLng = new LatLng(25.4484, 78.5685); // Jhansi coordinates
+    final double MAX_DISTANCE_KM = 50.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -657,7 +661,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             tvpick.setText(pickAddressValue);
             showPickupMarker(latLng);
             drawRoute(pickLatLng,destinationLatLng);
-
+            validateMapLocation();
 
         }, 200); // 200ms delay to ensure fragment is ready
     }
@@ -1084,7 +1088,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             if (mMap != null) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
 
-                String address = getAddressFromLatLng(MapActivity.this, currentLat, currentLng);
+                String address = getAddressFromLatLng(MapActivity.this, location.latitude, location.longitude);
                 setHomeAddress(address);
 
                 tvpick.setText(address);
@@ -1414,31 +1418,44 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+//restrict for jhansi
+//            LatLng southwest = new LatLng(25.0870, 78.4150);
+//            LatLng northeast = new LatLng(25.7870, 79.1150);
+//            LatLngBounds jhansiBounds = new LatLngBounds(southwest, northeast);
+//
+//            mMap.setLatLngBoundsForCameraTarget(jhansiBounds);
         // Set click listener
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 String fragmentName = getCurrentFragmentName();
-                if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
-                    pickupPlacesSelected = true; // ✅ Stop auto-updating pickup
-                    isMapClicked = true; // ✅ Set flag
-                    String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                double distance = distanceBetween(jhansiLatLng, latLng);
+                if (distance>MAX_DISTANCE_KM) {
+                    if ("HomeFragment".equals(fragmentName)){
+                        showMessageAlert();
+                    }
+                }else{
+                    if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
+                        pickupPlacesSelected = true; // ✅ Stop auto-updating pickup
+                        isMapClicked = true; // ✅ Set flag
+                        String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
 
-                    getPickUpLatLng(latLng.latitude, latLng.longitude, address, latLng);
+                        getPickUpLatLng(latLng.latitude, latLng.longitude, address, latLng);
 
-                    if (riderMarket != null) riderMarket.remove();
-                    showPickupMarker(latLng);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
-                   // animateCameraWithOffset(latLng);
-                    setHomeAddress(address);
-                    if (tvpick != null)
-                        tvpick.setText(address);
-                    drawRoute(latLng, destinationLatLng);
+                        if (riderMarket != null) riderMarket.remove();
+                        showPickupMarker(latLng);
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
+                        // animateCameraWithOffset(latLng);
+                        setHomeAddress(address);
+                        if (tvpick != null)
+                            tvpick.setText(address);
+                        drawRoute(latLng, destinationLatLng);
 
-                    // ✅ Reset flag after small delay (e.g. 1 sec)
-                    new Handler().postDelayed(() -> isMapClicked = false, 1000);
+                        // ✅ Reset flag after small delay (e.g. 1 sec)
+                        new Handler().postDelayed(() -> isMapClicked = false, 1000);
+                    }
                 }
+
             }
         });
 
@@ -1450,42 +1467,53 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onCameraIdle() {
                 LatLng centerj = googleMap.getCameraPosition().target;
-
-//                if (!isWithinJhansiArea(centerj.latitude, centerj.longitude)) {
-//                    Toast.makeText(MapActivity.this, "Sorry, service is only available within 100 km of Jhansi.", Toast.LENGTH_LONG).show();
-//                    // Optionally reset the map to Jhansi
-//                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.4484, 78.5685), 12));
-//                } else
-                {
-                    // Continue normal flow
-
-                    if (isMapClicked) return; // ✅ Ignore if just clicked
-
-                    String fragmentName = getCurrentFragmentName();
-                    if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
-
-                        LatLng center = mMap.getCameraPosition().target;
-                        String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
-                        //  Common.currenLocation = new LatLng(center.latitude, center.longitude);
-                        //  getPickUpLatLng(center.latitude, center.longitude, tvpick.getText().toString(),center);
-                        getPickUpLatLng(center.latitude, center.longitude, address, center);
-
-                        setHomeAddress(address);
-
-                        if (tvpick != null)
-                            tvpick.setText(address);
-
-                        if (riderMarket != null) riderMarket.remove();
-                        showPickupMarker(center);
-                        drawRoute(center, destinationLatLng);
-//                    if(fragmentName.equalsIgnoreCase("HomeFragment")){
-//                        common.switchFragment(new PickUpFragment());
+                String fragmentName = getCurrentFragmentName();
+                // Jhansi location
+                double distance = distanceBetween(jhansiLatLng, centerj);
+                if ("HomeFragment".equals(fragmentName)){
+                if (distance > MAX_DISTANCE_KM) {
+                    showMessageAlert();
+                   //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(jhansiLatLng, 12));
+                    return;
+                }
+              }
+//                if ("PickUpFragment".equals(fragmentName)){
+//                    if (distance > MAX_DISTANCE_KM) {
+        //                LatLng southwest = new LatLng(25.0870, 78.4150);
+//            LatLng northeast = new LatLng(25.7870, 79.1150);
+//            LatLngBounds jhansiBounds = new LatLngBounds(southwest, northeast);
+//
+//            mMap.setLatLngBoundsForCameraTarget(jhansiBounds);
+//                      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(jhansiLatLng, 12));
+//                        common.errorToast(getString(R.string.not_serve));
+//                       return;
+//
 //                    }
-                    }
+//                }
+
+
+                // Continue normal flow
+                if (isMapClicked) return; //  Ignore if just clicked
+
+
+                if ("HomeFragment".equals(fragmentName) || "PickUpFragment".equals(fragmentName)) {
+                    LatLng center = mMap.getCameraPosition().target;
+                    String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+
+                    getPickUpLatLng(center.latitude, center.longitude, address, center);
+                    setHomeAddress(address);
+
+                    if (tvpick != null)
+                        tvpick.setText(address);
+
+                    if (riderMarket != null) riderMarket.remove();
+                    showPickupMarker(center);
+                    drawRoute(center, destinationLatLng);
                 }
             }
         });
-       showPickupAndDropMarkers();
+
+        showPickupAndDropMarkers();
 
 
     }
@@ -1580,11 +1608,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void fetchNearbyLocations(double latitude, double longitude) {
+        //for jhansi only change lat lng other wise above value need to use
+        latitude= jhansiLatLng.latitude;
+        longitude=jhansiLatLng.longitude;
        // Make sure this is defined in your strings.xml
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
                 + "location=" + latitude + "," + longitude
-                + "&radius=2500" // meters
-                + "&type=tourist_attraction" // Change type if needed: restaurant, cafe, etc.
+                + "&radius=3000" // meters
+                + "&type=establishment" // Change type if needed: restaurant, cafe,tourist_attraction etc.
                 + "&key=" + apiKey;
 
         Log.d("NearbyURLcvbjnkml,;.", url);
@@ -1688,7 +1719,59 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Log.d("MapActivity", "onDestroy called, listeners removed.");
     }
 
+    public double distanceBetween(LatLng start, LatLng end) {
+        float[] results = new float[1];
+        android.location.Location.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude, results);
+        return results[0] / 1000.0; // meters to kilometers
+    }
 
 
 
+    private void showMessageAlert() {
+        if (isDialogShown) return; //  Already shown, don’t show again
+
+        isDialogShown = true; // Set flag
+
+        Dialog dialog = new Dialog(MapActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow();
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView(R.layout.dialog_nolocation);
+
+        Button btn_yes = dialog.findViewById(R.id.btn_yes);
+        btn_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                isDialogShown = false; //  Reset flag on dismiss
+                common.switchFragment(new PickUpFragment());
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchNearbyLocations(0,0);
+
+    }
+
+    public void validateMapLocation() {
+        LatLng centerj = mMap.getCameraPosition().target;
+        String fragmentName = getCurrentFragmentName();
+        // Jhansi location
+        double distance = distanceBetween(jhansiLatLng, centerj);
+        if ("HomeFragment".equals(fragmentName)){
+            if (distance > MAX_DISTANCE_KM) {
+                showMessageAlert();
+       }
+        }
+    }
 }
