@@ -771,11 +771,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     public void clearRouteIfInHome() {
-        if (("HomeFragment".equals(getCurrentFragmentName())||"PickUpFragment".equals(getCurrentFragmentName())) && mMap != null) {
-            mMap.clear();
+//        if (("HomeFragment".equals(getCurrentFragmentName())||"PickUpFragment".equals(getCurrentFragmentName())) && mMap != null) {
+//            mMap.clear();
             //showPickupMarker(Common.currenLocation);
            // showPickupMarker(pickLatLng);
-        }
+       // }
     }
 
     public void drawRoute(LatLng origin, LatLng dest) {
