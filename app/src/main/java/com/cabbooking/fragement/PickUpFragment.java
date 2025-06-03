@@ -104,6 +104,7 @@ int vechicle_pos;
         repository=new Repository(getActivity());
         common = new Common(getActivity());
         ((MapActivity) getActivity()).setTitle("");
+        ((MapActivity) getActivity()).addRestriction();
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
 //        vechicle_pos=Integer.parseInt(getArguments().getString("pos"));
 //        vec_list=new ArrayList<>();

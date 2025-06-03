@@ -78,8 +78,8 @@
 
                     <ImageView
                         android:id="@+id/iv_pick"
-                        android:layout_width="@dimen/space_6"
-                        android:layout_height="@dimen/space_6"
+                        android:layout_width="@dimen/space_8"
+                        android:layout_height="@dimen/space_8"
                         android:layout_alignParentEnd="true"
                         android:src="@drawable/ic_close" />
                 </RelativeLayout>
@@ -116,8 +116,8 @@
 
                     <ImageView
                         android:id="@+id/iv_destination"
-                        android:layout_width="@dimen/space_6"
-                        android:layout_height="@dimen/space_6"
+                        android:layout_width="@dimen/space_8"
+                        android:layout_height="@dimen/space_8"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_close" />
