@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_gravity="center"
@@ -40,7 +40,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="1.8"
+                android:layout_weight="1.9"
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
@@ -48,9 +48,9 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space_2"
+                    android:layout_marginVertical="@dimen/space_2"
                     android:gravity="center_vertical"
-                    android:padding="@dimen/space_2">
+                  >
 
 
                     <EditText
@@ -59,7 +59,7 @@
                         android:layout_toLeftOf="@id/iv_pick"
                         android:background="@null"
                         android:id="@+id/tv_pick"
-
+                        android:padding="@dimen/space_2"
                         android:layout_centerVertical="true"
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
@@ -93,11 +93,12 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/space_2"
+                    android:layout_marginVertical="@dimen/space_2"
                     android:gravity="center_vertical"
-                    android:padding="@dimen/space_2">
+                   >
 
                     <EditText
+                        android:padding="@dimen/space_2"
                         style="@style/TextViewRegular"
                         android:layout_marginRight="@dimen/space_2"
                         android:layout_toLeftOf="@id/iv_destination"
