@@ -139,7 +139,7 @@ public class Common {
 
 
     // Function to get distance in km
-    public float getDistanceInKm(Activity activity) {
+    public float getDistanceInKm(Context activity) {
         Location pickupLocation = new Location(String.valueOf(activity));
         pickupLocation.setLatitude(((MapActivity)context).getPickupLat());
         pickupLocation.setLongitude(((MapActivity)context).getPickupLng());

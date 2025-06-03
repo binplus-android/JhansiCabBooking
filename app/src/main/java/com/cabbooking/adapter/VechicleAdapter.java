@@ -18,15 +18,18 @@ import com.cabbooking.R;
 import com.cabbooking.model.VechicleModel;
 import com.cabbooking.model.VechicleModel.RecordList;
 import com.cabbooking.model.VechicleModel.RecordList;
+import com.cabbooking.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHolder> {
     Context context;
     ArrayList<VechicleModel.RecordList> list;
     int pos=0;
     onTouchMethod listener;
+    Common common;
     public interface onTouchMethod{
         void onSelection(int pos);
     }
@@ -35,6 +38,7 @@ public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHo
         this.context = context;
         this.list = list;
         this.listener=listener;
+        common=new Common(context);
     }
 
     @NonNull
@@ -49,7 +53,8 @@ public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHo
         VechicleModel.RecordList model = list.get(position);
         holder.tv_vname.setText(model.getName());
         holder.tv_vdesc.setText(model.getDescription());
-        holder.tv_rate.setText("Rs."+String.valueOf(model.getFare()));
+        String distance= String.valueOf(common.getDistanceInKm(context));
+        holder.tv_rate.setText("Rs."+String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(distance)));
         Picasso.get().load(IMAGE_BASE_URL+model.getIcon()).placeholder(R.drawable.logo).error(R.drawable.logo).into(holder.iv_vimg);
 
         holder.rel_main.setOnClickListener(new View.OnClickListener() {

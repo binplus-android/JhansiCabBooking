@@ -1412,7 +1412,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // 3. Move camera to Jhansi
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jhansiCenter, 12));
             mMap.setMinZoomPreference(10f);
-        }
+            String address = getAddressFromLatLng(MapActivity.this, jhansiCenter.latitude, jhansiCenter.longitude);
+            getPickUpLatLng(jhansiCenter.latitude, jhansiCenter.longitude, address, jhansiCenter);      }
 
 
     @Override
@@ -1430,6 +1431,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mMap.setOnMapClickListener(latLng -> {
             String fragName = getCurrentFragmentName();
+            //  Disable clicks for certain fragments
+            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) {
+                return;
+            }
+
             double distance = distanceBetween(jhansiLatLng, latLng);
 
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
@@ -1457,11 +1463,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         mMap.setOnCameraIdleListener(() -> {
+            String fragName = getCurrentFragmentName();
+            //  Disable clicks for certain fragments
+            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) {
+                return;
+            }
             if (isMapClicked) return;
 
             LatLng center = mMap.getCameraPosition().target;
-            String fragName = getCurrentFragmentName();
+
             double distance = distanceBetween(jhansiLatLng, center);
+
 
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
                 if ("HomeFragment".equals(fragName) && distance > MAX_DISTANCE_KM) {
