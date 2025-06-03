@@ -133,6 +133,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Common common;
     public boolean isDialogShown = false;
     ActivityMapBinding binding;
+    LatLng lastSelectedLatLng = null;
     public static ArrayList<NearAreaNameModel> areaList = new ArrayList<>();
     SessionManagment sessionManagment;
     public GoogleApiClient mGoogleApiClient;
@@ -642,6 +643,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             pickAddres = pickAddressValue;
 //            tvpick.setText(pickAddressValue);
             pickLatLng = latLng;
+        lastSelectedLatLng = new LatLng(pickupLat, pickupLng);
 
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             for (Fragment fragment : fragments) {
@@ -663,7 +665,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             tvpick.setText(pickAddressValue);
             showPickupMarker(latLng);
             drawRoute(pickLatLng,destinationLatLng);
-            validateMapLocation();
+//            validateMapLocation();
 
        // }, 200); // 200ms delay to ensure fragment is ready
     }
@@ -767,15 +769,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.fromBitmap(smallMarker);
     }
 
-//    public void drawRoute(LatLng origin, LatLng dest) {
-//        if (origin != null && dest != null) {
-//            Log.d("draww", "drawRoute: " + origin + "==" + dest);
-//            String url = getDirectionsUrl(origin, dest);
-//            new DownloadTask().execute(url);
-//        }else {
-//            Log.e("MapActivity", "Pickup  Destination location null");
-//        }
-//    }
 
     public void clearRouteIfInHome() {
         if (("HomeFragment".equals(getCurrentFragmentName())||"PickUpFragment".equals(getCurrentFragmentName())) && mMap != null) {
@@ -985,6 +978,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void mapCode() {
 
         Log.e("dfcvghnjk", "vgbhjnmkl");
+        Toast.makeText(activity, "hekkki", Toast.LENGTH_SHORT).show();
         location = new Location(this, new locationListener() {
             @Override
             public void locationResponse(LocationResult response) {
@@ -1413,7 +1407,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jhansiCenter, 12));
             mMap.setMinZoomPreference(10f);
             String address = getAddressFromLatLng(MapActivity.this, jhansiCenter.latitude, jhansiCenter.longitude);
-            getPickUpLatLng(jhansiCenter.latitude, jhansiCenter.longitude, address, jhansiCenter);      }
+            getPickUpLatLng(jhansiCenter.latitude, jhansiCenter.longitude, address, jhansiCenter);
+            if (tvpick != null) tvpick.setText(address);
+            if (riderMarket != null) riderMarket.remove();
+            pickupPlacesSelected = true;
+            showPickupMarker(jhansiCenter);
+            drawRoute(jhansiCenter, destinationLatLng);}
 
 
     @Override
@@ -1464,16 +1463,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mMap.setOnCameraIdleListener(() -> {
             String fragName = getCurrentFragmentName();
-            //  Disable clicks for certain fragments
+
+            // Disable for some fragments
             if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) {
                 return;
             }
+
             if (isMapClicked) return;
 
             LatLng center = mMap.getCameraPosition().target;
 
-            double distance = distanceBetween(jhansiLatLng, center);
+            // If last selected location is set, override center
+            if ("HomeFragment".equals(fragName) && lastSelectedLatLng != null) {
+                center = lastSelectedLatLng;
+            }
 
+            double distance = distanceBetween(jhansiLatLng, center);
 
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
                 if ("HomeFragment".equals(fragName) && distance > MAX_DISTANCE_KM) {
@@ -1492,6 +1497,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 drawRoute(center, destinationLatLng);
             }
         });
+
 
         showPickupAndDropMarkers();
     }
