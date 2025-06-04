@@ -978,7 +978,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void mapCode() {
 
         Log.e("dfcvghnjk", "vgbhjnmkl");
-        Toast.makeText(activity, "hekkki", Toast.LENGTH_SHORT).show();
         location = new Location(this, new locationListener() {
             @Override
             public void locationResponse(LocationResult response) {
