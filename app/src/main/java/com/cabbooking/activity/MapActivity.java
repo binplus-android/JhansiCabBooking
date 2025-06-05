@@ -246,6 +246,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     if (frgmentName.contains("HomeFragment")) {
 //                        clearRouteIfInHome();
                       homeToolBar();
+                        if (currentPolyline != null) {
+                            currentPolyline.setVisible(false); // hide draw route in HomeFragment
+                        }
+                        if (destinationMarker != null) destinationMarker.setVisible(false);
 
                     }
 
@@ -280,6 +284,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         //setMap(false);
                         binding.main.setVisibility(View.VISIBLE);
                         showCommonPickDestinationArea(false,false);
+                        showPolyLine();
                     }
                     else if(frgmentName.contains("DestinationFragment")||frgmentName.contains("PickUpAddressFragment")){
                         showCommonPickDestinationArea(true,true);
@@ -291,6 +296,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linOnlyBack.setVisibility(View.GONE);
                         binding.main.setVisibility(View.GONE);
                         enableAddressClick();
+                        showPolyLine();
                     }
                     else {
                           if(frgmentName.contains("RideFragment")||frgmentName.contains("AfterPaymentDoneFragment")){
@@ -298,7 +304,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                           }else if (frgmentName.contains("VechileFragment")) {
                               disableAddressClick();
                           }
-
+                        showPolyLine();
                         common.setMap(false, true, 160, binding.mapContainer,
                         binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
@@ -878,13 +884,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 lineOptions.geodesic(true); // optional: smoother lines
             }
 
+
             if (currentPolyline != null) {
                 currentPolyline.remove();
             }
 
             if (lineOptions != null && mMap != null) {
                 currentPolyline = mMap.addPolyline(lineOptions);
+
             }
+
         }
 
     }
@@ -1798,4 +1807,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
        // tvDestination.setKeyListener(null);
     }
 
+    public void showPolyLine(){
+        if (currentPolyline != null) {
+            currentPolyline.setVisible(true); // show in other fragments
+        }
+        if (destinationMarker != null) destinationMarker.setVisible(true);
+    }
 }
