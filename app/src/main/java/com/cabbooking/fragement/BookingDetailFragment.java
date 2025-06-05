@@ -160,13 +160,13 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions()
                 .position(pickupLatLng)
                 .title("Pickup")
-                .icon(resizeMapIcon(R.drawable.ic_circle_loc_blue, 50, 70)));
+                .icon(resizeMapIcon(R.drawable.ic_circle_loc_black, 50, 70)));
 
         // Add destination marker with custom icon
         mMap.addMarker(new MarkerOptions()
                 .position(destinationLatLng)
                 .title("Destination")
-                .icon(resizeMapIcon(R.drawable.ic_circle_loc_black, 50, 70)));
+                .icon(resizeMapIcon(R.drawable.ic_circle_loc_blue, 50, 70)));
 
         // Adjust camera to show both points
         LatLngBounds.Builder builder = new LatLngBounds.Builder();

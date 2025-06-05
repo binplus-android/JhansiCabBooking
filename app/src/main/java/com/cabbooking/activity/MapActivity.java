@@ -43,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -209,6 +210,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Log.e("log_fragment_backstack_two",frgmentName);//srtfyuhij
 
                     if (frgmentName.equalsIgnoreCase("VechileFragment")) {
+                        disableAddressClick();
                         if (riderMarket != null) {
                             riderMarket.remove();
                             riderMarket = null;
@@ -220,6 +222,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                     }
                     else if (frgmentName.equalsIgnoreCase("PickUpFragment") || frgmentName.contains("HomeFragment")){
+
 
                         clearRouteIfInHome();
 
@@ -287,8 +290,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         binding.linBackMain.setVisibility(View.VISIBLE);
                         binding.linOnlyBack.setVisibility(View.GONE);
                         binding.main.setVisibility(View.GONE);
+                        enableAddressClick();
                     }
                     else {
+                          if(frgmentName.contains("RideFragment")||frgmentName.contains("AfterPaymentDoneFragment")){
+                              offClick();
+                          }else {
+                              enableAddressClick();
+                          }
                         common.setMap(false, true, 160, binding.mapContainer,
                         binding.main.findViewById(R.id.lin_search));
                         binding.mytoolbar.setVisibility(View.GONE);
@@ -1757,5 +1766,47 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 showMessageAlert();
        }
         }
+    }
+  public void offClick(){
+      tvpick.setEnabled(false); // Completely disables interaction
+      tvpick.setCursorVisible(false);
+      tvpick.setKeyListener(null); // Extra safety
+      tvpick.setFocusable(false);
+      tvpick.setClickable(false);
+      tvDestination.setEnabled(false); // Completely disables interaction
+      tvDestination.setCursorVisible(false);
+      tvDestination.setKeyListener(null); // Extra safety
+      tvDestination.setFocusable(false);
+      tvDestination.setClickable(false);
+  }
+    public void enableAddressClick() {
+        tvpick.setEnabled(true);
+        tvpick.setFocusable(true);
+        tvpick.setFocusableInTouchMode(true);
+        tvpick.setCursorVisible(true);
+        tvpick.setLongClickable(true);
+        tvpick.setClickable(true);
+        tvpick.setKeyListener(new EditText(this).getKeyListener()); // Restore key listener
+
+        tvDestination.setEnabled(true);
+        tvDestination.setFocusable(true);
+        tvDestination.setFocusableInTouchMode(true);
+        tvDestination.setCursorVisible(true);
+        tvDestination.setLongClickable(true);
+        tvDestination.setClickable(true);
+        tvDestination.setKeyListener(new EditText(this).getKeyListener()); // Restore key listener
+    }
+
+    public void disableAddressClick(){
+        tvpick.setFocusable(false);
+        tvpick.setFocusableInTouchMode(false);
+        tvpick.setCursorVisible(false);
+        tvpick.setLongClickable(false);
+        tvpick.setClickable(true); // Important: Click listener ke liye
+        tvDestination.setFocusable(false);
+        tvDestination.setFocusableInTouchMode(false);
+        tvDestination.setCursorVisible(false);
+        tvDestination.setLongClickable(false);
+        tvDestination.setClickable(true); // Important: Click listener ke liye
     }
 }
