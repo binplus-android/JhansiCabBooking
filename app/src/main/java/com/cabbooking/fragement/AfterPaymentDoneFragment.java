@@ -361,7 +361,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
 
     private void updateMapMarkers() {
            // check this aftervreal updation mMap.clear(); to off blink comment this
-       // mMap.clear();
+        mMap.clear();
 
         // Add pickup marker with custom icon
         mMap.addMarker(new MarkerOptions()
