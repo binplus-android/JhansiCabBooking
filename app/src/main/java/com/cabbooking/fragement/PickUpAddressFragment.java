@@ -93,6 +93,10 @@ public class PickUpAddressFragment extends Fragment {
         getPIckUpList();
         lastValidAddress=tv_pick.getText().toString();
         if (tv_pick != null) {
+            if(!tv_pick.getText().toString().isEmpty()){
+                binding.recDestination.setVisibility(View.VISIBLE);
+                fetchAutocompleteSuggestions(tv_pick.getText().toString());
+            }
             tv_pick.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {

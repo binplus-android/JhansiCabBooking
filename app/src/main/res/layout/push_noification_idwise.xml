@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+
+        android:padding="@dimen/space_2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_time"
+                android:layout_width="12pt"
+                android:layout_height="12pt"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/logo"/>
+            <LinearLayout
+                android:layout_weight="1.6"
+                android:layout_marginLeft="@dimen/space_2"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/img_time"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:text="Title"
+                    android:textStyle="bold"
+                    android:maxLines="1" />
+
+                <TextView
+                    android:layout_marginTop="@dimen/space_1"
+                    android:id="@+id/tv_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:text="result"
+                    android:textSize="@dimen/space_5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    />
+
+            </LinearLayout>
+            <TextView
+                android:textSize="@dimen/space_5"
+                android:gravity="end"
+                android:id="@+id/tv_time"
+                android:layout_weight=".4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/dark_grey"
+                android:text="00:00 pm"
+
+                />
+        </LinearLayout>
+        <View
+            android:layout_marginHorizontal="@dimen/space_2"
+            android:background="@color/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <RelativeLayout
+            android:layout_marginLeft="@dimen/space_11"
+            android:padding="@dimen/space_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_toLeftOf="@id/img_v"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:padding="@dimen/space_2"
+                    android:background="@drawable/grey_outline"
+                    android:id="@+id/tv_vnumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="vnumber"
+                    android:textSize="@dimen/space_5"
+                    android:textStyle="bold"
+                    android:maxLines="1" />
+
+                <TextView
+                    android:layout_marginTop="@dimen/space_1"
+                    android:id="@+id/tv_vname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:text="vname"
+                    android:textSize="@dimen/space_5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    />   <TextView
+                    android:layout_marginTop="@dimen/space_1"
+                    android:id="@+id/tv_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:text="otp"
+                    android:textSize="@dimen/space_5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    />
+
+            </LinearLayout>
+            <ImageView
+                android:layout_marginRight="@dimen/space_6"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/img_v"
+                android:layout_width="20pt"
+                android:layout_height="20pt"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/logo"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:background="@color/white"
+            android:padding="@dimen/space_2"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="18pt">
+            <LinearLayout
+                android:id="@+id/lin_share"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="10pt"
+                    android:layout_height="10pt"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_share"/>
+                <TextView
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="@dimen/space_5"
+                    android:id="@+id/tv_call_ride"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/share"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/space_5" />
+            </LinearLayout>
+
+            <View
+                android:background="@color/grey_5"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+            <LinearLayout
+                android:id="@+id/lin_call"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="10pt"
+                    android:layout_height="10pt"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_call"/>
+            <TextView
+                android:layout_marginHorizontal="@dimen/space_5"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/tv_location"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/call"
+                android:textAllCaps="true"
+                android:textSize="@dimen/space_5" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

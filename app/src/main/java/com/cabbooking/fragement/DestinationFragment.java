@@ -97,7 +97,10 @@ public class DestinationFragment extends Fragment {
 
 
         if (tvDestination != null) {
-
+            if(!tvDestination.getText().toString().isEmpty()){
+                binding.recDestination.setVisibility(View.VISIBLE);
+                fetchAutocompleteSuggestions(tvDestination.getText().toString());
+            }
             tvDestination.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {

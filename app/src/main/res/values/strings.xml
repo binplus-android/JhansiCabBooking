@@ -21,6 +21,7 @@
     <string name="not_to_share_otp">Keep Your OTP Confidential</string>
     <string name="verify_here">Verify OTP</string>
     <string name="submit">Submit</string>
+    <string name="share">Share</string>
     <string name="register">Register</string>
     <string name="time_remaining">Time remaining : </string>
     <string name="resend">Request a new OTP</string>
@@ -60,6 +61,7 @@
     <string name="return_date">Return date : </string>
     <string name="otp">OTP :</string>
     <string name="call_ride_mate">Call Ride Mate</string>
+    <string name="call">Call</string>
     <string name="driver_live_location">Driver Live Location</string>
     <string name="vechicle_recommendation">Vechicle Recommendation</string>
     <string name="confirm_your_pickup">Confirm your pickup</string>
