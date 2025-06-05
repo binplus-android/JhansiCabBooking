@@ -672,13 +672,15 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                                     pickupLatLng.latitude,pickupLatLng.longitude );
                         }
                         else if(tripStatus>5) {
-                            {
                                 //car-pickup,actual destination-destination(trip started)
                                 setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
                                         destinationLatLng.latitude, destinationLatLng.longitude);
-                            }
-
                         }
+//                        else if(tripStatus>7) {
+//                                //car-pickup,actual destination-pickup(trip started)
+//                                setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+//                                        pickupLatLng.latitude, pickupLatLng.longitude);
+//                        }
 
                     }else{
                         common.errorToast(resp.getError());
