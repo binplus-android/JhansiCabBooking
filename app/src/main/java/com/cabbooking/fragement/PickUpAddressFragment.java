@@ -140,14 +140,14 @@ public class PickUpAddressFragment extends Fragment {
         if (!query.isEmpty()) {
             LatLng jhansiCenter = new LatLng(25.4484, 78.5685);
 
-// 50 km radius bounds (approx 0.45 degrees)
+// 10 km radius bounds (~0.09 degrees latitude/longitude)
             RectangularBounds bounds = RectangularBounds.newInstance(
-                    new LatLng(jhansiCenter.latitude - 0.45, jhansiCenter.longitude - 0.45),
-                    new LatLng(jhansiCenter.latitude + 0.45, jhansiCenter.longitude + 0.45)
+                    new LatLng(jhansiCenter.latitude - 0.09, jhansiCenter.longitude - 0.09),
+                    new LatLng(jhansiCenter.latitude + 0.09, jhansiCenter.longitude + 0.09)
             );
 
             FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 50 km box
+                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 10 km box
                     .setTypeFilter(TypeFilter.ADDRESS)
                     .setCountry("IN")
                     .setQuery(query)

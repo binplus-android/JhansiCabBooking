@@ -166,7 +166,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public Polyline currentPolyline;
 
     LatLng jhansiLatLng = new LatLng(25.4484, 78.5685); // Jhansi coordinates
-    final double MAX_DISTANCE_KM = 50.0;
+    final double MAX_DISTANCE_KM = 10.0;
 
 
     @Override
@@ -630,20 +630,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Picasso.get().load(IMAGE_BASE_URL + val).placeholder(R.drawable.logo).
                 error(R.drawable.logo).into(binding.navHeader.civLogo);
     }
-    public boolean isWithinJhansiArea(double selectedLat, double selectedLng) {
-        android.location.Location jhansi = new  android.location.Location("");
-        jhansi.setLatitude(25.4484);
-        jhansi.setLongitude(78.5685);
 
-        android.location.Location selected = new  android.location.Location("");
-        selected.setLatitude(selectedLat);
-        selected.setLongitude(selectedLng);
-
-        float distanceInMeters = jhansi.distanceTo(selected);
-        float distanceInKm = distanceInMeters / 1000f;
-
-        return distanceInKm <= 100;
-    }
 
 
     public void getPickUpLatLng(Double Lat, Double Lng, String pickAddressValue, LatLng latLng) {
@@ -1389,39 +1376,30 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public boolean isMapClicked = false;
     public void  addRestriction()
         {
-            LatLng jhansiCenter = new LatLng(25.4484, 78.5685); // Jhansi center
 
-//            // 1. Draw Circle for 50km
-//            mMap.addCircle(new CircleOptions()
-//                    .center(jhansiCenter)
-//                    .radius(50000) // 50km
-//                    .strokeColor(Color.RED)
-//                    .fillColor(0x22FF0000)
-//                    .strokeWidth(2f));
-
-            // 2. Limit camera to 50km around Jhansi
-            double latRadian = Math.toRadians(jhansiCenter.latitude);
+            //  Limit camera to 50km around Jhansi
+            double latRadian = Math.toRadians(jhansiLatLng.latitude);
             double degLatKm = 110.574;
             double degLongKm = 111.320 * Math.cos(latRadian);
-            double deltaLat = 50.0 / degLatKm;
-            double deltaLng = 50.0 / degLongKm;
+            double deltaLat = 10.0 / degLatKm;
+            double deltaLng = 10.0 / degLongKm;
 
-            LatLng southwest = new LatLng(jhansiCenter.latitude - deltaLat, jhansiCenter.longitude - deltaLng);
-            LatLng northeast = new LatLng(jhansiCenter.latitude + deltaLat, jhansiCenter.longitude + deltaLng);
+            LatLng southwest = new LatLng(jhansiLatLng.latitude - deltaLat, jhansiLatLng.longitude - deltaLng);
+            LatLng northeast = new LatLng(jhansiLatLng.latitude + deltaLat, jhansiLatLng.longitude + deltaLng);
             LatLngBounds jhansiBounds = new LatLngBounds(southwest, northeast);
 
             mMap.setLatLngBoundsForCameraTarget(jhansiBounds);
 
             // 3. Move camera to Jhansi
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jhansiCenter, 12));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jhansiLatLng, 12));
             mMap.setMinZoomPreference(10f);
-            String address = getAddressFromLatLng(MapActivity.this, jhansiCenter.latitude, jhansiCenter.longitude);
-            getPickUpLatLng(jhansiCenter.latitude, jhansiCenter.longitude, address, jhansiCenter);
+            String address = getAddressFromLatLng(MapActivity.this, jhansiLatLng.latitude, jhansiLatLng.longitude);
+            getPickUpLatLng(jhansiLatLng.latitude, jhansiLatLng.longitude, address, jhansiLatLng);
             if (tvpick != null) tvpick.setText(address);
             if (riderMarket != null) riderMarket.remove();
             pickupPlacesSelected = true;
-            showPickupMarker(jhansiCenter);
-            drawRoute(jhansiCenter, destinationLatLng);}
+            showPickupMarker(jhansiLatLng);
+            drawRoute(jhansiLatLng, destinationLatLng);}
 
 
     @Override
@@ -1430,8 +1408,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         String fragmentName = getCurrentFragmentName();
 
         // Jhansi center
-        LatLng jhansiLatLng = new LatLng(25.4484, 78.5685);
-        double MAX_DISTANCE_KM = 50.0;
+       // LatLng jhansiLatLng = new LatLng(25.4484, 78.5685);
+        double MAX_DISTANCE_KM = 10.0;
 
         if ("PickUpFragment".equals(fragmentName)) {addRestriction();}
 
