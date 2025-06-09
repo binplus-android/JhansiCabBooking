@@ -23,6 +23,7 @@ import com.cabbooking.Response.OTPverificatioResp;
 import com.cabbooking.databinding.ActivityOtpactivityBinding;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.utils.Apis;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
@@ -48,7 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class OTPActivity extends AppCompatActivity implements View.OnClickListener {
+public class OTPActivity extends BaseActivity implements View.OnClickListener {
     ActivityOtpactivityBinding binding;
     Common common;
     CountDownTimer cTimer ;
@@ -110,18 +111,18 @@ public class OTPActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
         if(v.getId ()==R.id.btn_submit) {
-            if(ConnectivityReceiver.isConnected()){
+           // if(ConnectivityReceiver.isConnected()){
                 onValidation();
-            }else {
-                common.noInternetDialog();
-            }
+//            }else {
+//                common.noInternetDialog();
+//            }
         }
         else if(v.getId ()==R.id.tv_resend_otp) {
-            if(ConnectivityReceiver.isConnected()){
+           // if(ConnectivityReceiver.isConnected()){
                 onResend();
-            } else {
-                common.noInternetDialog();
-            }
+//            } else {
+//                common.noInternetDialog();
+//            }
         }
     }
 

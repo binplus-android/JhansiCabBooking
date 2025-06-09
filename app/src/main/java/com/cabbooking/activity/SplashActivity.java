@@ -38,6 +38,7 @@ import com.cabbooking.adapter.EnquiryAdapter;
 import com.cabbooking.adapter.NotificationAdapter;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.EnquiryModel;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Constants;
 import com.cabbooking.utils.OnConfig;
@@ -50,7 +51,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
     final int SPLASH_DISPLAY_LENGTH = 2000;
     SessionManagment sessionManagment;
     Common common;

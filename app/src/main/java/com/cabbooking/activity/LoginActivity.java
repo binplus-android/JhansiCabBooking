@@ -16,6 +16,7 @@ import com.cabbooking.R;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.databinding.ActivityLoginBinding;
 import com.cabbooking.utils.Apis;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.LoadingBar;
@@ -32,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     ActivityLoginBinding binding;
     Common common;
     LoadingBar loadingBar;
@@ -64,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             startActivity(i);
         }
         if(v.getId()==R.id.btn_otp){
-            if(ConnectivityReceiver.isConnected()){
+           // if(ConnectivityReceiver.isConnected()){
                 if (!common.isValidMobileNumber(binding.etMob.getText().toString())) {
                     new ToastMsg(LoginActivity.this).toastIconError(getString(R.string.enter_valid_mobile));
                 }
@@ -72,10 +73,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String number = binding.etMob.getText().toString();
                     login(number);
                 }
-            }
-            else{
-                common.noInternetDialog();
-            }
+//            }
+//            else{
+//                common.noInternetDialog();
+//            }
         }
     }
     public void login(String number){

@@ -83,6 +83,7 @@ import com.cabbooking.interfaces.OnBackPressedListener;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
 import com.cabbooking.model.NearAreaNameModel;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Location;
 import com.cabbooking.utils.OnConfig;
@@ -128,7 +129,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener {

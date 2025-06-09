@@ -20,67 +20,28 @@ import com.cabbooking.databinding.DialogNoIntenetBinding;
 
 
 public class ConnectivityReceiver extends BroadcastReceiver {
-    Dialog dialog;
-    public static ConnectivityReceiverListener connectivityReceiverListener;
 
-    public ConnectivityReceiver() {
-        super();
+    public interface ConnectivityReceiverListener {
+        void onNetworkConnectionChanged(boolean isConnected);
     }
 
-    @Override
-    public void onReceive(Context context, Intent arg1) {
-        ConnectivityManager cm = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null
-                && activeNetwork.isConnectedOrConnecting();
+    public static ConnectivityReceiverListener connectivityReceiverListener;
 
-        if (!isConnected){
-            noInternetDialog(context);
-        }else{
-            if (dialog!=null){
-                if (dialog.isShowing()){
-                    dialog.dismiss();
-                }
-            }
-        }
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        boolean isConnected = isConnected(context);
 
         if (connectivityReceiverListener != null) {
             connectivityReceiverListener.onNetworkConnectionChanged(isConnected);
         }
     }
 
-    public static boolean isConnected() {
-        ConnectivityManager
-                cm = (ConnectivityManager) AppController.getInstance().getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null
-                && activeNetwork.isConnectedOrConnecting();
-    }
-
-
-    public interface ConnectivityReceiverListener {
-        void onNetworkConnectionChanged(boolean isConnected);
-    }
-
-    public void noInternetDialog(Context context) {
-        dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        DialogNoIntenetBinding dBinding=
-                DataBindingUtil.inflate(LayoutInflater.from(context),
-                        R.layout.dialog_no_intenet,null,false);
-        dialog.setContentView(dBinding.getRoot());
-        dialog.setCancelable(false);
-        dialog.getWindow();
-        //  dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setGravity(Gravity.CENTER);
-        if(!((Activity) context).isFinishing()) {
-            //show dialog
-            dialog.show();
-        }
-
-        dialog.setCanceledOnTouchOutside(false);
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }
+
+

@@ -370,47 +370,67 @@ public class Common {
            return true;
         }
     }
-    public void noInternetDialog() {
-        try {
+//    public void noInternetDialog() {
+//        try {
+//
+//
+//            Dialog dialogInternet = new Dialog (context);
+//            dialogInternet.requestWindowFeature (Window.FEATURE_NO_TITLE);
+//            DialogNoIntenetBinding dBinding =
+//                    DataBindingUtil.inflate (LayoutInflater.from (context),
+//                            R.layout.dialog_no_intenet, null, false);
+//            dialogInternet.setContentView (dBinding.getRoot());
+//            dialogInternet.setCancelable (true);
+//            dialogInternet.getWindow ( );
+//
+//            //  dialogInternet.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            dialogInternet.getWindow ( ).setBackgroundDrawable (new ColorDrawable(Color.TRANSPARENT));
+//            dialogInternet.getWindow ( ).setGravity (Gravity.CENTER);
+//            TextView tv_no_internet=dialogInternet.findViewById(R.id.tv_no_internet);
+//            Button btn_ok=dialogInternet.findViewById(R.id.btn_ok);
+////            btn_ok.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    dialogInternet.dismiss();
+////                }
+////            });
+//
+//
+////            else{
+//            dialogInternet.show ( );
+//            // }
+//
+//            if(ConnectivityReceiver.isConnected()){
+//                if(dialogInternet.isShowing()){
+//                    dialogInternet.dismiss();}
+//            }
+//
+//            dialogInternet.setCanceledOnTouchOutside (true);
+//        }catch (Exception e){
+//            e.printStackTrace ();
+//        }
+//
+//    }
 
-
-            Dialog dialogInternet = new Dialog (context);
-            dialogInternet.requestWindowFeature (Window.FEATURE_NO_TITLE);
-            DialogNoIntenetBinding dBinding =
-                    DataBindingUtil.inflate (LayoutInflater.from (context),
-                            R.layout.dialog_no_intenet, null, false);
-            dialogInternet.setContentView (dBinding.getRoot());
-            dialogInternet.setCancelable (true);
-            dialogInternet.getWindow ( );
-
-            //  dialogInternet.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            dialogInternet.getWindow ( ).setBackgroundDrawable (new ColorDrawable(Color.TRANSPARENT));
-            dialogInternet.getWindow ( ).setGravity (Gravity.CENTER);
-            TextView tv_no_internet=dialogInternet.findViewById(R.id.tv_no_internet);
-            Button btn_ok=dialogInternet.findViewById(R.id.btn_ok);
-//            btn_ok.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    dialogInternet.dismiss();
-//                }
-//            });
-
-
-//            else{
-            dialogInternet.show ( );
-            // }
-
-            if(ConnectivityReceiver.isConnected()){
-                if(dialogInternet.isShowing()){
-                    dialogInternet.dismiss();}
-            }
-
-            dialogInternet.setCanceledOnTouchOutside (true);
-        }catch (Exception e){
-            e.printStackTrace ();
-        }
-
-    }
+//    public void noInternetDialog(Context context) {
+//        dialog = new Dialog(context);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        DialogNoIntenetBinding dBinding=
+//                DataBindingUtil.inflate(LayoutInflater.from(context),
+//                        R.layout.dialog_no_intenet,null,false);
+//        dialog.setContentView(dBinding.getRoot());
+//        dialog.setCancelable(false);
+//        dialog.getWindow();
+//        //  dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        dialog.getWindow().setGravity(Gravity.CENTER);
+//        if(!((Activity) context).isFinishing()) {
+//            //show dialog
+//            dialog.show();
+//        }
+//
+//        dialog.setCanceledOnTouchOutside(false);
+//    }
 
     public void errorToast(String msg) {
         if (msg == null || msg.isEmpty()) {

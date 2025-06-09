@@ -30,6 +30,7 @@ import com.cabbooking.databinding.ActivityNotificationsBinding;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.VechicleModel;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.OnConfig;
 import com.cabbooking.utils.Repository;
@@ -43,7 +44,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationsActivity extends AppCompatActivity {
+public class NotificationsActivity extends BaseActivity {
     Common common;
     Activity activity;
     ActivityNotificationsBinding binding;

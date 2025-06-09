@@ -22,6 +22,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cabbooking.R;
 import com.cabbooking.Response.LoginResp;
 import com.cabbooking.databinding.ActivitySignUpBinding;
+import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.ConnectivityReceiver;
 import com.cabbooking.utils.Constants;
@@ -32,7 +33,7 @@ import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.ToastMsg;
 import com.google.gson.JsonObject;
 
-public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignUpActivity extends BaseActivity implements View.OnClickListener {
     ActivitySignUpBinding binding;
     Common common;
     LoadingBar loadingBar;
@@ -81,7 +82,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(i);
 
         }else if (v.getId() == R.id.btn_otp) {
-            if (ConnectivityReceiver.isConnected()) {
+            //if (ConnectivityReceiver.isConnected()) {
 
                 if (!common.isValidName(binding.etName.getText().toString())) {
                     new ToastMsg(SignUpActivity.this).toastIconError(getString(R.string.enter_valid_name));
@@ -110,9 +111,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                      signUp(number,name,email);
                     }
                 }
-            } else {
-                common.noInternetDialog();
-            }
+//            }
+//            else {
+//                common.noInternetDialog();
+//            }
         }
     }
 
