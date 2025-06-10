@@ -338,7 +338,7 @@ public class PaymentFragment extends Fragment {
         tv_ridername.setText(resp.getRecordList().getName());
         tv_vnumb.setText(resp.getRecordList().getContactNo());
        tv_otp.setText(getActivity().getString(R.string.otp)+" "+resp.getRecordList().getPickupOtp());
-        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleImage()).
+        Picasso.get().load(IMAGE_BASE_URL+resp.getRecordList().getVehicleTypeImage()).
                 placeholder(R.drawable.logo).error(R.drawable.logo).into(iv_car);
 
         tv_vname.setText(resp.getRecordList().getVehicleModelName());
