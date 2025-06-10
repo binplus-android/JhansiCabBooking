@@ -30,12 +30,14 @@ public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHo
     int pos=0;
     onTouchMethod listener;
     Common common;
+    String outstation_type="";
     public interface onTouchMethod{
         void onSelection(int pos);
     }
 
-    public VechicleAdapter(Context context, ArrayList<VechicleModel.RecordList> list, onTouchMethod listener) {
+    public VechicleAdapter(String outstation_type,Context context, ArrayList<VechicleModel.RecordList> list, onTouchMethod listener) {
         this.context = context;
+        this.outstation_type = outstation_type;
         this.list = list;
         this.listener=listener;
         common=new Common(context);
@@ -54,7 +56,13 @@ public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHo
         holder.tv_vname.setText(model.getName());
         holder.tv_vdesc.setText(model.getDescription());
         String distance= String.valueOf(common.getDistanceInKm(context));
-        holder.tv_rate.setText("Rs."+String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(distance)));
+        String amount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(distance));
+        if(outstation_type.equalsIgnoreCase("1")){
+            String returndistance= String.valueOf(common.getReturnDistanceInKm(context));
+            String returnamount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(returndistance));
+            holder.tv_rate.setText("Rs."+String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
+        }else{
+        holder.tv_rate.setText("Rs."+amount);}
         Picasso.get().load(IMAGE_BASE_URL+model.getIcon()).placeholder(R.drawable.logo).error(R.drawable.logo).into(holder.iv_vimg);
 
         holder.rel_main.setOnClickListener(new View.OnClickListener() {

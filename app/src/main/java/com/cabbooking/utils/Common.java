@@ -153,6 +153,21 @@ public class Common {
 
         return distanceInKm;
     }
+ public float getReturnDistanceInKm(Context activity) {
+        Location pickupLocation = new Location(String.valueOf(activity));
+        Location destinationLocation = new Location(String.valueOf(activity));
+     destinationLocation.setLatitude(((MapActivity)context).getPickupLat());
+     destinationLocation.setLongitude(((MapActivity)context).getPickupLng());
+
+
+     pickupLocation.setLatitude(((MapActivity) context).getDestinationLat());
+     pickupLocation.setLongitude( ((MapActivity) context).getDestinationLng());
+
+        float distanceInMeters = pickupLocation.distanceTo(destinationLocation);
+        float distanceInKm = distanceInMeters / 1000; // Convert to km
+
+        return distanceInKm;
+    }
 
     public void addLocationData(JsonObject object) {
         object.addProperty("pickupLat", ((MapActivity)context).getPickupLat());

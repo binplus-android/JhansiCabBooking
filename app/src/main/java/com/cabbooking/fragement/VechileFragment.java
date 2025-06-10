@@ -170,7 +170,7 @@ public class VechileFragment extends Fragment {
     }
     public void addTrip() {
         String distance= String.valueOf(common.getDistanceInKm(getActivity()));
-        Log.d("getetette_dis", "addTrip: "+distance);
+        String amount=String.format(Locale.US, "%.0f", list.get(sel_pos).getFare()*Double.parseDouble(distance));
 
         JsonObject object=new JsonObject();
         object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
@@ -178,14 +178,22 @@ public class VechileFragment extends Fragment {
         object.addProperty("isRound",outstation_type);
         common.addLocationData(object);
         object.addProperty("vehicleType",list.get(sel_pos).getId());
-        object.addProperty("distance",distance);
+
       //make it .3
-        object.addProperty("amount",String.format(Locale.US, "%.0f", list.get(sel_pos).getFare()*Double.parseDouble(distance)));
         if(outstation_type.equalsIgnoreCase("1")) {
+            String returndistance= String.valueOf(common.getReturnDistanceInKm(getActivity()));
+            String returnamount=String.format(Locale.US, "%.0f", list.get(sel_pos).getFare()*Double.parseDouble(returndistance));
+
             String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
-            object.addProperty("returnDate",returnDateval);  }
+            object.addProperty("returnDate",returnDateval);
+            object.addProperty("distance",String.valueOf(Double.parseDouble(distance)+Double.parseDouble(returndistance)));
+            object.addProperty("amount",String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
+        }
         else{
             object.addProperty("returnDate","");
+            object.addProperty("distance",distance);
+            object.addProperty("amount",amount);
+
         }
 
         repository.addTrip(object, new ResponseService() {
@@ -253,7 +261,7 @@ public class VechileFragment extends Fragment {
 
                             binding.btnBook.setText("Book "+list.get(0).getName());
                             sel_pos=0;
-                            adapter = new VechicleAdapter(getActivity(), list, new VechicleAdapter.onTouchMethod() {
+                            adapter = new VechicleAdapter(outstation_type,getActivity(), list, new VechicleAdapter.onTouchMethod() {
                                 @Override
                                 public void onSelection(int pos) {
                                     sel_pos=pos;
@@ -312,6 +320,7 @@ public class VechileFragment extends Fragment {
             sessionManagment.setValue(KEY_OUTSTATION_TYPE,"0");
             outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
             binding.linRetunDate.setVisibility(View.GONE);
+            getList();
         });
 
         binding.linRoundTrip.setOnClickListener(v -> {
