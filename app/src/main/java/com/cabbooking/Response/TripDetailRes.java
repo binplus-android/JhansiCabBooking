@@ -47,7 +47,7 @@ public class TripDetailRes {
         public String amount;
         public int adminShare;
         public String pickupOtp;
-        public int tripStatus;
+        public int tripStatus,isRoundStarted=0;
         public String status;
         public Object cancelledBy;
         public Object cancelReason;
@@ -65,6 +65,14 @@ public class TripDetailRes {
         public int seats;
         public String tripStatusName;
 
+
+        public int getIsRoundStarted() {
+            return isRoundStarted;
+        }
+
+        public void setIsRoundStarted(int isRoundStarted) {
+            this.isRoundStarted = isRoundStarted;
+        }
 
         public String getVehicleNumber() {
             return vehicleNumber;

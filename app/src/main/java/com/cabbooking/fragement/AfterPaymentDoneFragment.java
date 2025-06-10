@@ -78,7 +78,7 @@ import retrofit2.Retrofit;
  * create an instance of this fragment.
  */
 public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCallback {
-    int  tripStatus=0;
+    int  tripStatus=0,isRoundStarted=0;
     String trip_type="",outstation_type="",tripId="",driver_Number="";
     SessionManagment sessionManagment;
     FragmentAfterPaymentDoneBinding binding;
@@ -412,6 +412,7 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                     Log.e("tripDetail ",data.toString());
                     if (resp.getStatus()==200) {
                          tripStatus=resp.getRecordList().getTripStatus();
+                        isRoundStarted=resp.getRecordList().getIsRoundStarted();
                         TextView tvpick=binding.commonAddress.findViewById(R.id.tv_pick);
                         EditText et_des=binding.commonAddress.findViewById(R.id.tv_desctination);
                         et_des.setEnabled(false);
@@ -666,21 +667,28 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                     if (resp.getStatus()==200) {
 //                        ((MapActivity)getActivity()).setDriverLocation(resp.getRecordList().getLat(),
 //                                resp.getRecordList().getLng());
-                        if(tripStatus<5||tripStatus==5) {
-                            //car-pickup,user -destination(trip not started)
-                            setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
-                                    pickupLatLng.latitude,pickupLatLng.longitude );
-                        }
-                        else if(tripStatus>5) {
+                        if(isRoundStarted==0) {
+                            if (tripStatus < 5 || tripStatus == 5) {
+                                //car-pickup,user -destination(trip not started)
+                                setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+                                        pickupLatLng.latitude, pickupLatLng.longitude);
+                            } else if (tripStatus > 5) {
                                 //car-pickup,actual destination-destination(trip started)
                                 setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
                                         destinationLatLng.latitude, destinationLatLng.longitude);
+                            }
+                        }else{
+                            if (tripStatus < 5 || tripStatus == 5) {
+                                //car-pickup,user -destination(trip not started)
+                                setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+                                        destinationLatLng.latitude, destinationLatLng.longitude);
+                            } else if (tripStatus > 5) {
+                                //car-pickup,actual destination-destination(trip started)
+                                setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
+                                        pickupLatLng.latitude, pickupLatLng.longitude);
+                            }
                         }
-//                        else if(tripStatus>7) {
-//                                //car-pickup,actual destination-pickup(trip started)
-//                                setLocations(Double.parseDouble(resp.getRecordList().getLat()), Double.parseDouble(resp.getRecordList().getLng()),
-//                                        pickupLatLng.latitude, pickupLatLng.longitude);
-//                        }
+
 
                     }else{
                         common.errorToast(resp.getError());
