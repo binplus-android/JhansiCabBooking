@@ -16,6 +16,7 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitClient {
 
@@ -63,4 +64,35 @@ public class RetrofitClient {
         }
         return retrofit;
     }
+
+    public static Retrofit getFileDownloadRetrofitInstance(Context context) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+
+        // Same headers
+        builder.addInterceptor(chain -> {
+            String tokenType = new SessionManagment(context).getUserDetails().get(KEY_TOKEN_TYPE);
+            String token = new SessionManagment(context).getUserDetails().get(KEY_TOKEN);
+
+            if (tokenType == null || tokenType.isEmpty()) tokenType = "Bearer";
+            if (token == null || token.isEmpty()) token = "invalid token";
+
+            Request request = chain.request().newBuilder()
+                    .addHeader("Authorization", tokenType + " " + token)
+                    .addHeader("Accept", "*/*") // Accept all types (especially non-JSON)
+                    .build();
+
+            return chain.proceed(request);
+        });
+
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(interceptor);
+
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(ScalarsConverterFactory.create()) // Use ScalarsConverter instead of Gson
+                .client(builder.build())
+                .build();
+    }
+
 }

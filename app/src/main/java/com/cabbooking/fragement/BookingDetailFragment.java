@@ -1,5 +1,8 @@
 package com.cabbooking.fragement;
 
+
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
@@ -7,6 +10,9 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,12 +21,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -46,9 +57,12 @@ import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.FragmentBookingDetailBinding;
 import com.cabbooking.databinding.FragmentBookingHistoryBinding;
 import com.cabbooking.model.BookingHistoryModel;
+import com.cabbooking.utils.Apis;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.LoadingBar;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
+import com.cabbooking.utils.RetrofitClient;
 import com.cabbooking.utils.SessionManagment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -62,28 +76,43 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
+
+import okhttp3.ResponseBody;
+
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BookingDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookingDetailFragment extends Fragment implements OnMapReadyCallback  {
+public class BookingDetailFragment extends Fragment implements OnMapReadyCallback {
     FragmentBookingDetailBinding binding;
     private String pendingFileUrl;
-    String trip_type="",outstation_type="";
+    String trip_type = "", outstation_type = "";
+    String pdfUrl = "";
+    String lastDownloadedFilePath = "";
     Common common;
     SessionManagment sessionManagment;
-    String book_id="",book_date="",tripId="";
+    String book_id = "", book_date = "", tripId = "";
     Repository repository;
-    JsonObject feedobject=new JsonObject();
+    JsonObject feedobject = new JsonObject();
     private GoogleMap mMap;
     private LatLng pickupLatLng = null;
     private LatLng destinationLatLng = null;
+    LoadingBar progressbar;
 
 
     public void setLocations(double pickupLat, double pickupLng, double destLat, double destLng) {
@@ -93,6 +122,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
             updateMapMarkers();
         }
     }
+
     public BookingDetailFragment() {
         // Required empty public constructor
     }
@@ -116,6 +146,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         binding = FragmentBookingDetailBinding.inflate(inflater, container, false);
         initView();
         getAllData();
+
         allClick();
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
@@ -133,9 +164,153 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
             public void onRefresh() {
                 binding.swipeRefresh.setRefreshing(false);
                 getAllData();
+
             }
         });
         return binding.getRoot();
+    }
+    private void showHideProgressBar(boolean showStatus) {
+        if (showStatus) {
+            progressbar.show();
+        } else {
+            progressbar.dismiss();
+        }
+    }
+
+    public void downloadInvoiceFile(String tripId) {
+        showHideProgressBar(true);
+        Apis apiInterface = RetrofitClient.getFileDownloadRetrofitInstance(getActivity()).create(Apis.class);
+
+        Call<ResponseBody> call = apiInterface.downloadInvoice(
+                tripId
+        );
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                showHideProgressBar(false);
+                if (response.isSuccessful() && response.body() != null) {
+
+                    boolean success = saveFileToGallery(response.body());
+                    if (success) {
+
+                        showDownloadNotification();
+                    }
+                } else {
+                    Log.e("API_FAIL", "Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("API_ERROR", t.getMessage());
+                showHideProgressBar(false);
+            }
+        });
+    }
+
+    public boolean saveFileToGallery(ResponseBody body) {
+        try {
+            String fileName = "Trip_Invoice_" + System.currentTimeMillis() + ".pdf";
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (!downloadsDir.exists()) downloadsDir.mkdirs();
+
+            File file = new File(downloadsDir, fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            InputStream is = body.byteStream();
+            byte[] buffer = new byte[4096];
+            int len;
+
+            while ((len = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+            }
+
+            fos.flush();
+            fos.close();
+            is.close();
+
+            MediaScannerConnection.scanFile(
+                    getActivity(),
+                    new String[]{file.getAbsolutePath()},
+                    new String[]{"application/pdf"},
+                    null
+            );
+
+            lastDownloadedFilePath = file.getAbsolutePath(); // save path globally
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    // Show Notification When Download Complete
+    public void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "download_channel";
+            CharSequence name = "Download Channel";
+            String description = "Shows notification when download is complete";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void showDownloadNotification() {
+        createNotificationChannel(getActivity()); // Add this line
+        File file = new File(lastDownloadedFilePath);
+        Uri fileUri = FileProvider.getUriForFile(
+                getActivity(),
+                getActivity().getPackageName() + ".provider",
+                file
+        );
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(fileUri, "application/pdf");
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getActivity(),
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), "download_channel")
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Invoice Downloaded")
+                .setContentText("Tap to open PDF")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManagerCompat manager = NotificationManagerCompat.from(getActivity());
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        manager.notify(1001, builder.build());
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -345,16 +520,17 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         binding.linInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                  //  String pdfUrl = BASE_URL+model.getReceipt_url() ;
-                    String pdfUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" ;
-//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl));
-//                    getActivity().startActivity(browserIntent);
-                    pendingFileUrl = pdfUrl;
-                    checkPermissionsAndDownload(pdfUrl);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+                downloadInvoiceFile("272");
+//                try {
+//                  //  String pdfUrl = BASE_URL+model.getReceipt_url() ;
+//                    String pdfUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" ;
+////                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl));
+////                    getActivity().startActivity(browserIntent);
+//                    pendingFileUrl = pdfUrl;
+//                    checkPermissionsAndDownload(pdfUrl);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
             }
         });
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -456,6 +632,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
     }
 
     private void initView() {
+        progressbar = new LoadingBar(getActivity());
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
@@ -562,7 +739,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
         request.allowScanningByMediaScanner();
 
-        DownloadManager manager = (DownloadManager) requireContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager = (DownloadManager) requireContext().getSystemService(DOWNLOAD_SERVICE);
         manager.enqueue(request);
 
         Toast.makeText(requireContext(), "Download started", Toast.LENGTH_SHORT).show();

@@ -21,11 +21,15 @@ import com.cabbooking.model.EnquiryModel;
 import com.cabbooking.model.VechicleModel;
 import com.cabbooking.model.WalletHistoryModel;
 import com.google.gson.JsonObject;
+import okhttp3.ResponseBody;
 
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 public interface Apis {
 
@@ -77,6 +81,7 @@ public interface Apis {
     @POST("updateFeedback")
     Call<CommonResp> feedBack(@Body  JsonObject jsonObject);
 
-
+    @GET("printTripInvoice/{id}")
+    Call<ResponseBody> downloadInvoice(@Path("id") String tripId);
 
 }

@@ -1,12 +1,16 @@
 package com.cabbooking.fragement;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +84,7 @@ public class BookingHistoryFragment extends Fragment {
             public void onRefresh() {
                 binding.swipeRefresh.setRefreshing(false);
                 getList();
+
             }
         });
 
@@ -88,9 +93,13 @@ public class BookingHistoryFragment extends Fragment {
 
     private void getList()
     {
+
             list.clear();
+
             JsonObject object = new JsonObject();
         object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
+        object.addProperty("startIndex",list.size());
+        object.addProperty("fetchRecord","100");
         repository.getBookingHistory(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
@@ -98,7 +107,7 @@ public class BookingHistoryFragment extends Fragment {
                     BookingHistoryModel resp = (BookingHistoryModel) data;
                     Log.e("BookingHistoryModel ", data.toString());
                     if (resp.getStatus() == 200) {
-                        list.clear();
+
                         list = resp.getRecordList();
                         if(list.size()>0) {
                             adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
@@ -141,14 +150,16 @@ public class BookingHistoryFragment extends Fragment {
     private void allClick() {
     }
 
+
+
     private void initView() {
         ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("Booking History");
 //        binding.recList.setLayoutManager(new LinearLayoutManager(getActivity()));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+//        layoutManager.setReverseLayout(true);
+//        layoutManager.setStackFromEnd(true);
 
         binding.recList.setLayoutManager(layoutManager);
         list=new ArrayList<>();

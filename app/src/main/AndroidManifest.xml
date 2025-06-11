@@ -95,7 +95,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-<!--        <service-->
+
+
+        <!--        <service-->
 <!--            android:name=".utils.MyFirebaseMessagingService"-->
 <!--            android:exported="true"-->
 <!--            android:permission="TODO">-->
