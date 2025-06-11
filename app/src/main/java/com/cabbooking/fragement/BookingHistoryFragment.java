@@ -133,7 +133,7 @@ public class BookingHistoryFragment extends Fragment {
         JsonObject object = new JsonObject();
         object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
         object.addProperty("startIndex", startIndex);
-        object.addProperty("fetchRecord", "15");
+        object.addProperty("fetchRecord", fetchRecord);
 
         repository.getBookingHistory(object, new ResponseService() {
             @Override
