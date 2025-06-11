@@ -27,6 +27,7 @@ import com.cabbooking.databinding.FragmentBookingHistoryBinding;
 import com.cabbooking.model.BookingHistoryModel;
 import com.cabbooking.model.WalletHistoryModel;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.LoadingBar;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
@@ -44,14 +45,16 @@ public class BookingHistoryFragment extends Fragment {
 
     FragmentBookingHistoryBinding binding;
     Common common;
+    LoadingBar progressbar;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
     SessionManagment sessionManagment;
     BookingAdapter adapter;
     ArrayList<BookingHistoryModel.RecordList> list;
     Repository repository;
     private int startIndex = 0;
     private final int fetchRecord = 15;
-    private boolean isLoading = false;
-    private boolean isLastPage = false;
+
 
 
 
@@ -96,21 +99,37 @@ public class BookingHistoryFragment extends Fragment {
             getList();
             binding.swipeRefresh.setRefreshing(false);
         });
-        binding.recList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) binding.recList.getLayoutManager();
+        // Global flag to prevent multiple loads
 
-                if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
-                    getList(); // load next page
+
+
+            binding.recList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    if (dy > 0) { // only when scrolling down
+                        LinearLayoutManager layoutManager = (LinearLayoutManager) binding.recList.getLayoutManager();
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                        if (!isLoading && !isLastPage && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            isLoading = true;
+                            startIndex += 15;
+                            getList(); // Load next page
+                        }
+                    }
                 }
-            }
-        });
+            });
+
+
 
         return binding.getRoot();
     }
 
     private void getList() {
+        if (startIndex == 0) {
+            showHideProgressBar(true); // only first time
+        }
         JsonObject object = new JsonObject();
         object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
         object.addProperty("startIndex", startIndex);
@@ -120,6 +139,8 @@ public class BookingHistoryFragment extends Fragment {
             @Override
             public void onResponse(Object data) {
                 try {
+                    showHideProgressBar(false);
+                    isLoading = false;
                     BookingHistoryModel resp = (BookingHistoryModel) data;
                     Log.e("BookingHistoryModel ", data.toString());
 
@@ -153,6 +174,7 @@ public class BookingHistoryFragment extends Fragment {
 
                             startIndex += newList.size(); // increment for next page
                         } else {
+                            isLastPage = true;
                             if (startIndex == 0) {
                                 binding.recList.setVisibility(View.GONE);
                                 binding.layNoadata.setVisibility(View.VISIBLE);
@@ -161,6 +183,8 @@ public class BookingHistoryFragment extends Fragment {
                         }
 
                     } else {
+                        showHideProgressBar(false);
+                        isLoading = false;
                         common.errorToast(resp.getError());
                     }
                 } catch (Exception e) {
@@ -195,10 +219,17 @@ public class BookingHistoryFragment extends Fragment {
 
         binding.recList.setLayoutManager(layoutManager);
         list=new ArrayList<>();
+        progressbar=new LoadingBar(getActivity());
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
     }
-
+    private void showHideProgressBar(boolean showStatus) {
+        if (showStatus) {
+            progressbar.show();
+        } else {
+            progressbar.dismiss();
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
