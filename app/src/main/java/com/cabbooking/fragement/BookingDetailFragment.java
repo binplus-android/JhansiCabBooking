@@ -520,7 +520,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         binding.linInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadInvoiceFile("272");
+                downloadInvoiceFile(book_id);
 //                try {
 //                  //  String pdfUrl = BASE_URL+model.getReceipt_url() ;
 //                    String pdfUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" ;

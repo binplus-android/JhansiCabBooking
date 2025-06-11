@@ -6,8 +6,11 @@ import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Environment;
@@ -45,6 +48,11 @@ public class BookingHistoryFragment extends Fragment {
     BookingAdapter adapter;
     ArrayList<BookingHistoryModel.RecordList> list;
     Repository repository;
+    private int startIndex = 0;
+    private final int fetchRecord = 15;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+
 
 
     public BookingHistoryFragment() {
@@ -79,75 +87,99 @@ public class BookingHistoryFragment extends Fragment {
         initView();
         allClick();
         getList();
-        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                binding.swipeRefresh.setRefreshing(false);
-                getList();
 
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            startIndex = 0;
+            isLastPage = false;
+            list.clear();
+            adapter.notifyDataSetChanged();
+            getList();
+            binding.swipeRefresh.setRefreshing(false);
+        });
+        binding.recList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) binding.recList.getLayoutManager();
+
+                if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == list.size() - 1) {
+                    getList(); // load next page
+                }
             }
         });
 
         return binding.getRoot();
     }
 
-    private void getList()
-    {
-
-            list.clear();
-
-            JsonObject object = new JsonObject();
+    private void getList() {
+        JsonObject object = new JsonObject();
         object.addProperty("userId", sessionManagment.getUserDetails().get(KEY_ID));
-        object.addProperty("startIndex",list.size());
-        object.addProperty("fetchRecord","100");
+        object.addProperty("startIndex", startIndex);
+        object.addProperty("fetchRecord", "15");
+
         repository.getBookingHistory(object, new ResponseService() {
             @Override
             public void onResponse(Object data) {
                 try {
                     BookingHistoryModel resp = (BookingHistoryModel) data;
                     Log.e("BookingHistoryModel ", data.toString());
+
                     if (resp.getStatus() == 200) {
+                        ArrayList<BookingHistoryModel.RecordList> newList = resp.getRecordList();
 
-                        list = resp.getRecordList();
-                        if(list.size()>0) {
-                            adapter=new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
-                                @Override
-                                public void onSelection(int pos) {
-                                    Fragment fm=new BookingDetailFragment();
-                                    Bundle bundle=new Bundle();
-                                    bundle.putString("book_id",String.valueOf(list.get(pos).getTripId()));
-                                    bundle.putString("book_date",String.valueOf(list.get(pos).getCreatedAt()));
+                        if (newList != null && newList.size() > 0) {
+                            if (startIndex == 0) {
+                                list.clear(); // Clear only for the first load
+                                list.addAll(newList);
 
-                                    fm.setArguments(bundle);
-                                    common.switchFragment(fm);
-                                }
-                            });
-                            binding.recList.setVisibility(View.VISIBLE);
-                            binding.layNoadata.setVisibility(View.GONE);
-                            binding.recList.setAdapter(adapter);
+                                adapter = new BookingAdapter(getActivity(), list, new BookingAdapter.onTouchMethod() {
+                                    @Override
+                                    public void onSelection(int pos) {
+                                        Fragment fm = new BookingDetailFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("book_id", String.valueOf(list.get(pos).getTripId()));
+                                        bundle.putString("book_date", String.valueOf(list.get(pos).getCreatedAt()));
+                                        fm.setArguments(bundle);
+                                        common.switchFragment(fm);
+                                    }
+                                });
+
+                                binding.recList.setVisibility(View.VISIBLE);
+                                binding.layNoadata.setVisibility(View.GONE);
+                                binding.recList.setAdapter(adapter);
+                            } else {
+                                list.addAll(newList);
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            startIndex += newList.size(); // increment for next page
+                        } else {
+                            if (startIndex == 0) {
+                                binding.recList.setVisibility(View.GONE);
+                                binding.layNoadata.setVisibility(View.VISIBLE);
+                            }
+                            // Else: no more data to load, don't do anything
                         }
-                        else {
-                            binding.recList.setVisibility(View.GONE);
-                            binding.layNoadata.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    else{
+
+                    } else {
                         common.errorToast(resp.getError());
                     }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                @Override
-                public void onServerError(String errorMsg) {
-                    Log.e("errorMsg",errorMsg);
-                }
-            }, true);
+            }
 
-        }
+            @Override
+            public void onServerError(String errorMsg) {
+                Log.e("errorMsg", errorMsg);
+            }
+        }, true);
+    }
+
+
 
 
     private void allClick() {
+
     }
 
 
@@ -166,4 +198,13 @@ public class BookingHistoryFragment extends Fragment {
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startIndex = 0;
+        list.clear();
+        getList();
+    }
+
 }
