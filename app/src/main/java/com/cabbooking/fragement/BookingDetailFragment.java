@@ -390,6 +390,9 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
 //                    9 => 'Cancelled'
 
                         binding.tvStatus.setText(resp.getRecordList().getTripStatusName());
+                        if(resp.getRecordList().getTripStatusName().equalsIgnoreCase("completed")){
+                            binding.tvStatus.setBackgroundTintList(getActivity().getColorStateList(R.color.green_500));
+                        }
                         if(resp.getRecordList().getIsOutstation()==1){
                             trip_type="1";
                             if(resp.getRecordList().getIsRound()==1){
