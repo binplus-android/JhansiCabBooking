@@ -82,6 +82,9 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
 
         holder.tv_amt.setText("-Rs."+String.valueOf(model.getAmount()));
         holder.tv_status.setText(model.getTripStatusName());
+        if(model.getTripStatusName().equalsIgnoreCase("completed")){
+            holder.tv_status.setBackgroundTintList(context.getColorStateList(R.color.green_500));
+        }
         if(!common.checkNullString(model.getVehicleTypeImage()).equalsIgnoreCase("")){
             Picasso.get().load(IMAGE_BASE_URL + model.getVehicleTypeImage()).placeholder(R.drawable.logo).into(holder.iv_vimg);
         }
