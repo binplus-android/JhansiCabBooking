@@ -1,17 +1,31 @@
 package com.cabbooking.utils;
 
+import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
+
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cabbooking.R;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.activity.SplashActivity;
@@ -19,6 +33,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
@@ -60,7 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.e("dxcfvghbnj","wsdegrtyju");
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "sdxfcgvbh: " + remoteMessage.getData().toString());
-        String title = "", message = "",type="";
+        String title = "", message = "";
         try {
 
             JSONObject data = new JSONObject(remoteMessage.getData());
@@ -68,9 +84,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             JSONObject body = new JSONObject(data.getString("body"));
             title = body.getString("title");
             message = body.getString("description");
-            type = body.getString("type");
+
             // Build and display the custom notification
-            sendNotification(title, message,type);
+            sendNotification(title, message,body);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -85,43 +101,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //            handleNotification(remoteMessage.getNotification());
 //        }// Check if message contains a notification payload.
     }
-    private void sendNotification(String title, String message,String type_id) {
-        PendingIntent pendingIntent=null;
-        if (type_id.equalsIgnoreCase("")){
-            Intent intent = new Intent(this, SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-         pendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
-        );
-    }else{
-            Intent intent = new Intent(this, MapActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            pendingIntent = PendingIntent.getActivity(
-                    this,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
-            );
-        }
-
-        // Build notification using default layout
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.logo) // Your app's notification icon
-                .setContentTitle(title)        // Title of the notification
-                .setContentText(message)       // Message content
-                .setAutoCancel(true)
-                .setCustomContentView(getCustomContentView(title, message, type_id)) // Set your custom view// Dismiss notification when clicked
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Set notification priority
-                .setContentIntent(pendingIntent); // Set the pending intent
-
+    private void sendNotification(String title, String message, JSONObject body) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // For Android Oreo and above, create the notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
@@ -132,61 +114,116 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Generate a unique notification ID
-        int notificationId = (int) System.currentTimeMillis();
+        NotificationCompat.Builder notificationBuilder;
 
-        notificationManager.notify(notificationId, notificationBuilder.build());
-    }
-    private RemoteViews getCustomContentView(String title, String body, String type) {
-        DateTimeFormatter dtf = null;
-        String time="";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            dtf = DateTimeFormatter.ofPattern("hh:mm a");
-            LocalDateTime now = LocalDateTime.now();
-            time = dtf.format(now);
+        if (message.isEmpty()) {
+
+            RemoteViews customView = new RemoteViews(getPackageName(), R.layout.push_noification_idwise);
+
+            String imageUrl = null;
+            try {
+                imageUrl = IMAGE_BASE_URL + body.getString("driverProfileImage").toString();
+                Glide.with(this)
+                        .asBitmap()
+                        .load(imageUrl)
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                // Set all text fields
+                                try {
+                                    customView.setTextViewText(R.id.tv_name, body.getString("title").toString());
+                                    customView.setTextViewText(R.id.tv_description, body.getString("vehicleModelName").toString()+
+                                            " OTP-"+body.getString("pickupOtp").toString());
+                                    customView.setTextViewText(R.id.tv_vnumber, body.getString("vehicleNumber").toString());
+                                    customView.setTextViewText(R.id.tv_vname, body.getString("vehicleModelName").toString());
+                                    customView.setTextViewText(R.id.tv_otp, " OTP-"+body.getString("pickupOtp").toString());
+                                    customView.setImageViewBitmap(R.id.img_v, resource);
+
+
+                                    //  Bind to layout clicks
+                                    // Prepare intents and build notification (same as your code)
+                                    String channelId = CHANNEL_ID;
+                                    int notificationId = 1234;
+
+                                    Intent answerIntent = new Intent(getApplicationContext(), MapActivity.class);
+                                    answerIntent.putExtra("page_type", "call");
+                                    answerIntent.putExtra("body", body.toString());
+                                    answerIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    PendingIntent answerPendingIntent = PendingIntent.getActivity(getApplicationContext(), 101, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                                    Intent declineIntent = new Intent(getApplicationContext(), MapActivity.class);
+                                    declineIntent.putExtra("page_type", "share");
+                                    declineIntent.putExtra("body", body.toString());
+                                    declineIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    PendingIntent declinePendingIntent = PendingIntent.getActivity(getApplicationContext(), 102, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
+                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
+                                            .setSmallIcon(R.drawable.logo)
+                                            .setContentTitle(title)
+                                            .setContentText(body.toString())
+                                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                            .setCustomContentView(customView)
+                                            .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                                            .addAction(R.drawable.ic_call, "Call", answerPendingIntent)
+                                            .addAction(R.drawable.ic_delete, "Share", declinePendingIntent)
+                                            .setAutoCancel(true);
+                                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                                        return;
+                                    }
+                                    notificationManager.notify(notificationId, builder.build());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                // Optional: you can set a placeholder bitmap
+                            }
+
+                            @Override
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                Bitmap defaultProfileImage = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+                                customView.setImageViewBitmap(R.id.img_v, defaultProfileImage);
+                            }
+
+
+                        });
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+
+            // 👇 Use custom layout if description is empty
+
+
+
+
+
         }
+        else {
+            Intent intent = new Intent(this, SplashActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-
-        RemoteViews notificationLayout = null;
-        if (type.equalsIgnoreCase("")) {
-            notificationLayout = new RemoteViews(getPackageName(), R.layout.push_noification_);
-            notificationLayout.setTextViewText(R.id.tv_name, Html.fromHtml(title));
-            notificationLayout.setTextViewText(R.id.tv_result, Html.fromHtml(body));
-            notificationLayout.setTextViewText(R.id.tv_time, time);
-            notificationLayout.setImageViewResource(R.id.img_time, R.drawable.logo);
-        } else {
-            notificationLayout =new RemoteViews(getPackageName(), R.layout.push_noification_idwise);
-            //lin_call--lin_share
-            notificationLayout.setTextViewText(R.id.tv_name, Html.fromHtml(title));
-            notificationLayout.setTextViewText(R.id.tv_result, Html.fromHtml(body));
-            notificationLayout.setTextViewText(R.id.tv_vnumber, Html.fromHtml(body));
-            notificationLayout.setTextViewText(R.id.tv_vname, Html.fromHtml(body));
-            notificationLayout.setTextViewText(R.id.tv_otp, Html.fromHtml(body));
-            notificationLayout.setImageViewResource(R.id.img_time, R.drawable.logo);
-            notificationLayout.setImageViewResource(R.id.img_v, R.drawable.logo);
-
-
-
-
-            // Call Intent
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(Uri.parse("tel:9876543210"));
-            PendingIntent callPendingIntent = PendingIntent.getActivity(
-                    this, 101, callIntent, PendingIntent.FLAG_IMMUTABLE);
-
-            // Share Intent
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "Check this: " + body);
-            PendingIntent sharePendingIntent = PendingIntent.getActivity(
-                    this, 102, Intent.createChooser(shareIntent, "Share via"), PendingIntent.FLAG_IMMUTABLE);
-
-            //  Bind to layout clicks
-            notificationLayout.setOnClickPendingIntent(R.id.lin_call, callPendingIntent);
-            notificationLayout.setOnClickPendingIntent(R.id.lin_share, sharePendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+            );
+            notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setContentIntent(pendingIntent);
+            int notificationId = (int) System.currentTimeMillis();
+            notificationManager.notify(notificationId, notificationBuilder.build());
         }
-
-        return notificationLayout;
     }
-
 }

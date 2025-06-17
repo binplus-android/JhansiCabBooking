@@ -16,6 +16,8 @@ import static com.cabbooking.utils.SessionManagment.KEY_WHATSPP;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -177,7 +179,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         isAddressFetched = false;
         initView();
-
+      notificationActionCode();
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         apiKey = getString(R.string.google_maps_key);
@@ -343,6 +345,31 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
             }
         });
 
+    }
+    public void notificationActionCode() {
+        if (getIntent() != null && getIntent().hasExtra("page_type") && getIntent().hasExtra("body")) {
+            String page_type = getIntent().getStringExtra("page_type");
+            String bodyString = getIntent().getStringExtra("body");
+//            if (page_type.equalsIgnoreCase("call") || page_type.equalsIgnoreCase("share")) {
+//                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                manager.cancel(1234); // Same ID used when showing the notification
+//            }
+            try {
+                JSONObject body = new JSONObject(bodyString);
+                if(page_type.equalsIgnoreCase("call")){
+                    common.calling(body.getString("driverContactNo").toString());
+                }else if(page_type.equalsIgnoreCase("share")){
+                    String msg=body.getString("vehicleNumber").toString()+
+                            "\n"+body.getString("vehicleModelName").toString()+"\n"+
+                            "OTP-"+body.getString("pickupOtp").toString()+
+                            "\n"+"Contact no."+body.getString("driverContactNo").toString();
+                    common.shareLink(msg);
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 
     public void homeToolBar() {
@@ -1337,6 +1364,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         mlist = new ArrayList<>();
         sessionManagment = new SessionManagment(MapActivity.this);
         common = new Common(MapActivity.this);
+        common.subscribeToTopic();
         setSupportActionBar(binding.mytoolbar);
         binding.recMenu.setLayoutManager(new LinearLayoutManager(MapActivity.this));
         toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.mytoolbar, R.string.drawer_open, R.string.drawer_close);
