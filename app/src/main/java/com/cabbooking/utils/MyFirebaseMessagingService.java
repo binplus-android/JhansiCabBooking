@@ -117,6 +117,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder;
 
         if (message.isEmpty()) {
+            Intent mainTapIntent = new Intent(getApplicationContext(), MapActivity.class);
+            mainTapIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+            PendingIntent mainPendingIntent = PendingIntent.getActivity(
+                    getApplicationContext(),
+                    103,
+                    mainTapIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
             RemoteViews customView = new RemoteViews(getPackageName(), R.layout.push_noification_idwise);
 
@@ -165,6 +174,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                             .setContentTitle(title)
                                             .setContentText(body.toString())
                                             .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                            .setContentIntent(mainPendingIntent)
                                             .setCustomContentView(customView)
                                             .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                                             .setAutoCancel(true);
