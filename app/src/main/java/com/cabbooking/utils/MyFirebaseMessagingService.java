@@ -136,7 +136,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                             " OTP-"+body.getString("pickupOtp").toString());
                                     customView.setTextViewText(R.id.tv_vnumber, body.getString("vehicleNumber").toString());
                                     customView.setTextViewText(R.id.tv_vname, body.getString("vehicleModelName").toString());
-                                    customView.setTextViewText(R.id.tv_otp, " OTP-"+body.getString("pickupOtp").toString());
+                                    customView.setTextViewText(R.id.tv_otp, "OTP-"+body.getString("pickupOtp").toString());
                                     customView.setImageViewBitmap(R.id.img_v, resource);
 
 
@@ -157,6 +157,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     declineIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                     PendingIntent declinePendingIntent = PendingIntent.getActivity(getApplicationContext(), 102, declineIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+                                    customView.setOnClickPendingIntent(R.id.lin_call, answerPendingIntent);
+                                    customView.setOnClickPendingIntent(R.id.lin_share, declinePendingIntent);
 
                                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
                                             .setSmallIcon(R.drawable.logo)
@@ -165,9 +167,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                                             .setCustomContentView(customView)
                                             .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                                            .addAction(R.drawable.ic_call, "Call", answerPendingIntent)
-                                            .addAction(R.drawable.ic_delete, "Share", declinePendingIntent)
                                             .setAutoCancel(true);
+//                                     .addAction(R.drawable.ic_call, "Call", answerPendingIntent)
+//                                            .addAction(R.drawable.ic_delete, "Share", declinePendingIntent)
                                     if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                                         return;
                                     }

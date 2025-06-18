@@ -362,7 +362,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
                     String msg=body.getString("vehicleNumber").toString()+
                             "\n"+body.getString("vehicleModelName").toString()+"\n"+
                             "OTP-"+body.getString("pickupOtp").toString()+
-                            "\n"+"Contact no."+body.getString("driverContactNo").toString();
+                            "\n"+"Contact no.-"+body.getString("driverContactNo").toString();
                     common.shareLink(msg);
                 }
             } catch (JSONException e) {
