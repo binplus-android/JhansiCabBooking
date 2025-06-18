@@ -207,15 +207,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 throw new RuntimeException(e);
             }
 
-
-
-
-            // 👇 Use custom layout if description is empty
-
-
-
-
-
         }
         else {
             Intent intent = new Intent(this, SplashActivity.class);
