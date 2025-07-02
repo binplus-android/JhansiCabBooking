@@ -49,13 +49,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.Bound;
 import com.cabbooking.Response.CancleRideResp;
 import com.cabbooking.Response.CommonResp;
 import com.cabbooking.Response.ProfileDetailResp;
+import com.cabbooking.Response.ServiceLOcationResp;
 import com.cabbooking.activity.LoginActivity;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.databinding.DialogNoIntenetBinding;
 import com.cabbooking.fragement.HomeFragment;
+import com.cabbooking.interfaces.BoundCallback;
 import com.cabbooking.interfaces.SuccessCallBack;
 import com.cabbooking.interfaces.WalletCallBack;
 import com.cabbooking.model.AppSettingModel;
@@ -103,7 +106,7 @@ public class Common {
     SessionManagment sessionManagment;
     Repository repository;
      String deviceId = "", fcmToken = "";;
-
+    //LatLng jhansiLatLng = new LatLng(25.4484, 78.5685); // Jhansi coordinates
 
     public Common(Context context) {
         this.context = context;
@@ -111,6 +114,68 @@ public class Common {
         sessionManagment=new SessionManagment(context);
         repository = new Repository(context);
     }
+
+    public void serviceLocation(BoundCallback callback) {
+        JsonObject feedobject = new JsonObject();
+        repository.serviceLocation(feedobject, new ResponseService() {
+            @Override
+            public void onResponse(Object data) {
+                try {
+                    ServiceLOcationResp resp = (ServiceLOcationResp) data;
+                    if (resp.getStatus() == 200) {
+                        List<Bound> list = new ArrayList<>();
+                        for (ServiceLOcationResp.RecordList r : resp.getRecordList()) {
+                            Bound bm = new Bound();
+                            bm.name = r.getName();
+                            bm.lat = r.getLat();
+                            bm.lng = r.getLng();
+
+                            Bound.LatLng ne = new Gson().fromJson(
+                                    new JSONObject(r.getBound()).getJSONObject("ne").toString(),
+                                    Bound.LatLng.class
+                            );
+                            Bound.LatLng sw = new Gson().fromJson(
+                                    new JSONObject(r.getBound()).getJSONObject("sw").toString(),
+                                    Bound.LatLng.class
+                            );
+                            bm.ne = ne;
+                            bm.sw = sw;
+
+                            list.add(bm);
+                        }
+                        callback.onResult(list); // ✅ Send data back
+                    } else {
+                        callback.onError(resp.getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onError("Parsing error");
+                }
+            }
+
+            @Override
+            public void onServerError(String errorMsg) {
+                callback.onError(errorMsg);
+            }
+        }, true);
+    }
+
+
+    public List<Bound> getAllBounds(ServiceLOcationResp resp) {
+        List<Bound> boundsList = new ArrayList<>();
+        try {
+            for (ServiceLOcationResp.RecordList record : resp.getRecordList()) {
+                if (record.getBound() != null && !record.getBound().isEmpty()) {
+                    Bound bound = new Gson().fromJson(record.getBound(), Bound.class);
+                    boundsList.add(bound);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return boundsList;
+    }
+
     public String getDirectionsUrl(LatLng origin, LatLng dest) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;

@@ -26,7 +26,9 @@ import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.PickUpAddressAdapter;
 import com.cabbooking.databinding.FragmentDestinationBinding;
 import com.cabbooking.model.PickupAdressModel;
+import com.cabbooking.model.TempBound;
 import com.cabbooking.utils.Common;
+import com.cabbooking.utils.SessionManagment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
@@ -36,8 +38,11 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +55,7 @@ import java.util.Locale;
  */
 public class PickUpAddressFragment extends Fragment {
     FragmentDestinationBinding binding;
+    SessionManagment sessionManagment;
     ArrayList<PickupAdressModel>list1;
     PickUpAddressAdapter adapter;
     Common common;
@@ -136,41 +142,85 @@ public class PickUpAddressFragment extends Fragment {
         }
     }
 
+//    public void fetchAutocompleteSuggestions(String query) {
+//        if (!query.isEmpty()) {
+////            LatLng jhansiCenter = new LatLng(25.4484, 78.5685);
+////
+////// 10 km radius bounds (~0.09 degrees latitude/longitude)
+////            RectangularBounds bounds = RectangularBounds.newInstance(
+////                    new LatLng(jhansiCenter.latitude - 0.09, jhansiCenter.longitude - 0.09),
+////                    new LatLng(jhansiCenter.latitude + 0.09, jhansiCenter.longitude + 0.09)
+////            );
+//
+//            LatLng southwest = new LatLng(25.3900, 78.5000); // Bottom-left corner (SW)
+//            LatLng northeast = new LatLng(25.5200, 78.6500); // Top-right corner (NE)
+//            RectangularBounds bounds = RectangularBounds.newInstance(southwest, northeast);
+//
+//            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+//                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 10 km box
+//                    .setTypeFilter(TypeFilter.ADDRESS)
+//                    .setCountry("IN")
+//                    .setQuery(query)
+//                    .build();
+//
+//
+//            placesClient.findAutocompletePredictions(request)
+//                    .addOnSuccessListener(response -> {
+//                        list1.clear();
+//
+//                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+//                            String placeId = prediction.getPlaceId();
+//                            String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
+//                            String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
+//
+//                            // prediction.getFullText(null).toString()
+//                            fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
+//
+//                            // list1.add(new PickupAdressModel(mainAddress, 0, 0, fullAddress));
+//                        }
+//                        adapter.notifyDataSetChanged();
+//                    })
+//                    .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
+//        }
+//    }
+
     public void fetchAutocompleteSuggestions(String query) {
+        list1.clear();
+        adapter.notifyDataSetChanged();
+
         if (!query.isEmpty()) {
-            LatLng jhansiCenter = new LatLng(25.4484, 78.5685);
+            String boundsJson = sessionManagment.getValue("BOUND_LIST");
+            if (boundsJson == null) return;
 
-// 10 km radius bounds (~0.09 degrees latitude/longitude)
-            RectangularBounds bounds = RectangularBounds.newInstance(
-                    new LatLng(jhansiCenter.latitude - 0.09, jhansiCenter.longitude - 0.09),
-                    new LatLng(jhansiCenter.latitude + 0.09, jhansiCenter.longitude + 0.09)
-            );
+            Type listType = new TypeToken<List<TempBound>>() {}.getType();
+            List<TempBound> boundList = new Gson().fromJson(boundsJson, listType);
 
-            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                    .setLocationRestriction(bounds) // ✅ Hard limit: only within 10 km box
-                    .setTypeFilter(TypeFilter.ADDRESS)
-                    .setCountry("IN")
-                    .setQuery(query)
-                    .build();
+            for (TempBound bound : boundList) {
+                LatLng southwest = new LatLng(bound.getSlat(), bound.getSlng());
+                LatLng northeast = new LatLng(bound.getNlat(), bound.getNlon());
+                RectangularBounds bounds = RectangularBounds.newInstance(southwest, northeast);
 
+                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                        .setLocationRestriction(bounds)
+                        .setTypeFilter(TypeFilter.ADDRESS)
+                        .setCountry("IN")
+                        .setQuery(query)
+                        .build();
 
-            placesClient.findAutocompletePredictions(request)
-                    .addOnSuccessListener(response -> {
-                        list1.clear();
+                placesClient.findAutocompletePredictions(request)
+                        .addOnSuccessListener(response -> {
+                            list1.clear();
+                            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                                String placeId = prediction.getPlaceId();
+                                String mainAddress = prediction.getPrimaryText(null).toString();
+                                String fullAddress = prediction.getFullText(null).toString();
 
-                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                            String placeId = prediction.getPlaceId();
-                            String mainAddress = prediction.getPrimaryText(null).toString();  // e.g., MP Nagar
-                            String fullAddress = prediction.getFullText(null).toString();     // e.g., MP Nagar, Zone II, Bhopal
-
-                            // prediction.getFullText(null).toString()
-                            fetchPlaceDetails(placeId, mainAddress, fullAddress);  //
-
-                            // list1.add(new PickupAdressModel(mainAddress, 0, 0, fullAddress));
-                        }
-                        adapter.notifyDataSetChanged();
-                    })
-                    .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
+                                fetchPlaceDetails(placeId, mainAddress, fullAddress);
+                            }
+                            adapter.notifyDataSetChanged();
+                        })
+                        .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
+            }
         }
     }
 
@@ -248,6 +298,7 @@ public class PickUpAddressFragment extends Fragment {
     }
 
     public void initView() {
+        sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
         ((MapActivity)getActivity()).setTitle("Pickup");
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,true);

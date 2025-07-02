@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,11 +34,14 @@ import com.android.installreferrer.api.InstallReferrerClient;
 import com.android.installreferrer.api.InstallReferrerStateListener;
 import com.android.installreferrer.api.ReferrerDetails;
 import com.cabbooking.R;
+import com.cabbooking.Response.Bound;
 import com.cabbooking.Response.NotificationResp;
 import com.cabbooking.adapter.EnquiryAdapter;
 import com.cabbooking.adapter.NotificationAdapter;
+import com.cabbooking.interfaces.BoundCallback;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.EnquiryModel;
+import com.cabbooking.model.TempBound;
 import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Constants;
@@ -50,6 +54,7 @@ import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SplashActivity extends BaseActivity {
     final int SPLASH_DISPLAY_LENGTH = 2000;
@@ -70,6 +75,31 @@ public class SplashActivity extends BaseActivity {
 
         common.generateToken();
         common.getDeviceId();
+        common.serviceLocation(new BoundCallback() {
+            @Override
+            public void onResult(List<Bound> boundList) {
+                ArrayList<TempBound>temp =new ArrayList<>();
+                temp.clear();
+                for (Bound b : boundList) {
+                    Log.d("Bound", b.name + " → NE: " + b.ne.lat + "," + b.ne.lng + " | SW: " + b.sw.lat + "," + b.sw.lng);
+                    temp.add(new TempBound( b.ne.lat, b.ne.lng, b.sw.lat, b.sw.lng));
+                }
+
+                if(temp.size()==0){
+                    temp.add(new TempBound(  35.674545, 97.395555, 6.5546079, 68.1113787));
+                    String json = new Gson().toJson(temp);
+                    sessionManagment.setValue("BOUND_LIST", json);
+                }else{
+                    String json = new Gson().toJson(temp);
+                    sessionManagment.setValue("BOUND_LIST", json);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(SplashActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

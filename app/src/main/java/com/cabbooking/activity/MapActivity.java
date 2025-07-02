@@ -67,6 +67,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.Bound;
 import com.cabbooking.adapter.MenuAdapter;
 import com.cabbooking.databinding.ActivityMapBinding;
 import com.cabbooking.fragement.AfterPaymentDoneFragment;
@@ -81,10 +82,12 @@ import com.cabbooking.fragement.ProfileFragment;
 import com.cabbooking.fragement.RideFragment;
 import com.cabbooking.fragement.WalletHistoryFragment;
 import com.cabbooking.interfaces.AddressCallback;
+import com.cabbooking.interfaces.BoundCallback;
 import com.cabbooking.interfaces.OnBackPressedListener;
 import com.cabbooking.model.AppSettingModel;
 import com.cabbooking.model.MenuModel;
 import com.cabbooking.model.NearAreaNameModel;
+import com.cabbooking.model.TempBound;
 import com.cabbooking.utils.BaseActivity;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Location;
@@ -114,6 +117,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -124,6 +129,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -168,8 +174,13 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
     String apiKey;
     public Polyline currentPolyline;
 
-    LatLng jhansiLatLng = new LatLng(25.4484, 78.5685); // Jhansi coordinates
+
+    ArrayList<TempBound> boundList=new ArrayList<>();
+
     final double MAX_DISTANCE_KM = 10.0;
+    private final List<LatLngBounds> serviceAreas = new ArrayList<>();
+    private LatLngBounds combinedBounds; // optional: if you want one combined region
+
 
 
     @Override
@@ -179,6 +190,34 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map);
         isAddressFetched = false;
         initView();
+        common.serviceLocation(new BoundCallback() {
+            @Override
+            public void onResult(List<Bound> boundList) {
+                ArrayList<TempBound>temp =new ArrayList<>();
+                temp.clear();
+                for (Bound b : boundList) {
+                    Log.d("Bound", b.name + " → NE: " + b.ne.lat + "," + b.ne.lng + " | SW: " + b.sw.lat + "," + b.sw.lng);
+                    temp.add(new TempBound( b.ne.lat, b.ne.lng, b.sw.lat, b.sw.lng));
+
+                }
+
+                if(temp.size()==0){
+                    temp.add(new TempBound(  35.674545, 97.395555, 6.5546079, 68.1113787));
+                    String json = new Gson().toJson(temp);
+                    sessionManagment.setValue("BOUND_LIST", json);
+                }else{
+                    String json = new Gson().toJson(temp);
+                    sessionManagment.setValue("BOUND_LIST", json);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MapActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        loadServiceAreas();
+
       notificationActionCode();
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
@@ -346,6 +385,32 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         });
 
     }
+    private void loadServiceAreas() {
+        String json = sessionManagment.getValue("BOUND_LIST");
+        if (json == null) return;
+
+        Type type = new TypeToken<ArrayList<TempBound>>() {}.getType();
+        List<TempBound> boundList = new Gson().fromJson(json, type);
+
+        serviceAreas.clear(); // clear previous, if any
+
+        LatLngBounds.Builder combinedBuilder = new LatLngBounds.Builder();
+
+        for (TempBound item : boundList) {
+            LatLng ne = new LatLng(item.getNlat(), item.getNlon());
+            LatLng sw = new LatLng(item.getSlat(), item.getSlng());
+
+            LatLngBounds bounds = new LatLngBounds(sw, ne);
+            serviceAreas.add(bounds);
+            combinedBuilder.include(ne);
+            combinedBuilder.include(sw);
+
+            Log.d("SessionBound", "NE: " + ne + " SW: " + sw);
+        }
+
+        combinedBounds = combinedBuilder.build(); // final bounds covering all areas
+    }
+
     public void notificationActionCode() {
         if (getIntent() != null && getIntent().hasExtra("page_type") && getIntent().hasExtra("body")) {
             String page_type = getIntent().getStringExtra("page_type");
@@ -1412,73 +1477,79 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
     }
 
     public boolean isMapClicked = false;
-    public void  addRestriction()
-        {
+    public void addRestriction() {
 
-            //  Limit camera to 50km around Jhansi
-            double latRadian = Math.toRadians(jhansiLatLng.latitude);
-            double degLatKm = 110.574;
-            double degLongKm = 111.320 * Math.cos(latRadian);
-            double deltaLat = 10.0 / degLatKm;
-            double deltaLng = 10.0 / degLongKm;
+        //  (a) सर्विस‑एरिया लोड कर लें
+        loadServiceAreas();
+        if (serviceAreas.isEmpty()) {
+            Toast.makeText(this, "No service area loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            LatLng southwest = new LatLng(jhansiLatLng.latitude - deltaLat, jhansiLatLng.longitude - deltaLng);
-            LatLng northeast = new LatLng(jhansiLatLng.latitude + deltaLat, jhansiLatLng.longitude + deltaLng);
-            LatLngBounds jhansiBounds = new LatLngBounds(southwest, northeast);
+        //  (b) कैमरा को उन्हीं bounds तक सीमित करें
+        mMap.setLatLngBoundsForCameraTarget(combinedBounds);
+        mMap.setMinZoomPreference(10f);
 
-            mMap.setLatLngBoundsForCameraTarget(jhansiBounds);
+        //  (c) पहली area के centre पर कैमरा ले जाएँ
+        LatLng firstCenter = getCenter(serviceAreas.get(0));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstCenter, 12f));
 
-            // 3. Move camera to Jhansi
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jhansiLatLng, 12));
-            mMap.setMinZoomPreference(10f);
-            String address = getAddressFromLatLng(MapActivity.this, jhansiLatLng.latitude, jhansiLatLng.longitude);
-            getPickUpLatLng(jhansiLatLng.latitude, jhansiLatLng.longitude, address, jhansiLatLng);
-            if (tvpick != null) tvpick.setText(address);
-            if (riderMarket != null) riderMarket.remove();
-            pickupPlacesSelected = true;
-            showPickupMarker(jhansiLatLng);
-            drawRoute(jhansiLatLng, destinationLatLng);}
+        //  (d) वही पुराना reverse‑geocode और UI update
+        String address = getAddressFromLatLng(this, firstCenter.latitude, firstCenter.longitude);
+        getPickUpLatLng(firstCenter.latitude, firstCenter.longitude, address, firstCenter);
+        if (tvpick != null) tvpick.setText(address);
+        if (riderMarket != null) riderMarket.remove();
+
+        pickupPlacesSelected = true;
+        showPickupMarker(firstCenter);
+        drawRoute(firstCenter, destinationLatLng);
+    }
+
+    /* helper */
+    private LatLng getCenter(LatLngBounds b) {
+        return new LatLng(
+                (b.northeast.latitude + b.southwest.latitude) / 2,
+                (b.northeast.longitude + b.southwest.longitude) / 2
+        );
+    }
+
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        String fragmentName = getCurrentFragmentName();
 
-        // Jhansi center
-       // LatLng jhansiLatLng = new LatLng(25.4484, 78.5685);
-        double MAX_DISTANCE_KM = 10.0;
+        loadServiceAreas(); // 1. Load bounds from session
+        if (serviceAreas.isEmpty()) {
+            Toast.makeText(this, "No service area loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        if ("PickUpFragment".equals(fragmentName)) {addRestriction();}
+        addRestriction(); // 2. Restrict map & set initial camera
 
-
+        showPickupAndDropMarkers(); // 3. Optional
 
         mMap.setOnMapClickListener(latLng -> {
             String fragName = getCurrentFragmentName();
-            //  Disable clicks for certain fragments
-            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) {
-                return;
-            }
+            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) return;
 
-            double distance = distanceBetween(jhansiLatLng, latLng);
 
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
-                if (distance > MAX_DISTANCE_KM && "HomeFragment".equals(fragName)) {
-                    showMessageAlert();
-                    return;
-                }
+                    if ("HomeFragment".equals(fragName) && !isInsideServiceArea(latLng)) {
+                        showMessageAlert(); // "No service area"
+                        return;
+                    }
 
                 pickupPlacesSelected = true;
                 isMapClicked = true;
 
-                String address = getAddressFromLatLng(MapActivity.this, latLng.latitude, latLng.longitude);
+                String address = getAddressFromLatLng(this, latLng.latitude, latLng.longitude);
                 getPickUpLatLng(latLng.latitude, latLng.longitude, address, latLng);
 
                 if (riderMarket != null) riderMarket.remove();
                 showPickupMarker(latLng);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
                 setHomeAddress(address);
-
                 if (tvpick != null) tvpick.setText(address);
                 drawRoute(latLng, destinationLatLng);
 
@@ -1488,45 +1559,36 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
 
         mMap.setOnCameraIdleListener(() -> {
             String fragName = getCurrentFragmentName();
-
-            // Disable for some fragments
-            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) {
-                return;
-            }
-
+            if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) return;
             if (isMapClicked) return;
 
             LatLng center = mMap.getCameraPosition().target;
-
-            // If last selected location is set, override center
             if ("HomeFragment".equals(fragName) && lastSelectedLatLng != null) {
                 center = lastSelectedLatLng;
             }
 
-            double distance = distanceBetween(jhansiLatLng, center);
-
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
-                if ("HomeFragment".equals(fragName) && distance > MAX_DISTANCE_KM) {
-                    showMessageAlert();
+                if ("HomeFragment".equals(fragName) && !isInsideServiceArea(center)) {
+                    showMessageAlert(); // "No service area"
                     return;
                 }
 
-                String address = getAddressFromLatLng(MapActivity.this, center.latitude, center.longitude);
+                String address = getAddressFromLatLng(this, center.latitude, center.longitude);
                 getPickUpLatLng(center.latitude, center.longitude, address, center);
                 setHomeAddress(address);
-
                 if (tvpick != null) tvpick.setText(address);
                 if (riderMarket != null) riderMarket.remove();
-
                 showPickupMarker(center);
                 drawRoute(center, destinationLatLng);
             }
         });
-
-
-        showPickupAndDropMarkers();
     }
-
+    private boolean isInsideServiceArea(LatLng point) {
+        for (LatLngBounds bounds : serviceAreas) {
+            if (bounds.contains(point)) return true;
+        }
+        return false;
+    }
     public void showPickupAndDropMarkers() {
         if (pickupLng != null && pickupLat != null && destinationLat != null && destinationLng != null) {
             LatLng pickupLatLng = new LatLng(pickupLat, pickupLng);
@@ -1616,19 +1678,42 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
             }
         }).start();
     }
+    private LatLng getFirstBoundCenterFromSession() {
+        String json = sessionManagment.getValue("BOUND_LIST");
+        if (json == null) return null;
+
+        try {
+            Type type = new TypeToken<List<TempBound>>() {}.getType();
+            List<TempBound> boundList = new Gson().fromJson(json, type);
+            if (boundList == null || boundList.isEmpty()) return null;
+
+            TempBound first = boundList.get(0); // You can also loop if needed
+            double centerLat = (first.getNlat() + first.getSlat()) / 2;
+            double centerLng = (first.getNlon() + first.getSlng()) / 2;
+
+            return new LatLng(centerLat, centerLng);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public void fetchNearbyLocations(double latitude, double longitude) {
-        //for jhansi only change lat lng other wise above value need to use
-        latitude= jhansiLatLng.latitude;
-        longitude=jhansiLatLng.longitude;
-       // Make sure this is defined in your strings.xml
+        LatLng center = getFirstBoundCenterFromSession();
+        if (center == null) {
+            Log.e("NearbyLocation", "No valid bound in session");
+            return;
+        }
+        latitude = center.latitude;
+        longitude = center.longitude;
+
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
                 + "location=" + latitude + "," + longitude
-                + "&radius=3000" // meters
-                + "&type=establishment" // Change type if needed: restaurant, cafe,tourist_attraction etc.
+                + "&radius=3000"
+                + "&type=establishment"
                 + "&key=" + apiKey;
 
-        Log.d("NearbyURLcvbjnkml,;.", url);
+        Log.d("NearbyURL", url);
 
         new Thread(() -> {
             try {
@@ -1651,6 +1736,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
             }
         }).start();
     }
+
 
     public void parseNearbyPlaces(String json) {
         try {
@@ -1773,17 +1859,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
 
     }
 
-    public void validateMapLocation() {
-        LatLng centerj = mMap.getCameraPosition().target;
-        String fragmentName = getCurrentFragmentName();
-        // Jhansi location
-        double distance = distanceBetween(jhansiLatLng, centerj);
-        if ("HomeFragment".equals(fragmentName)){
-            if (distance > MAX_DISTANCE_KM) {
-                showMessageAlert();
-       }
-        }
-    }
+
     public void offClick() {
         tvpick.setEnabled(false);
         tvpick.setCursorVisible(false);

@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
@@ -30,21 +31,35 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.cabbooking.R;
+import com.cabbooking.Response.Bound;
 import com.cabbooking.Response.HomeBookingResp;
 import com.cabbooking.activity.MapActivity;
 import com.cabbooking.adapter.DestinationHomeAdapter;
 import com.cabbooking.databinding.FragmentHomeBinding;
+import com.cabbooking.interfaces.BoundCallback;
 import com.cabbooking.model.DestinationModel;
 import com.cabbooking.model.NearAreaNameModel;
+import com.cabbooking.model.TempBound;
 import com.cabbooking.utils.Common;
 import com.cabbooking.utils.Repository;
 import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -63,6 +78,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         initView();
+
+
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -210,13 +227,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
        // ((MapActivity) getActivity()).moveToUserLocation();
     }
     public void initView() {
-        repository=new Repository(getActivity());
-        ((MapActivity)getActivity()).showCommonPickDestinationArea(false,false);
-        sessionManagment=new SessionManagment(getActivity());
-        sessionManagment.setValue(KEY_TYPE,"0");
+        repository = new Repository(getActivity());
+        ((MapActivity) getActivity()).showCommonPickDestinationArea(false, false);
+        sessionManagment = new SessionManagment(getActivity());
+        sessionManagment.setValue(KEY_TYPE, "0");
         common = new Common(getActivity());
         list = new ArrayList<>();
         binding.recDestination.setLayoutManager(new LinearLayoutManager(getActivity()));
+
     }
     private void hideKeyboard() {
         if (getActivity() != null && getView() != null) {
@@ -228,6 +246,32 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.lin_destination) {
             common.switchFragment(new DestinationFragment());
+            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                    .setQuery("Jhansi, India")
+                    .setCountry("IN")
+                    .build();
+            if (!Places.isInitialized()) {
+                Places.initialize(getActivity(), getString(R.string.google_maps_key));
+            }
+            PlacesClient placesClient = Places.createClient(getActivity()); // yahi hai `placesClient
+            placesClient.findAutocompletePredictions(request)
+                    .addOnSuccessListener(response -> {
+                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                            String placeId = prediction.getPlaceId();
+
+                            // Get the place's LatLng using Place ID
+                            List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
+                            FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, placeFields);
+
+                            placesClient.fetchPlace(placeRequest)
+                                    .addOnSuccessListener(fetchResponse -> {
+                                        Place place = fetchResponse.getPlace();
+                                        LatLng latLng = place.getLatLng();
+                                        Log.d("Location", "Lat: " + latLng.latitude + ", Lng: " + latLng.longitude);
+                                    });
+                        }
+                    });
+
         } else if (v.getId() == R.id.lin_local) {
             ((MapActivity)getActivity()).displayLocation();
             if (((MapActivity) getActivity()).getPickupLng() == 0.0 && ((MapActivity) getActivity()).getPickupLat() == 0.0) {

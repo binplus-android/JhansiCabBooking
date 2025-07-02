@@ -17,6 +17,7 @@ import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
 import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.Response.ProfileUpdateResp;
+import com.cabbooking.Response.ServiceLOcationResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
@@ -454,6 +455,31 @@ public void getDetailTrip(JsonObject postData, ResponseService responseService, 
 
             @Override
             public void onFailure(Call<CommonResp> call, Throwable t) {
+                showHideProgressBar(false);
+                Log.e("repository_login_error", t.toString());
+                showErrorMsg(responseService, t);
+            }
+        });
+
+    }
+ public void serviceLocation(JsonObject postData, ResponseService responseService, boolean showProgress) {
+        showHideProgressBar(showProgress);
+        common=new Common(context);
+
+        apiInterface.serviceLocation(postData).enqueue(new Callback<ServiceLOcationResp>() {
+            @Override
+            public void onResponse(Call<ServiceLOcationResp> call, Response<ServiceLOcationResp> response) {
+                Log.e("serviceLocation", response.toString());
+                if (response.isSuccessful()) {
+                    showHideProgressBar(false);
+                    responseService.onResponse(response.body());
+                } else {
+                    common.repositoryResponseCode(response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServiceLOcationResp> call, Throwable t) {
                 showHideProgressBar(false);
                 Log.e("repository_login_error", t.toString());
                 showErrorMsg(responseService, t);

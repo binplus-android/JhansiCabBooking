@@ -13,6 +13,7 @@ import com.cabbooking.Response.PaymentResp;
 import com.cabbooking.Response.PickupResp;
 import com.cabbooking.Response.ProfileDetailResp;
 import com.cabbooking.Response.ProfileUpdateResp;
+import com.cabbooking.Response.ServiceLOcationResp;
 import com.cabbooking.Response.TripDetailRes;
 import com.cabbooking.Response.TripRiderResp;
 import com.cabbooking.model.AppSettingModel;
@@ -80,6 +81,8 @@ public interface Apis {
     Call<CommonResp> postEnquiry(@Body  JsonObject jsonObject);
     @POST("updateFeedback")
     Call<CommonResp> feedBack(@Body  JsonObject jsonObject);
+    @POST("getServiceLocations")
+    Call<ServiceLOcationResp> serviceLocation(@Body  JsonObject jsonObject);
 
     @GET("printTripInvoice/{id}")
     Call<ResponseBody> downloadInvoice(@Path("id") String tripId);
