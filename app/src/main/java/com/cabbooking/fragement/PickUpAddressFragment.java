@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.cabbooking.utils.SessionManagment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
@@ -45,8 +47,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -184,87 +189,125 @@ public class PickUpAddressFragment extends Fragment {
 //        }
 //    }
 
+    /* =============================  MAIN METHOD  ============================= */
     public void fetchAutocompleteSuggestions(String query) {
+
         list1.clear();
         adapter.notifyDataSetChanged();
 
-        if (!query.isEmpty()) {
-            String boundsJson = sessionManagment.getValue("BOUND_LIST");
-            if (boundsJson == null) return;
+        if (TextUtils.isEmpty(query)) return;
 
-            Type listType = new TypeToken<List<TempBound>>() {}.getType();
-            List<TempBound> boundList = new Gson().fromJson(boundsJson, listType);
+        // 1. bounds JSON से TempBound list निकालो
+        String boundsJson = sessionManagment.getValue("BOUND_LIST");
+        if (boundsJson == null) return;
 
-            for (TempBound bound : boundList) {
-                LatLng southwest = new LatLng(bound.getSlat(), bound.getSlng());
-                LatLng northeast = new LatLng(bound.getNlat(), bound.getNlon());
-                RectangularBounds bounds = RectangularBounds.newInstance(southwest, northeast);
+        Type listType = new TypeToken<List<TempBound>>(){}.getType();
+        List<TempBound> boundList = new Gson().fromJson(boundsJson, listType);
+        if (boundList == null || boundList.isEmpty()) return;
 
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setLocationRestriction(bounds)
-                        .setTypeFilter(TypeFilter.ADDRESS)
-                        .setCountry("IN")
-                        .setQuery(query)
-                        .build();
+        // 2. Google‑Places का session‑token (better quota usage)
+        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
-                placesClient.findAutocompletePredictions(request)
-                        .addOnSuccessListener(response -> {
-                            list1.clear();
-                            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                                String placeId = prediction.getPlaceId();
-                                String mainAddress = prediction.getPrimaryText(null).toString();
-                                String fullAddress = prediction.getFullText(null).toString();
+        // 3. Duplicate place‑ids रोकने के लिए set
+        Set<String> seenPlaceIds = Collections.synchronizedSet(new HashSet<>());
 
-                                fetchPlaceDetails(placeId, mainAddress, fullAddress);
-                            }
-                            adapter.notifyDataSetChanged();
-                        })
-                        .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
-            }
-        }
-    }
+        for (TempBound bound : boundList) {
 
-    private void fetchPlaceDetails(String placeId, String mainAddress, String fullAddress) {
-        List<Place.Field> placeFields = Arrays.asList(
-                Place.Field.LAT_LNG
-        );
+            RectangularBounds bounds = RectangularBounds.newInstance(
+                    new LatLng(bound.getSlat(), bound.getSlng()),
+                    new LatLng(bound.getNlat(), bound.getNlon())
+            );
 
-        FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
-        try {
-            placesClient.fetchPlace(request)
+            FindAutocompletePredictionsRequest request =
+                    FindAutocompletePredictionsRequest.builder()
+                            .setSessionToken(token)
+                            .setLocationRestriction(bounds)
+                            .setTypeFilter(TypeFilter.ADDRESS)
+                            .setCountry("IN")
+                            .setQuery(query)
+                            .build();
+
+            placesClient.findAutocompletePredictions(request)
                     .addOnSuccessListener(response -> {
+                        for (AutocompletePrediction prediction :
+                                response.getAutocompletePredictions()) {
 
-
-                        Place place = response.getPlace();
-                        LatLng latLng = place.getLatLng();
-                        if (latLng != null) {
-                            double lat = latLng.latitude;
-                            double lng = latLng.longitude;
-                            Activity activity = getActivity();
-                            if (activity != null) {
-                                Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                                try {
-                                    List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                                    if (addresses != null && !addresses.isEmpty()) {
-                                        String postalCode = addresses.get(0).getPostalCode();
-
-                                        // Step 3: Add to model
-                                        list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                            // सिर्फ नई जगहें आगे भेजो
+                            if (seenPlaceIds.add(prediction.getPlaceId())) {
+                                fetchPlaceDetails(
+                                        prediction.getPlaceId(),
+                                        prediction.getPrimaryText(null).toString(),
+                                        prediction.getFullText(null).toString(),
+                                        boundList        // ⬅ bounds पास करो
+                                );
                             }
-//                        list1.add(new PickupAdressModel(mainAddress, lat, lng, fullAddress));
-//                        adapter.notifyDataSetChanged();
                         }
                     })
-                    .addOnFailureListener(e -> Log.e("Places", "Place details error", e));
-        }catch (Exception e){
-            e.printStackTrace();
+                    .addOnFailureListener(e ->
+                            Log.e("Places", "Autocomplete error", e));
         }
     }
+
+    /* =======================  PLACE‑DETAILS + BOUNDS‑FILTER  ======================= */
+    private void fetchPlaceDetails(String placeId,
+                                   String mainAddress,
+                                   String fullAddress,
+                                   List<TempBound> boundList) {
+
+        List<Place.Field> fields = Collections.singletonList(Place.Field.LAT_LNG);
+        FetchPlaceRequest req = FetchPlaceRequest.builder(placeId, fields).build();
+
+        placesClient.fetchPlace(req)
+                .addOnSuccessListener(resp -> {
+                    LatLng ll = resp.getPlace().getLatLng();
+                    if (ll == null) return;
+
+                    double lat = ll.latitude;
+                    double lng = ll.longitude;
+
+                    /* 🔒  CLIENT‑SIDE BOUNDS CHECK  */
+                    if (!isInsideAnyBound(lat, lng, boundList)) {
+                        return;   // बाहर है ⇒ ignore
+                    }
+
+                    // Geocoder से pin‑code वग़ैरह
+                    try {
+                        if (isAdded() && getContext() != null) {
+                            Geocoder g = new Geocoder(getActivity(), Locale.getDefault());
+                            List<Address> adds = g.getFromLocation(lat, lng, 1);
+                            String pin = (!adds.isEmpty()) ? adds.get(0).getPostalCode() : "";
+
+                            list1.add(new PickupAdressModel(
+                                    mainAddress,
+                                    lat,
+                                    lng,
+                                    fullAddress + "  " + pin));
+
+                            adapter.notifyDataSetChanged();
+                        }
+                    } catch (IOException io) {
+                        Log.e("Places", "Geocoder error", io);
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Log.e("Places", "Place details error", e));
+    }
+
+    /* =========================  POINT‑IN‑RECT TEST  ========================= */
+    private boolean isInsideAnyBound(double lat, double lng, List<TempBound> bounds) {
+        for (TempBound b : bounds) {
+            double minLat = Math.min(b.getSlat(), b.getNlat());
+            double maxLat = Math.max(b.getSlat(), b.getNlat());
+            double minLng = Math.min(b.getSlng(), b.getNlon());
+            double maxLng = Math.max(b.getSlng(), b.getNlon());
+
+            if (lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
     public void getPIckUpList() {
@@ -279,9 +322,10 @@ public class PickUpAddressFragment extends Fragment {
                 lastValidAddress = selected;
                 LatLng latLng = new LatLng(list1.get(pos).getLat(),  list1.get(pos).getLng());
                 Log.d("gfgjj", "onSelection: "+list1.get(pos).getFormatted_address());
+                ((MapActivity)getActivity()).setHomeAddress(list1.get(pos).getFormatted_address().toString());
                 ((MapActivity)getActivity()).getPickUpLatLng(list1.get(pos).getLat(),
                         list1.get(pos).getLng(),list1.get(pos).getFormatted_address(), latLng);
-                ((MapActivity)getActivity()).setHomeAddress(list1.get(pos).getFormatted_address());
+
                 tv_pick = getActivity().findViewById(R.id.tv_pick);
                 tv_pick.setText(selected);
                 if(((MapActivity)getActivity()).getDestinationLat()==0.0||((MapActivity)getActivity()).getDestinationLng()==0.0){

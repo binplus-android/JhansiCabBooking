@@ -356,7 +356,13 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
                         binding.linOnlyBack.setVisibility(View.VISIBLE);
                         // setMap(false);
                         binding.main.setVisibility(View.VISIBLE);
+                        if (frgmentName.contains("PickUpFragment")) {
+                            if (currentPolyline != null) {
+                                currentPolyline.setVisible(false); // hide draw route in HomeFragment
+                            }
+                            if (destinationMarker != null) destinationMarker.setVisible(false);
 
+                        }
                     }
                 }
             }
@@ -1534,11 +1540,18 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
             if ("VechileFragment".equals(fragName) || "RideFragment".equals(fragName)) return;
 
 
+//            if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
+//                    if ("HomeFragment".equals(fragName) && !isInsideServiceArea(latLng)) {
+//                        showMessageAlert(); // "No service area"
+//                        return;
+//                    }
+
+
             if ("HomeFragment".equals(fragName) || "PickUpFragment".equals(fragName)) {
-                    if ("HomeFragment".equals(fragName) && !isInsideServiceArea(latLng)) {
-                        showMessageAlert(); // "No service area"
-                        return;
-                    }
+                if (!isInsideServiceArea(latLng)) {
+                    showMessageAlert(); // "No service area"
+                    return;
+                }
 
                 pickupPlacesSelected = true;
                 isMapClicked = true;
@@ -1824,6 +1837,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
 
 
     public void showMessageAlert() {
+        String fragName = getCurrentFragmentName();
         if (isDialogShown) return; //  Already shown, don’t show again
 
         isDialogShown = true; // Set flag
@@ -1841,7 +1855,9 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
             public void onClick(View v) {
                 dialog.dismiss();
                 isDialogShown = false; //  Reset flag on dismiss
-                common.switchFragment(new PickUpFragment());
+                if (!"PickUpFragment".equals(fragName)) {
+                    common.switchFragment(new PickUpFragment());
+                }
             }
         });
 

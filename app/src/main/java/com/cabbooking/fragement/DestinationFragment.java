@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ import com.cabbooking.utils.SessionManagment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
@@ -149,72 +151,73 @@ public class DestinationFragment extends Fragment {
         list.clear();
         adapter.notifyDataSetChanged();
 
-        if (!query.isEmpty()) {
-            String boundsJson = sessionManagment.getValue("BOUND_LIST");
-            if (boundsJson == null) return;
+        if (TextUtils.isEmpty(query)) return;
 
-            Type listType = new TypeToken<List<TempBound>>() {}.getType();
-            List<TempBound> boundList = new Gson().fromJson(boundsJson, listType);
+        String boundsJson = sessionManagment.getValue("BOUND_LIST");
+        if (boundsJson == null) return;
 
-            for (TempBound bound : boundList) {
-                LatLng southwest = new LatLng(bound.getSlat(), bound.getSlng());
-                LatLng northeast = new LatLng(bound.getNlat(), bound.getNlon());
-                RectangularBounds bounds = RectangularBounds.newInstance(southwest, northeast);
+        Type listType = new TypeToken<List<TempBound>>() {}.getType();
+        List<TempBound> boundList = new Gson().fromJson(boundsJson, listType);
+        if (boundList == null || boundList.isEmpty()) return;
 
-                FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                        .setLocationRestriction(bounds)
-                        .setTypeFilter(TypeFilter.ADDRESS)
-                        .setCountry("IN")
-                        .setQuery(query)
-                        .build();
+        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
-                placesClient.findAutocompletePredictions(request)
-                        .addOnSuccessListener(response -> {
-                            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                                String placeId = prediction.getPlaceId();
-                                String mainAddress = prediction.getPrimaryText(null).toString();
-                                String fullAddress = prediction.getFullText(null).toString();
+        for (TempBound bound : boundList) {
+            LatLng southwest = new LatLng(bound.getSlat(), bound.getSlng());
+            LatLng northeast = new LatLng(bound.getNlat(), bound.getNlon());
+            RectangularBounds bounds = RectangularBounds.newInstance(southwest, northeast);
 
-                                fetchPlaceDetails(placeId, mainAddress, fullAddress);
-                            }
-                            adapter.notifyDataSetChanged();
-                        })
-                        .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
-            }
+            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                    .setSessionToken(token)
+                    .setLocationRestriction(bounds)
+                    .setTypeFilter(TypeFilter.ADDRESS)
+                    .setCountry("IN")
+                    .setQuery(query)
+                    .build();
+
+            placesClient.findAutocompletePredictions(request)
+                    .addOnSuccessListener(response -> {
+                        for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                            String placeId = prediction.getPlaceId();
+                            String mainAddress = prediction.getPrimaryText(null).toString();
+                            String fullAddress = prediction.getFullText(null).toString();
+
+                            fetchPlaceDetails(placeId, mainAddress, fullAddress, boundList); // 👈 pass bounds here
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Places", "Autocomplete error", e));
         }
     }
 
 
-    private void fetchPlaceDetails(String placeId, String mainAddress, String fullAddress) {
-        List<Place.Field> placeFields = Arrays.asList(
-                Place.Field.LAT_LNG
-        );
+
+    private void fetchPlaceDetails(String placeId, String mainAddress, String fullAddress, List<TempBound> boundList) {
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
 
         FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
 
         placesClient.fetchPlace(request)
                 .addOnSuccessListener(response -> {
-
                     Place place = response.getPlace();
                     LatLng latLng = place.getLatLng();
                     if (latLng != null) {
                         double lat = latLng.latitude;
                         double lng = latLng.longitude;
-                        Activity activity = getActivity();
-                        if (activity != null) {
-                            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                            try {
-                                List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-                                if (addresses != null && !addresses.isEmpty()) {
-                                    String postalCode = addresses.get(0).getPostalCode();
 
-                                    // Step 3: Add to model
-                                    list.add(new DestinationModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
-                                    adapter.notifyDataSetChanged();
+                        if (isInsideAnyBound(lat, lng, boundList)) {  // ✅ Only add if within bounds
+                            if (isAdded() && getContext() != null) {
+                                Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+                                try {
+                                    List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                                    if (addresses != null && !addresses.isEmpty()) {
+                                        String postalCode = addresses.get(0).getPostalCode();
+                                        list.add(new DestinationModel(mainAddress, lat, lng, fullAddress + "  " + postalCode));
+                                        adapter.notifyDataSetChanged();
+                                    }
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -222,6 +225,19 @@ public class DestinationFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("Places", "Place details error", e));
     }
 
+    private boolean isInsideAnyBound(double lat, double lng, List<TempBound> bounds) {
+        for (TempBound bound : bounds) {
+            double minLat = Math.min(bound.getSlat(), bound.getNlat());
+            double maxLat = Math.max(bound.getSlat(), bound.getNlat());
+            double minLng = Math.min(bound.getSlng(), bound.getNlon());
+            double maxLng = Math.max(bound.getSlng(), bound.getNlon());
+
+            if (lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void getDestinatioList() {
         Log.d("hjhfjy", "getDestinatioList: "+list.size());
