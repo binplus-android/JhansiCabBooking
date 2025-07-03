@@ -38,6 +38,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Environment;
 import android.support.annotation.DrawableRes;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cabbooking.R;
 import com.cabbooking.Response.BookingDetailResp;
 import com.cabbooking.Response.CommonResp;
@@ -148,17 +150,19 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         getAllData();
 
         allClick();
-        SupportMapFragment mapFragment = (SupportMapFragment)
-                getChildFragmentManager().findFragmentById(R.id.map);
-
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.map_container, mapFragment)
-                    .commit();
-        }
-
-        mapFragment.getMapAsync(this);
+        //use this if need map visiulization
+//        SupportMapFragment mapFragment = (SupportMapFragment)
+//                getChildFragmentManager().findFragmentById(R.id.map);
+//
+//        if (mapFragment == null) {
+//            mapFragment = SupportMapFragment.newInstance();
+//            getChildFragmentManager().beginTransaction()
+//                    .replace(R.id.map_container, mapFragment)
+//                    .commit();
+//        }
+//
+//        mapFragment.getMapAsync(this);
+        //end
         binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -430,8 +434,26 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                             binding.tvReturndata.setVisibility(View.VISIBLE);
                             binding.tvReturndata.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
                         }
-                        setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
-                                Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
+                        //use this if need map visiulization
+//                        setLocations(Double.parseDouble(resp.getRecordList().getPickupLat()), Double.parseDouble(resp.getRecordList().getPickupLng()),
+//                                Double.parseDouble(resp.getRecordList().getDestinationLat()), Double.parseDouble(resp.getRecordList().getDestinationLng()));
+                        String startLat =resp.getRecordList().getPickupLat();
+                        String startLng = resp.getRecordList().getPickupLng();
+                        String endLat = resp.getRecordList().getDestinationLat();
+                        String endLng = resp.getRecordList().getDestinationLng();
+
+                        DisplayMetrics displayMetrics = new DisplayMetrics();
+                        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                        int width = displayMetrics.widthPixels;  // screen width in pixels
+                        int height = (int) (width * 0.33);        // maintain 3:1 aspect ratio
+
+                        String apiKey = getString(R.string.google_maps_key);
+                        String url = "https://maps.googleapis.com/maps/api/staticmap?size=" + width + "x" + height
+                                + "&markers=label:S|" + startLat + "," + startLng
+                                + "&markers=label:E|" + endLat + "," + endLng
+                                + "&key=" + apiKey;
+
+                        Glide.with(getActivity()).load(url).into(binding.iv);
                         if (resp.getRecordList().getTripStatus() > 1&&resp.getRecordList().getTripStatus()<7) {
                             binding.linTrack.setVisibility(View.VISIBLE);
                         }
@@ -646,6 +668,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         repository=new Repository(getActivity());
         ((MapActivity)getActivity()).setTitle("#ID "+book_id+"  "+date_val);
         //((MapActivity)getActivity()).setTitleWithSize("#ID 12345\n20-09-2024 | 09:30 PM",11);
+
     }
 
     private void feedBack(JsonObject feedobject)
