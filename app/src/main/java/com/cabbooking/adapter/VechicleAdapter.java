@@ -56,13 +56,15 @@ public class VechicleAdapter extends RecyclerView.Adapter<VechicleAdapter.ViewHo
         holder.tv_vname.setText(model.getName());
         holder.tv_vdesc.setText(model.getDescription());
         String distance= String.valueOf(common.getDistanceInKm(context));
-        String amount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(distance));
-        if(outstation_type.equalsIgnoreCase("1")){
-            String returndistance= String.valueOf(common.getReturnDistanceInKm(context));
-            String returnamount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(returndistance));
-            holder.tv_rate.setText("Rs."+String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
-        }else{
-        holder.tv_rate.setText("Rs."+amount);}
+       // String amount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(distance));
+       // if(outstation_type.equalsIgnoreCase("1")){
+//            String returndistance= String.valueOf(common.getReturnDistanceInKm(context));
+//            String returnamount=String.format(Locale.US, "%.0f", model.getFare()*Double.parseDouble(returndistance));
+//            holder.tv_rate.setText("Rs."+String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
+//        }else{
+       // holder.tv_rate.setText("Rs."+amount);
+        //}
+        holder.tv_rate.setText("Rs."+model.getFare());
         Picasso.get().load(IMAGE_BASE_URL+model.getIcon()).placeholder(R.drawable.logo).error(R.drawable.logo).into(holder.iv_vimg);
 
         holder.rel_main.setOnClickListener(new View.OnClickListener() {

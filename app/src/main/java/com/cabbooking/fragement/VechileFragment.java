@@ -56,6 +56,8 @@ import com.cabbooking.utils.ResponseService;
 import com.cabbooking.utils.SessionManagment;
 import com.cabbooking.utils.ToastMsg;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -178,6 +180,9 @@ public class VechileFragment extends Fragment {
         object.addProperty("isRound",outstation_type);
         common.addLocationData(object);
         object.addProperty("vehicleType",list.get(sel_pos).getId());
+        Gson gson = new Gson();
+        JsonElement tripDetailJson = gson.toJsonTree(list.get(sel_pos).getTripDetail());
+        object.add("tripDetail", tripDetailJson);
 
       //make it .3
         if(outstation_type.equalsIgnoreCase("1")) {
@@ -187,12 +192,26 @@ public class VechileFragment extends Fragment {
             String returnDateval=binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString();
             object.addProperty("returnDate",returnDateval);
             object.addProperty("distance",String.valueOf(Double.parseDouble(distance)+Double.parseDouble(returndistance)));
-            object.addProperty("amount",String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
+//            double d1 = Double.parseDouble(distance);
+//            double d2 = Double.parseDouble(returndistance);
+//            JsonArray distanceArr = new JsonArray();
+//            distanceArr.add(d1);
+//            distanceArr.add(d2);
+//            object.add("distanceArr", distanceArr);
+          //  object.addProperty("amount",String.valueOf(Double.parseDouble(amount)+Double.parseDouble(returnamount)));
+            object.addProperty("amount",list.get(sel_pos).getFare());
         }
         else{
             object.addProperty("returnDate","");
             object.addProperty("distance",distance);
-            object.addProperty("amount",amount);
+//            double d1 = Double.parseDouble(distance);
+//            double d2 =0;
+//            JsonArray distanceArr = new JsonArray();
+//            distanceArr.add(d1);
+//            distanceArr.add(d2);
+//            object.add("distanceArr", distanceArr);
+//            object.addProperty("amount",amount);
+            object.addProperty("amount",list.get(sel_pos).getFare());
 
         }
 
@@ -235,7 +254,22 @@ public class VechileFragment extends Fragment {
         return timeFormat.format(new Date());
     }
 
+    private String formatOneDecimal(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return "0.0";
+        }
+        value = value.replace("km", "").trim();  // अगर "km" जुड़ा है तो हटाओ
+        try {
+            double d = Double.parseDouble(value);
+            return String.format("%.1f", d);   // सिर्फ 1 decimal digit
+        } catch (NumberFormatException e) {
+            return "0.0";
+        }
+    }
+
     public void getList() {
+        String distance= formatOneDecimal(String.valueOf(common.getDistanceInKm(getActivity())));
+        String returndistance= formatOneDecimal(String.valueOf(common.getReturnDistanceInKm(getActivity())));
              list.clear();
             JsonObject object=new JsonObject();
          object.addProperty("userId",sessionManagment.getUserDetails().get(KEY_ID));
@@ -244,11 +278,28 @@ public class VechileFragment extends Fragment {
          common.addLocationData(object);
 
         if(outstation_type.equalsIgnoreCase("1")) {
+            JsonArray tripDetail = new JsonArray();
+            JsonObject obj1 = new JsonObject();
+            obj1.addProperty("distance", distance); // e.g. "5.3km"
+            tripDetail.add(obj1);
+
+            JsonObject obj2 = new JsonObject();
+            obj2.addProperty("distance", returndistance ); // e.g. "4.3km"
+            tripDetail.add(obj2);
+
+            object.add("tripDetail", tripDetail);
             object.addProperty("returnDate", binding.tvReturndate.getText().toString() + " " + binding.tvReturntime.getText().toString());
         }
         else{
+            JsonArray tripDetail = new JsonArray();
+            JsonObject obj1 = new JsonObject();
+            obj1.addProperty("distance", distance ); // e.g. "5.3km"
+            tripDetail.add(obj1);
+
+            object.add("tripDetail",tripDetail);
             object.addProperty("returnDate","");
         }
+
             repository.getVechicleData(object, new ResponseService() {
                 @Override
                 public void onResponse(Object data) {

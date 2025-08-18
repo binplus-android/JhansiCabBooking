@@ -41,7 +41,8 @@ public class VechicleModel {
         public String name;
         public String icon;
         public String description;
-        public int fare;
+        public Double fare;
+        public ArrayList<TripDetail> tripDetail;
 
         public RecordList() {}
 
@@ -50,7 +51,8 @@ public class VechicleModel {
             name = in.readString();
             icon = in.readString();
             description = in.readString();
-            fare = in.readInt();
+            fare = in.readDouble();
+            tripDetail = in.createTypedArrayList(TripDetail.CREATOR);
         }
 
         public static final Creator<RecordList> CREATOR = new Creator<RecordList>() {
@@ -71,7 +73,8 @@ public class VechicleModel {
             dest.writeString(name);
             dest.writeString(icon);
             dest.writeString(description);
-            dest.writeInt(fare);
+            dest.writeDouble(fare);
+            dest.writeTypedList(tripDetail);
         }
 
         @Override
@@ -79,9 +82,68 @@ public class VechicleModel {
             return 0;
         }
 
+        public ArrayList<TripDetail> getTripDetail() {
+            return tripDetail;
+        }
+
+        public void setTripDetail(ArrayList<TripDetail> tripDetail) {
+            this.tripDetail = tripDetail;
+        }
 
 
-        // Your existing getters and setters below
+
+        public static class TripDetail implements Parcelable {
+
+            private String distance;
+            private String amount;
+
+            public TripDetail() {
+            }
+
+            protected TripDetail(Parcel in) {
+                distance = in.readString();
+                amount = in.readString();
+            }
+
+            public static Creator<TripDetail> CREATOR = new Creator<TripDetail>() {
+                @Override
+                public TripDetail createFromParcel(Parcel in) {
+                    return new TripDetail(in);
+                }
+
+                @Override
+                public TripDetail[] newArray(int size) {
+                    return new TripDetail[size];
+                }
+            };
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(distance);
+                dest.writeString(amount);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public String getDistance() {
+                return distance;
+            }
+
+            public void setDistance(String distance) {
+                this.distance = distance;
+            }
+
+            public String getAmount() {
+                return amount;
+            }
+
+            public void setAmount(String amount) {
+                this.amount = amount;
+            }
+        }
 
         public int getId() { return id; }
         public void setId(int id) { this.id = id; }
@@ -95,8 +157,8 @@ public class VechicleModel {
         public String getDescription() { return description; }
         public void setDescription(String description) { this.description = description; }
 
-        public int getFare() { return fare; }
-        public void setFare(int fare) { this.fare = fare; }
+        public Double getFare() { return fare; }
+        public void setFare(Double fare) { this.fare = fare; }
     }
 
 }
