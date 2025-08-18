@@ -68,7 +68,7 @@ public class PickupResp implements Parcelable {
         public String isRound;
         public int vehicleType;
         public String distance;
-        public int amount;
+        public Double amount;
         public int tripStatus;
         public String upStringd_at;
         public String created_at;
@@ -89,7 +89,7 @@ public class PickupResp implements Parcelable {
             isRound = in.readString();
             vehicleType = in.readInt();
             distance = in.readString();
-            amount = in.readInt();
+            amount = in.readDouble();
             tripStatus = in.readInt();
             upStringd_at = in.readString();
             created_at = in.readString();
@@ -122,7 +122,7 @@ public class PickupResp implements Parcelable {
             dest.writeString(isRound);
             dest.writeInt(vehicleType);
             dest.writeString(distance);
-            dest.writeInt(amount);
+            dest.writeDouble(amount);
             dest.writeInt(tripStatus);
             dest.writeString(upStringd_at);
             dest.writeString(created_at);
@@ -226,11 +226,11 @@ public class PickupResp implements Parcelable {
             this.distance = distance;
         }
 
-        public int getAmount() {
+        public Double getAmount() {
             return amount;
         }
 
-        public void setAmount(int amount) {
+        public void setAmount(Double amount) {
             this.amount = amount;
         }
 
