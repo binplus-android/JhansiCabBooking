@@ -47,6 +47,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cabbooking.R;
 import com.cabbooking.Response.Bound;
@@ -435,6 +436,20 @@ public class Common {
             Intent dialIntent = new Intent(Intent.ACTION_DIAL, dialUri);
             context.startActivity(dialIntent);
 
+    }
+    public boolean isInvalidValue(String value) {
+        if (value == null) return true;
+
+        value = value.trim();
+        if (value.isEmpty()) return true;
+
+        try {
+            double num = Double.parseDouble(value);
+            // Agar value 1 se chhoti ho (including 0 & negative) → invalid
+            return num < 1;
+        } catch (NumberFormatException e) {
+            return true; // Agar number parse hi nahi ho paya
+        }
     }
 
     public boolean isValidName(String name){

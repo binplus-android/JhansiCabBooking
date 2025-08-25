@@ -36,19 +36,31 @@
                     <TextView
                         android:textSize="@dimen/space_7"
                         style="@style/TextViewSemBold"
-                        android:text="@string/estiamte_price"
+                        android:text="@string/price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
                         android:id="@+id/tv_price"
                         android:textSize="@dimen/space_7"
                         style="@style/TextViewSemBold"
-                        android:layout_alignParentEnd="true"
+                        android:layout_toLeftOf="@id/iv_fare"
                         android:text="Rs.0"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/iv_fare"
+                        android:rotation="90"
+                        android:layout_marginLeft="@dimen/space_4"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="8pt"
+                        android:layout_height="8pt"
+                        android:src="@drawable/ic_right_arrow"/>
                 </RelativeLayout>
-                <!--<include layout="@layout/common_map"/>-->
+                <include
+                    android:id="@+id/inc_fair"
+                    android:visibility="gone"
+                    layout="@layout/common_faredetail"/>
+<!--                <include layout="@layout/common_map"/>-->
                 <LinearLayout
                     android:layout_marginHorizontal="@dimen/space_8"
                     android:layout_marginTop="@dimen/space_4"

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:background="@color/grey"
+        android:padding="@dimen/space_5"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/t"
+                android:text="@string/trip_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tamt"
+                style="@style/TextViewSemBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/rs_0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/space_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/w"
+                android:text="@string/waiting_charge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/wamt"
+                style="@style/TextViewSemBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/rs_0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/space_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/n"
+                android:text="@string/night_halt_charge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/namt"
+                style="@style/TextViewSemBold"
+                android:layout_alignParentEnd="true"
+                android:text="@string/rs_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/space_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/e"
+                android:text="@string/extra_fare_charge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/eamt"
+                style="@style/TextViewSemBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/rs_0" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/space_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/a"
+                android:text="@string/additional_charge_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/aamt"
+                style="@style/TextViewSemBold"
+                android:layout_alignParentEnd="true"
+                android:text="@string/rs_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

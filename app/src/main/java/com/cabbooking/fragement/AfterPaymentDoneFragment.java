@@ -1,5 +1,7 @@
 package com.cabbooking.fragement;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
 import static com.cabbooking.utils.SessionManagment.KEY_ID;
 import static com.cabbooking.utils.SessionManagment.KEY_OUTSTATION_TYPE;
@@ -450,6 +452,21 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
                             binding.tvVdesc.setText("(" +resp.getRecordList().getVehicleColor()+")");
                         }
                         binding.tvPrice.setText("Rs. "+resp.getRecordList().getAmount());
+                        Log.d("getttt", "onResponse: "+common.isInvalidValue(resp.getRecordList().getFareDetail().getWaitingCharge()));
+                        if (common.isInvalidValue(resp.getRecordList().getFareDetail().getWaitingCharge())
+                                && common.isInvalidValue(resp.getRecordList().getFareDetail().getNightHaltCharge())
+                                && common.isInvalidValue(resp.getRecordList().getFareDetail().getAdditionalCharge())
+                                && common.isInvalidValue(resp.getRecordList().getFareDetail().getExtraFare())) {
+                            binding.ivFare.setVisibility(View.GONE);
+                        }
+                        else{
+                            binding.ivFare.setVisibility(VISIBLE);
+                            setAmount(binding.incFair.tamt,binding.incFair.t,resp.getRecordList().getFareDetail().getTripAmount());
+                            setAmount(binding.incFair.wamt,binding.incFair.w,resp.getRecordList().getFareDetail().getWaitingCharge());
+                            setAmount(binding.incFair.namt,binding.incFair.n,resp.getRecordList().getFareDetail().getNightHaltCharge());
+                            setAmount(binding.incFair.eamt,binding.incFair.e,resp.getRecordList().getFareDetail().getExtraFare());
+                            setAmount(binding.incFair.aamt,binding.incFair.a,resp.getRecordList().getFareDetail().getAdditionalCharge());
+                        }
                         amount_pay=resp.getRecordList().getAmount();
                         binding.tvReturnDate.setText(getActivity().getString(R.string.return_date)+resp.getRecordList().getReturnDate());
 
@@ -469,6 +486,22 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
 
     }
 
+    public void setAmount(TextView tv,TextView label,String amountStr) {
+        try {
+            double amount = Double.parseDouble(amountStr);
+            if (amount <= 0 || amount < 1) {
+                tv.setVisibility(View.GONE);
+                label.setVisibility(GONE);
+            } else {
+                tv.setVisibility(View.VISIBLE);
+                label.setVisibility(VISIBLE);
+                tv.setText("Rs. " + amountStr);
+            }
+        } catch (Exception e) {
+            tv.setVisibility(View.GONE);
+        }
+    }
+
     private void showPaymentMode(String payment_mode) {
         if(payment_mode.equalsIgnoreCase("upi")){
             binding.rdUpi.setChecked(true);
@@ -485,6 +518,16 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
     }
 
     private void allClick() {
+        binding.ivFare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(binding.incFair.getRoot().getVisibility()==VISIBLE){
+                    binding.incFair.getRoot().setVisibility(GONE);
+                }else{
+                    binding.incFair.getRoot().setVisibility(VISIBLE);
+                }
+            }
+        });
         binding.ivCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -576,8 +619,8 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
 
     }
     private void initView() {
-        binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(View.GONE);
-        binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(View.GONE);
+        binding.commonAddress.findViewById(R.id.iv_pick).setVisibility(GONE);
+        binding.commonAddress.findViewById(R.id.iv_destination).setVisibility(GONE);
         ((MapActivity)getActivity()).showCommonPickDestinationArea(true,false);
         sessionManagment=new SessionManagment(getActivity());
         common=new Common(getActivity());
@@ -586,19 +629,19 @@ public class AfterPaymentDoneFragment extends Fragment implements OnMapReadyCall
         trip_type=sessionManagment.getValue(KEY_TYPE);
         outstation_type=sessionManagment.getValue(KEY_OUTSTATION_TYPE);
         if(trip_type.equalsIgnoreCase("1")){
-            binding.tvTripType.setVisibility(View.VISIBLE);
+            binding.tvTripType.setVisibility(VISIBLE);
             if(outstation_type.equalsIgnoreCase("0")){
                 binding.tvTripType.setText(getActivity().getString(R.string.one_way_trip));
-                binding.tvReturnDate.setVisibility(View.GONE);
+                binding.tvReturnDate.setVisibility(GONE);
             }
             else {
                 binding.tvTripType.setText(getActivity().getString(R.string.round_trip));
-                binding.tvReturnDate.setVisibility(View.VISIBLE);
+                binding.tvReturnDate.setVisibility(VISIBLE);
             }
 
         }else{
-            binding.tvReturnDate.setVisibility(View.GONE);
-            binding.tvTripType.setVisibility(View.GONE);
+            binding.tvReturnDate.setVisibility(GONE);
+            binding.tvTripType.setVisibility(GONE);
         }
     }
     @Override

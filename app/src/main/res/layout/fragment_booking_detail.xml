@@ -163,8 +163,16 @@
                                 android:layout_height="wrap_content"/>
                         </LinearLayout>
 
+                        <ImageView
+                            android:id="@+id/iv_fare"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_right_arrow"
+                            android:rotation="90"
+                            android:layout_width="8pt"
+                            android:layout_height="8pt"/>
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_centerVertical="true"
                         android:gravity="end"
@@ -189,6 +197,10 @@
                     </LinearLayout>
 
                 </RelativeLayout>
+                <include
+                    android:id="@+id/inc_fair"
+                    android:visibility="gone"
+                    layout="@layout/common_faredetail"/>
 
                 <View
                     android:layout_marginVertical="@dimen/space_2"

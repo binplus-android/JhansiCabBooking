@@ -17,6 +17,7 @@ public class BookingDetailResp {
     }
 
     public class RecordList{
+        public FareDetail fareDetail;
         public int id;
         public int userId;
         public int driverId;
@@ -53,6 +54,115 @@ public class BookingDetailResp {
         public String tripStatusName;
         public String paymentMode;
         public String userFeedback;
+
+        public FareDetail getFareDetail() {
+            return fareDetail;
+        }
+
+        public void setFareDetail(FareDetail fareDetail) {
+            this.fareDetail = fareDetail;
+        }
+        public class FareDetail{
+            public String estimatedDistance;
+            public String estimatedAmount;
+            public String tripAmount;
+            public String waitingCharge;
+            public String nightHaltCharge;
+            public String parkingCharge;
+            public String tollCharge;
+            public String stateTax;
+            public String subtotal;
+            public String additionalCharge;
+            public String extraFare;
+
+            public String getEstimatedDistance() {
+                return estimatedDistance;
+            }
+
+            public void setEstimatedDistance(String estimatedDistance) {
+                this.estimatedDistance = estimatedDistance;
+            }
+
+            public String getEstimatedAmount() {
+                return estimatedAmount;
+            }
+
+            public void setEstimatedAmount(String estimatedAmount) {
+                this.estimatedAmount = estimatedAmount;
+            }
+
+            public String getTripAmount() {
+                return tripAmount;
+            }
+
+            public void setTripAmount(String tripAmount) {
+                this.tripAmount = tripAmount;
+            }
+
+            public String getWaitingCharge() {
+                return waitingCharge;
+            }
+
+            public void setWaitingCharge(String waitingCharge) {
+                this.waitingCharge = waitingCharge;
+            }
+
+            public String getNightHaltCharge() {
+                return nightHaltCharge;
+            }
+
+            public void setNightHaltCharge(String nightHaltCharge) {
+                this.nightHaltCharge = nightHaltCharge;
+            }
+
+            public String getParkingCharge() {
+                return parkingCharge;
+            }
+
+            public void setParkingCharge(String parkingCharge) {
+                this.parkingCharge = parkingCharge;
+            }
+
+            public String getTollCharge() {
+                return tollCharge;
+            }
+
+            public void setTollCharge(String tollCharge) {
+                this.tollCharge = tollCharge;
+            }
+
+            public String getStateTax() {
+                return stateTax;
+            }
+
+            public void setStateTax(String stateTax) {
+                this.stateTax = stateTax;
+            }
+
+            public String getSubtotal() {
+                return subtotal;
+            }
+
+            public void setSubtotal(String subtotal) {
+                this.subtotal = subtotal;
+            }
+
+            public String getAdditionalCharge() {
+                return additionalCharge;
+            }
+
+            public void setAdditionalCharge(String additionalCharge) {
+                this.additionalCharge = additionalCharge;
+            }
+
+            public String getExtraFare() {
+                return extraFare;
+            }
+
+            public void setExtraFare(String extraFare) {
+                this.extraFare = extraFare;
+            }
+        }
 
         public int getId() {
             return id;

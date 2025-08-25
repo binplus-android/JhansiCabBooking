@@ -391,14 +391,23 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
         });
 
     }
-    private void loadServiceAreas() {
+    public void loadServiceAreas() {
+        serviceAreas.clear(); // clear previous, if any
         String json = sessionManagment.getValue("BOUND_LIST");
-        if (json == null) return;
+        if (json == null || json.trim().isEmpty() || json.equalsIgnoreCase("null")) {
+            Log.e("SessionBound", "BOUND_LIST is null or empty");
+            return;
+        }
 
         Type type = new TypeToken<ArrayList<TempBound>>() {}.getType();
         List<TempBound> boundList = new Gson().fromJson(json, type);
 
-        serviceAreas.clear(); // clear previous, if any
+        if (boundList == null || boundList.isEmpty()) {
+            Log.e("SessionBound", "Parsed boundList is null or empty -> " + json);
+            return;
+        }
+
+
 
         LatLngBounds.Builder combinedBuilder = new LatLngBounds.Builder();
 
@@ -416,6 +425,7 @@ public class MapActivity extends  BaseActivity implements OnMapReadyCallback,
 
         combinedBounds = combinedBuilder.build(); // final bounds covering all areas
     }
+
 
     public void notificationActionCode() {
         if (getIntent() != null && getIntent().hasExtra("page_type") && getIntent().hasExtra("body")) {

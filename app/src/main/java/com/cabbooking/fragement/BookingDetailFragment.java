@@ -2,6 +2,8 @@ package com.cabbooking.fragement;
 
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static androidx.core.content.ContextCompat.getSystemService;
 import static com.cabbooking.utils.RetrofitClient.BASE_URL;
 import static com.cabbooking.utils.RetrofitClient.IMAGE_BASE_URL;
@@ -499,6 +501,20 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                                     resp.getRecordList().getVehicleColor() + ")");
                         }
                         binding.tvAmt.setText("-Rs." + resp.getRecordList().getAmount());
+                        if (common.isInvalidValue(resp.getRecordList().getFareDetail().getWaitingCharge())
+                            && common.isInvalidValue(resp.getRecordList().getFareDetail().getNightHaltCharge())
+                            && common.isInvalidValue(resp.getRecordList().getFareDetail().getAdditionalCharge())
+                            && common.isInvalidValue(resp.getRecordList().getFareDetail().getExtraFare())) {
+                            binding.ivFare.setVisibility(View.GONE);
+                        }
+                        else{
+                            binding.ivFare.setVisibility(VISIBLE);
+                            setAmount(binding.incFair.tamt,binding.incFair.t,resp.getRecordList().getFareDetail().getTripAmount());
+                            setAmount(binding.incFair.wamt,binding.incFair.w,resp.getRecordList().getFareDetail().getWaitingCharge());
+                            setAmount(binding.incFair.namt,binding.incFair.n,resp.getRecordList().getFareDetail().getNightHaltCharge());
+                            setAmount(binding.incFair.eamt,binding.incFair.e,resp.getRecordList().getFareDetail().getExtraFare());
+                            setAmount(binding.incFair.aamt,binding.incFair.a,resp.getRecordList().getFareDetail().getAdditionalCharge());
+                        }
                         binding.tvDist.setText("Distance: " + resp.getRecordList().getDistance() + "KM");
                         if(resp.getRecordList().getTripStatus()==9){
                             binding.tvPayment.setText("");
@@ -525,8 +541,34 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
         }, false);
 
     }
+    public void setAmount(TextView tv,TextView label,String amountStr) {
+        try {
+            double amount = Double.parseDouble(amountStr);
+            if (amount <= 0 || amount < 1) {
+                tv.setVisibility(View.GONE);
+                label.setVisibility(GONE);
+            } else {
+                tv.setVisibility(View.VISIBLE);
+                label.setVisibility(VISIBLE);
+                tv.setText("Rs. " + amountStr);
+            }
+        } catch (Exception e) {
+            tv.setVisibility(View.GONE);
+        }
+    }
+
 
     private void allClick() {
+        binding.ivFare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(binding.incFair.getRoot().getVisibility()==VISIBLE){
+                    binding.incFair.getRoot().setVisibility(GONE);
+                }else{
+                    binding.incFair.getRoot().setVisibility(VISIBLE);
+                }
+            }
+        });
         binding.tvCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

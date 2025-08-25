@@ -2,6 +2,7 @@ package com.cabbooking.model;
 
 public class AppSettingModel {
     public int id;
+    public String additionalCharges;
     public int version;
     public String app_link;
     public String share_link;
@@ -36,10 +37,13 @@ public class AppSettingModel {
         this.support_whatsapp = support_whatsapp;
     }
 
+    public String getAdditionalCharges() {
+        return additionalCharges;
+    }
 
-
-
-
+    public void setAdditionalCharges(String additionalCharges) {
+        this.additionalCharges = additionalCharges;
+    }
 
     public int getId() {
         return id;

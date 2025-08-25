@@ -12,6 +12,7 @@
     <string name="Signup">Signup</string>
     <string name="get_otp">Get OTP</string>
     <string name="enter_here">Enter here</string>
+    <string name="enter_amount">Enter Amount</string>
     <string name="enter_valid_name">Please enter valid name</string>
     <string name="enter_valid_mobile">Please enter valid mobile number</string>
     <string name="enter_valid_email">Please enter valid email id</string>
@@ -46,6 +47,7 @@
     <string name="available_rode_mate">Available Ride Mate</string>
     <string name="ride_mate">Ride Mate</string>
     <string name="estiamte_price">Estimate Price</string>
+    <string name="price">Price</string>
     <string name="booking_confirmed">Booking Confirmed</string>
     <string name="ride_confirmed">Your ride is confirmed</string>
     <string name="Cancel_Ride">Cancel Ride</string>
@@ -144,9 +146,16 @@
     <string name="choose_photo_to_upload">Choose photo to upload</string>
     <string name="photo_selected">Photo Selected</string>
     <string name="success">Success</string>
-    <string name="my_profile">My Profile</string>   <string name="get_invoice">Get invoice copy</string>
+    <string name="my_profile">My Profile</string>
+    <string name="get_invoice">Get invoice copy</string>
     <string name="choose_image_from_your_device_png_jpeg_jpg_etc">*choose image from your device (.png, .jpeg, .jpg etc)</string>
-
+    <string name="trip_amount">Trip Amount : </string>
+    <string name="waiting_charge">Waiting Charge : </string>
+    <string name="night_halt_charge">Night Halt Charge : </string>
+    <string name="extra_fare_charge">Extra Fare Charge : </string>
+    <string name="rs_0">Rs.0</string>
+    <string name="additional_charge_">Additional Charges : </string>
+    <string name="additional_charge">Additional Charge</string>
 
     <!--    <string name="allow_google_map">Allow "\'Google Maps\'" to access your location while you use the app?</string>-->
 </resources>
