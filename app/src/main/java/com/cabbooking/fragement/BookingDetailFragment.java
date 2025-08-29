@@ -505,7 +505,7 @@ public class BookingDetailFragment extends Fragment implements OnMapReadyCallbac
                             && common.isInvalidValue(resp.getRecordList().getFareDetail().getNightHaltCharge())
                             && common.isInvalidValue(resp.getRecordList().getFareDetail().getAdditionalCharge())
                             && common.isInvalidValue(resp.getRecordList().getFareDetail().getExtraFare())) {
-                            binding.ivFare.setVisibility(View.GONE);
+                            binding.ivFare.setVisibility(View.INVISIBLE);
                         }
                         else{
                             binding.ivFare.setVisibility(VISIBLE);
